@@ -1,0 +1,43 @@
+table {
+    width: 100%;
+    border-spacing: 0;
+}
+
+table, tr {
+    margin: 0;
+    padding: 0;
+}
+
+/* 
+table tr {
+} */
+
+table tr td {
+    height: 32px;
+    padding: 0;
+    border-right: 1px solid black;
+    vertical-align: middle;
+    position: relative;  
+    cursor: pointer;
+}
+
+
+table tbody tr td hr {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.note {
+    display: inline-block;
+    background-color: brown;
+    border-radius: 50%;
+    width: 80%;
+    position: absolute;
+    top: 0;
+    left: 3px;
+    cursor: pointer;
+    text-align: center;
+    line-height: 32px;
+    font-size: 20px;
+}
