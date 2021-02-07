@@ -95,15 +95,24 @@ class GuitarNeck extends React.Component{
         }
 
         var scaleNotes = this.getScaleNotes();
-        var scalesIntervals = this.getScalesIntervals();
+        var scaleIntervals = this.getScaleIntervals();
 
         this.cleanFretboard(() => {
-            this.spreadNotesOnFretboard(scaleNotes, scalesIntervals)
+            this.spreadNotesOnFretboard(scaleNotes, scaleIntervals)
         });
     }
 
-    getScalesIntervals(){
-        return guitar.scales[this.state.scale].modes[this.state.modeIndex].intervals;
+    getScaleIntervals(){
+        const scale = guitar.scales[this.state.scale];
+        var intervals = [];
+
+        if(scale.isModal){
+            intervals = scale.modes[this.state.modeIndex].intervals;
+        }else{
+            intervals = scale.intervals;
+        }
+
+        return intervals;
     }
     // Display Ionian mode in C
     scaleChange(e){
@@ -143,8 +152,9 @@ class GuitarNeck extends React.Component{
 
     componentDidUpdate(){
     }
-    spreadNotesOnFretboard(notes){
 
+    spreadNotesOnFretboard(notes, intervals){
+        console.log(intervals)
         var newFretboard = [...this.state.fretboard];
 
         var rootNote = notes[this.state.modeIndex]; // D  dorian
@@ -215,17 +225,21 @@ class GuitarNeck extends React.Component{
             return <option key={index} value={index}>{note}</option>
         })
 
-        const currentScale = guitar.scales[this.state.scale];
+        if(this.state.scale !== "unset"){
+            const currentScale = guitar.scales[this.state.scale];
 
-        var modes = null;
+            var modes = null;
+            
+            if(currentScale.isModal){
+                var scaleModes = currentScale.modes;
 
-        if(currentScale){
-            var scaleModes = currentScale.modes;
-
-            if(scaleModes.length){
-                modes = scaleModes.map((mode, index) => {
-                    return <option key={index} value={index}>{mode.name}</option>
-                })
+                if(currentScale){
+                    if(scaleModes.length){
+                        modes = scaleModes.map((mode, index) => {
+                            return <option key={index} value={index}>{mode.name}</option>
+                        })
+                    }
+                }
             }
         }
 

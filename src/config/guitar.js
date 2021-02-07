@@ -40,34 +40,35 @@ const config = {
         "major": {
             "name": "Major scale",
             "formula": [2, 2, 1, 2, 2, 2, 1],
+            "isModal": true,
             "modes": [
                 {
                     "name": "Ionian",
-                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                    "intervals": ['1', '2', '3', '4', '5', '6', '7'] 
                 },
                 {
                     "name": "Dorian",
-                    "intervals": ['1', 'b2', 'b3', '4', '5', '6', 'b7'] 
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', 'b7'] 
                 },
                 {
                     "name": "Phrygian",
-                    "intervals": ['1', '2', 'b', '#4', '#5', '6', '7'] 
+                    "intervals": ['1', 'b2', 'b3', '4', '5', 'b6', 'b7'] 
                 },
                 {
                     "name": "Lydian",
-                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
-                },
-                {
-                    "name": "Mixolydian",
                     "intervals": ['1', '2', '3', '#4', '5', '6', '7'] 
                 },
                 {
+                    "name": "Mixolydian",
+                    "intervals": ['1', '2', '3', '4', '5', '6', 'b7'] 
+                },
+                {
                     "name": "Aeolioan",
-                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                    "intervals": ['1', '2', 'b3', '4', '5', 'b6', 'b7'] 
                 },
                 {
                     "name": "Locrian",
-                    "intervals": ['1', '2', 'b3', '4', 'b5', 'b6', 'b7'] 
+                    "intervals": ['1', 'b2', 'b3', '4', 'b5', 'b6', 'b7'] 
                 },
             ]
         },
@@ -85,7 +86,7 @@ const config = {
                 },
                 {
                     "name": "Ionian augmented",
-                    "intervals": ['1', '2', '3', '4', '#5', '6', '7'] 
+                    "intervals": ['1', '2', '3', '#4', '5', '6', '7'] 
                 },
                 {
                     "name": "Romanian",
@@ -108,6 +109,7 @@ const config = {
         "melodic": {
             "name": "Melodic scale",
             "formula": [2, 1, 2, 2, 2, 2, 1],
+            "isModal": true,
             "modes": [
                 {
                     "name": "Melodic minor",
@@ -141,13 +143,16 @@ const config = {
         },
         "blues-minor":{
             "name": "Blues minor",
+            "isModal": false,
+            "intervals": ['1', 'b3', '4', 'b5', '5', 'b7'],
             "formula": [3, 2, 2, 3, 2],
-            "modes": []
         },
         "blues-major":{
             "name": "Blues major",
             "formula": [2, 2, 3, 2, 3],
-            "modes": []
+            "isModal": false,
+            "intervals": ['1', '2', 'b3', '3', '5', '6'],
+
         }
     },
     "chords": {
