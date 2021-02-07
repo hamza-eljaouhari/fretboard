@@ -31,70 +31,121 @@ const config = {
             "B"
         ]
     },
-    "intervals": [
-        "1",
-        "2",
-        "b3",
-        "3",
-        "4",
-        "5",
-        "b6",
-        "6",
-        "b7",
-        "7"
-    ],
     "numberOfStrings": 6,
     "numberOfFrets": 24,
     "tuning": [
         4, 11, 7, 2, 9, 4
     ], // E, A, D, G, B, E standard tuning
     "scales": {
-        "minor": {
-            "formula": [2, 1, 2, 2, 1, 2, 2],
-            "intervals": ['1', '2', 'b3', '4', '5', 'b6', 'b7'],
-            "triad": [0, 2, 4] // 1 3 5
-        },
         "major": {
+            "name": "Major scale",
             "formula": [2, 2, 1, 2, 2, 2, 1],
             "modes": [
-                "Inonian",
-                "Dorian",
-                "Phrygian",
-                "Lydian",
-                "Mixolydian",
-                "Aeolian",
-                "Locrian"
+                {
+                    "name": "Ionian",
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Dorian",
+                    "intervals": ['1', 'b2', 'b3', '4', '5', '6', 'b7'] 
+                },
+                {
+                    "name": "Phrygian",
+                    "intervals": ['1', '2', 'b', '#4', '#5', '6', '7'] 
+                },
+                {
+                    "name": "Lydian",
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Mixolydian",
+                    "intervals": ['1', '2', '3', '#4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Aeolioan",
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Locrian",
+                    "intervals": ['1', '2', 'b3', '4', 'b5', 'b6', 'b7'] 
+                },
             ]
         },
         "harmonic": {
+            "name": "Harmonic scale",
             "formula": [2, 1, 2, 2, 1, 3, 1],
             "modes": [
-                "Harmonic minor",
-                "Locrian #6",
-                "Ionian augmented",
-                "Romanian",
-                "Phrygian dominant",
-                "Lydian #2",
-                "Ultra locrian"
+                {
+                    "name": "Harmonic minor",
+                    "intervals": ['1', '2', 'b3', '4', '5', 'b6', '7'] 
+                },
+                {
+                    "name": "Locrian #6",
+                    "intervals": ['1', 'b2', 'b3', '4', 'b5', '6', 'b7'] 
+                },
+                {
+                    "name": "Ionian augmented",
+                    "intervals": ['1', '2', '3', '4', '#5', '6', '7'] 
+                },
+                {
+                    "name": "Romanian",
+                    "intervals": ['1', '2', 'b3', '#4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Phrygian dominant",
+                    "intervals": ['1', 'b2', '3', '4', '5', 'b6', 'b7'] 
+                },
+                {
+                    "name": "Lydian #2",
+                    "intervals": ['1', '#2', '3', '#4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Ultra locrian",
+                    "intervals": ['1', 'b2', 'b3', 'b4', 'b5', 'b6', 'bb7'] 
+                },
             ]
         },
         "melodic": {
+            "name": "Melodic scale",
             "formula": [2, 1, 2, 2, 2, 2, 1],
             "modes": [
-                "Melodic minor",
-                "Javanese",
-                "Lydian augmented",
-                "Lydian dominant",
-                "Hindu",
-                "Locrian #2",
-                "Super locrian"
+                {
+                    "name": "Melodic minor",
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Javanese",
+                    "intervals": ['1', 'b2', 'b3', '4', '5', '6', 'b7'] 
+                },
+                {
+                    "name": "Lydian augmented",
+                    "intervals": ['1', '2', 'b', '#4', '#5', '6', '7'] 
+                },
+                {
+                    "name": "Lydian dominant",
+                    "intervals": ['1', '2', '3', '#4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Hindu",
+                    "intervals": ['1', '2', 'b3', '4', '5', '6', '7'] 
+                },
+                {
+                    "name": "Locrian #2",
+                    "intervals": ['1', '2', 'b3', '4', 'b5', 'b6', 'b7'] 
+                },
+                {
+                    "name": "Super locrian",
+                    "intervals": ['1', 'b2', 'b3', '3', 'b5', 'b6', 'b7'] 
+                },
             ]
         },
         "blues-minor":{
+            "name": "Blues minor",
             "formula": [3, 2, 2, 3, 2],
             "modes": []
         },
         "blues-major":{
+            "name": "Blues major",
             "formula": [2, 2, 3, 2, 3],
             "modes": []
         }

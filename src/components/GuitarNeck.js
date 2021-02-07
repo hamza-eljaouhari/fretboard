@@ -1,5 +1,5 @@
 import guitar from '../config/guitar';
-import React from 'react';    
+import React, { useEffect } from 'react';
 import './guitar-neck.css';
 import { render } from '@testing-library/react';
 
@@ -13,19 +13,20 @@ class GuitarNeck extends React.Component{
             keyIndex: -1,
             arppegioDegree: '',
             scale: '',
-            modeIndex: -1
+            modeIndex: -1,
+            displayNotes: true
         };
-    
+
         this.keyChange = this.keyChange.bind(this);
         this.scaleChange = this.scaleChange.bind(this);
         this.arppegioChange = this.arppegioChange.bind(this);
         this.toggleNote = this.toggleNote.bind(this);
-        this.getScaleNotes = this.getScaleNotes.bind(this);
         this.getNoteFromFretboard = this.getNoteFromFretboard.bind(this);
         this.getScaleNotes = this.getScaleNotes.bind(this);
         this.modeChange = this.modeChange.bind(this);
+        this.displayNotesChange = this.displayNotesChange.bind(this);
     }
-    
+
     modeChange(e){
         var modeIndex = e.target.value;
 
@@ -35,9 +36,14 @@ class GuitarNeck extends React.Component{
                 this.spreadNotesOnFretboard(scaleNotes);
             }
         });
-
-
     }
+
+    displayNotesChange(e){
+        var displayNotes = e.target.value;
+
+        this.setState({displayNotes: displayNotes});
+    }
+
 
     toggleNote(i, j, e){
         var newFretboard = [...this.state.fretboard];
@@ -65,33 +71,30 @@ class GuitarNeck extends React.Component{
 
     getScaleNotes(){
         var scaleNotes = [];
-        
+
         var rootNote = guitar.notes.sharps[this.state.keyIndex]; // TODO: Color it later
 
         scaleNotes.push(rootNote);
-        
-        var i = parseInt(this.state.keyIndex);  
+
+        var i = parseInt(this.state.keyIndex);
 
         guitar.scales[this.state.scale].formula.forEach(function(step){
-            i = (i + step) % 12; 
-          
+            i = (i + step) % 12;
+
             scaleNotes.push(guitar.notes.sharps[i])
-            
         })
 
         return scaleNotes;
     }
-    
+
     displayScale(){
         var scaleNotes = this.getScaleNotes();
-
         this.cleanFretboard(() => {
             this.spreadNotesOnFretboard(scaleNotes)
         });
     }
     // Display Ionian mode in C
     scaleChange(e){
-        
         const newScale = e.target.value;
 
         this.setState({scale: newScale}, () => {
@@ -102,7 +105,7 @@ class GuitarNeck extends React.Component{
         // Get all 7 notes from the scale and spread them across the fretboard
     }
 
-    
+
     getNoteFromFretboard(m, n){
         var stringNote = guitar.tuning[m];
 
@@ -116,9 +119,9 @@ class GuitarNeck extends React.Component{
         this.setArppegioDegree({arppegioDegree: arppegioDegree});
         // find the notes using the intervals of tha arppegios
         var scaleNotes = this.getScaleNotes();
-        
+
         var arppegioNotes = [];
-        
+
         guitar.arppegios[arppegioDegree].intervals.forEach(function(step){
             arppegioNotes.push(scaleNotes[step - 1]);
         })
@@ -126,10 +129,12 @@ class GuitarNeck extends React.Component{
         this.spreadNotesOnFretboard(arppegioNotes);
     }
 
+    componentDidUpdate(){
+    }
     spreadNotesOnFretboard(notes){
 
         var newFretboard = [...this.state.fretboard];
-        
+
         var rootNote = notes[this.state.modeIndex]; // D  dorian
 
         if(!rootNote){
@@ -139,9 +144,9 @@ class GuitarNeck extends React.Component{
         for(var m = 0; m < guitar.numberOfStrings; m++){
             for(var n = 0; n < guitar.numberOfFrets; n++){
                 var currentNote = this.getNoteFromFretboard(m, n);
-                
+
                 if(notes.includes(currentNote)){ // C major has C D E A F B G E C
-                    if(rootNote === currentNote){ // if 
+                    if(rootNote === currentNote){ // if
                         newFretboard[m][n] = 'R';
                     }else{
                         newFretboard[m][n] = currentNote;
@@ -153,19 +158,20 @@ class GuitarNeck extends React.Component{
         this.setState({fretboard: newFretboard})
     }
 
+
     cleanFretboard(callback){
         var newFretboard = Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill(null));
-        
+
         this.setState({ fretboard : newFretboard }, callback)
     }
 
     render(){
         const strings = [];
-                
+
         for(let i = 0; i < guitar.numberOfStrings; i++){
             const frets = [];
-            
-        
+
+
             for(let j = 0; j < guitar.numberOfFrets; j++){
 
                 var note = null;
@@ -174,7 +180,7 @@ class GuitarNeck extends React.Component{
                 }
 
                 frets.push(
-                    <td 
+                    <td
                         key={j + '-' + i} id={j + '-' + i}
                         onClick={(e) => this.toggleNote(i, j, e)}>
                             { note }
@@ -193,27 +199,39 @@ class GuitarNeck extends React.Component{
         var notes = guitar.notes.sharps.map((note, index) => {
             return <option key={index} value={index}>{note}</option>
         })
-    
+
         const currentScale = guitar.scales[this.state.scale];
-        
-        var modes = null; 
+
+        var modes = null;
 
         if(currentScale){
             var scaleModes = currentScale.modes;
 
-            if(scaleModes){
+            if(scaleModes.length){
                 modes = scaleModes.map((mode, index) => {
-                    return <option key={index} value={index}>{mode}</option>
+                    return <option key={index} value={index}>{mode.name}</option>
                 })
             }
         }
-        
+
+        var buttonText = 'Switch to intevals'
+
+        if(!this.state.displayNotes){
+            buttonText = 'Switch to notes';
+        }
+
+        var scalesNames = Object.keys(guitar.scales);
+
+        var scales = scalesNames.map((scaleName) => {
+            return <option key={scaleName} value={scaleName}>{guitar.scales[scaleName].name}</option>;
+        });
+
 
         return(
             <div>
                 <table>
                     <tbody>
-                        { 
+                        {
                             strings
                         }
                     </tbody>
@@ -230,12 +248,7 @@ class GuitarNeck extends React.Component{
                 </label>
                 <select value={this.state.scale} onChange={this.scaleChange}>
                     <option>Select scale</option>
-                    <option value="minor">Natural Minor</option>
-                    <option value="major">Major</option>
-                    <option value="harmonic">Harmonic</option>
-                    <option value="melodic">Melodic</option>
-                    <option value="blues-minor">Blues minor</option>
-                    <option value="blues-major">Blues major</option>
+                    { scales }
                 </select>
                 <label>
                     Modes :
@@ -253,7 +266,8 @@ class GuitarNeck extends React.Component{
                     <option value="major">Major</option>
                     <option value="m7">Minor 7th</option>
                     <option value="7">Major 7th</option>
-                </select>        
+                </select>
+                <button onClick={() => this.setState({displayNotes: !this.state.displayNotes})}>{ buttonText }</button>
             </div>
         );
     }
