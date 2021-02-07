@@ -3,18 +3,18 @@
 const config = {
     "notes": {
         "sharps": [
-            "C",
+            "C", 
             "C#",
-            "D",
+            "D", 
             "D#",
             "E",
-            "F",
+            "F", 
             "F#",
-            "G",
+            "G", // 2
             "G#",
-            "A",
-            "A#",
-            "B"
+            "A", // 1
+            "A#",// 
+            "B",
         ],
         "flats": [
             "C",
@@ -31,6 +31,18 @@ const config = {
             "B"
         ]
     },
+    "intervals": [
+        "1",
+        "2",
+        "b3",
+        "3",
+        "4",
+        "5",
+        "b6",
+        "6",
+        "b7",
+        "7"
+    ],
     "numberOfStrings": 6,
     "numberOfFrets": 24,
     "tuning": [
@@ -55,18 +67,36 @@ const config = {
             ]
         },
         "harmonic": {
-            "modes": {
-
-            }
+            "formula": [2, 1, 2, 2, 1, 3, 1],
+            "modes": [
+                "Harmonic minor",
+                "Locrian #6",
+                "Ionian augmented",
+                "Romanian",
+                "Phrygian dominant",
+                "Lydian #2",
+                "Ultra locrian"
+            ]
         },
         "melodic": {
-            "formula": [2, 1, 2, 2, 2, 2, 1]
+            "formula": [2, 1, 2, 2, 2, 2, 1],
+            "modes": [
+                "Melodic minor",
+                "Javanese",
+                "Lydian augmented",
+                "Lydian dominant",
+                "Hindu",
+                "Locrian #2",
+                "Super locrian"
+            ]
         },
         "blues-minor":{
-            "formula": []
+            "formula": [3, 2, 2, 3, 2],
+            "modes": []
         },
         "blues-major":{
-            "formula": []
+            "formula": [2, 2, 3, 2, 3],
+            "modes": []
         }
     },
     "chords": {

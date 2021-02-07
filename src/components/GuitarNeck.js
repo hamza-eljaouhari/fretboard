@@ -12,7 +12,8 @@ class GuitarNeck extends React.Component{
             fretboard: Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill(null)),
             keyIndex: -1,
             arppegioDegree: '',
-            scale: ''
+            scale: '',
+            modeIndex: -1
         };
     
         this.keyChange = this.keyChange.bind(this);
@@ -22,8 +23,21 @@ class GuitarNeck extends React.Component{
         this.getScaleNotes = this.getScaleNotes.bind(this);
         this.getNoteFromFretboard = this.getNoteFromFretboard.bind(this);
         this.getScaleNotes = this.getScaleNotes.bind(this);
+        this.modeChange = this.modeChange.bind(this);
     }
     
+    modeChange(e){
+        var modeIndex = e.target.value;
+
+        this.setState({modeIndex: modeIndex}, () => {
+            if(this.state.keyIndex > -1 && this.state.scale){
+                var scaleNotes = this.getScaleNotes();
+                this.spreadNotesOnFretboard(scaleNotes);
+            }
+        });
+
+
+    }
 
     toggleNote(i, j, e){
         var newFretboard = [...this.state.fretboard];
@@ -56,12 +70,13 @@ class GuitarNeck extends React.Component{
 
         scaleNotes.push(rootNote);
         
-        var i = parseInt(this.state.keyIndex); // 1
+        var i = parseInt(this.state.keyIndex);  
 
-        guitar.scales.[this.state.scale].formula.forEach(function(step){
-            i = (i + step) % 12; // 
-            
+        guitar.scales[this.state.scale].formula.forEach(function(step){
+            i = (i + step) % 12; 
+          
             scaleNotes.push(guitar.notes.sharps[i])
+            
         })
 
         return scaleNotes;
@@ -115,12 +130,22 @@ class GuitarNeck extends React.Component{
 
         var newFretboard = [...this.state.fretboard];
         
+        var rootNote = notes[this.state.modeIndex]; // D  dorian
+
+        if(!rootNote){
+            rootNote = guitar.notes.sharps[this.state.keyIndex]; // C
+        }
+
         for(var m = 0; m < guitar.numberOfStrings; m++){
             for(var n = 0; n < guitar.numberOfFrets; n++){
                 var currentNote = this.getNoteFromFretboard(m, n);
                 
-                if(notes.includes(currentNote)){
-                    newFretboard[m][n] = currentNote;
+                if(notes.includes(currentNote)){ // C major has C D E A F B G E C
+                    if(rootNote === currentNote){ // if 
+                        newFretboard[m][n] = 'R';
+                    }else{
+                        newFretboard[m][n] = currentNote;
+                    }
                 }
             }
         }
@@ -165,6 +190,25 @@ class GuitarNeck extends React.Component{
             )
         }
 
+        var notes = guitar.notes.sharps.map((note, index) => {
+            return <option key={index} value={index}>{note}</option>
+        })
+    
+        const currentScale = guitar.scales[this.state.scale];
+        
+        var modes = null; 
+
+        if(currentScale){
+            var scaleModes = currentScale.modes;
+
+            if(scaleModes){
+                modes = scaleModes.map((mode, index) => {
+                    return <option key={index} value={index}>{mode}</option>
+                })
+            }
+        }
+        
+
         return(
             <div>
                 <table>
@@ -179,10 +223,7 @@ class GuitarNeck extends React.Component{
                 </label>
                 <select value={this.state.keyIndex} onChange={this.keyChange}>
                     <option>Select key</option>
-                    <option value="0">C</option>
-                    <option value="1">C#</option>
-                    <option value="2">D</option>
-                    <option value="3">D#</option>
+                    { notes }
                 </select>
                 <label>
                     Scale :
@@ -195,6 +236,13 @@ class GuitarNeck extends React.Component{
                     <option value="melodic">Melodic</option>
                     <option value="blues-minor">Blues minor</option>
                     <option value="blues-major">Blues major</option>
+                </select>
+                <label>
+                    Modes :
+                </label>
+                <select value={this.state.modeIndex} onChange={this.modeChange}>
+                    <option>Select mode</option>
+                    { modes }
                 </select>
                 <label>
                     Arppegios :
