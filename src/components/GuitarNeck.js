@@ -1,7 +1,8 @@
 import guitar from '../config/guitar';
-import React, { useEffect } from 'react';
+import React from 'react';
 import './guitar-neck.css';
-import { render } from '@testing-library/react';
+
+var classNames = require('classnames');
 
 class GuitarNeck extends React.Component{
 
@@ -11,9 +12,9 @@ class GuitarNeck extends React.Component{
         this.state = {
             fretboard: Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill(null)),
             keyIndex: -1,
-            arppegioDegree: '',
-            scale: '',
-            modeIndex: -1,
+            arppegioDegree: 'unset',
+            scale: 'unset',
+            modeIndex: 0,
             displayNotes: true
         };
 
@@ -31,10 +32,7 @@ class GuitarNeck extends React.Component{
         var modeIndex = e.target.value;
 
         this.setState({modeIndex: modeIndex}, () => {
-            if(this.state.keyIndex > -1 && this.state.scale){
-                var scaleNotes = this.getScaleNotes();
-                this.spreadNotesOnFretboard(scaleNotes);
-            }
+            this.displayScale();
         });
     }
 
@@ -61,15 +59,17 @@ class GuitarNeck extends React.Component{
         const newKeyIndex = e.target.value;
 
         this.setState({ keyIndex: newKeyIndex}, () => {
-
-            if(this.state.scale){
-                this.displayScale()
-            }
-
+            this.displayScale()
         });
     }
 
     getScaleNotes(){
+
+        alert(this.state.keyIndex);
+     
+        alert(this.state.scale);
+   
+
         var scaleNotes = [];
 
         var rootNote = guitar.notes.sharps[this.state.keyIndex]; // TODO: Color it later
@@ -88,10 +88,22 @@ class GuitarNeck extends React.Component{
     }
 
     displayScale(){
+
+        if(this.state.scale === "unset" || this.state.keyIndex < 0){
+            this.cleanFretboard()
+            return;
+        }
+
         var scaleNotes = this.getScaleNotes();
+        var scalesIntervals = this.getScalesIntervals();
+
         this.cleanFretboard(() => {
-            this.spreadNotesOnFretboard(scaleNotes)
+            this.spreadNotesOnFretboard(scaleNotes, scalesIntervals)
         });
+    }
+
+    getScalesIntervals(){
+        return guitar.scales[this.state.scale].modes[this.state.modeIndex].intervals;
     }
     // Display Ionian mode in C
     scaleChange(e){
@@ -146,11 +158,14 @@ class GuitarNeck extends React.Component{
                 var currentNote = this.getNoteFromFretboard(m, n);
 
                 if(notes.includes(currentNote)){ // C major has C D E A F B G E C
-                    if(rootNote === currentNote){ // if
-                        newFretboard[m][n] = 'R';
-                    }else{
-                        newFretboard[m][n] = currentNote;
-                    }
+                    var noteStyling = classNames({
+                        'note': true,
+                        'root': rootNote === currentNote,
+                        'third': true,
+                        'fifth': true
+                    });
+
+                    newFretboard[m][n] = <span className={noteStyling}>{currentNote}</span>;
                 }
             }
         }
@@ -240,28 +255,28 @@ class GuitarNeck extends React.Component{
                     Keys :
                 </label>
                 <select value={this.state.keyIndex} onChange={this.keyChange}>
-                    <option>Select key</option>
+                    <option value="unset">Select key</option>
                     { notes }
                 </select>
                 <label>
                     Scale :
                 </label>
                 <select value={this.state.scale} onChange={this.scaleChange}>
-                    <option>Select scale</option>
+                    <option value="unset">Select scale</option>
                     { scales }
                 </select>
                 <label>
                     Modes :
                 </label>
                 <select value={this.state.modeIndex} onChange={this.modeChange}>
-                    <option>Select mode</option>
+                    <option value="unset">Select mode</option>
                     { modes }
                 </select>
                 <label>
                     Arppegios :
                 </label>
                 <select value={this.state.arppegioDegree} onChange={this.arppegioChange}>
-                    <option>Select arppegio</option>
+                    <option value="unset">Select arppegio</option>
                     <option value="minor">Minor</option>
                     <option value="major">Major</option>
                     <option value="m7">Minor 7th</option>
