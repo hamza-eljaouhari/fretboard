@@ -62,15 +62,9 @@ table tbody tr td hr {
 .controls{
     margin-top: 35px;
 }
-
-.controls form{
+ /* .controls form{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
-}
-
-.form-control {
-    margin-top: 20px;
-    width: 20%;
-    margin-right: 10px;
-}
+    justify-content: space-between;
+    align-content: space-between;
+} */

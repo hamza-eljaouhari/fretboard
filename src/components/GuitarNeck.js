@@ -4,11 +4,44 @@ import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { makeStyles } from '@material-ui/core/styles';
 
 import './guitar-neck.css';
 
+const useStyles = makeStyles({
+    root: {
+      background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      border: 0,
+      borderRadius: 3,
+      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      color: 'white',
+      height: 48,
+      padding: '0 30px',
+    },
+    form: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between'
+    },
+    formControl: {
+        width: '20%',
+        margin: '0 10px 10px 10px'
+    },
+    notesIntervalButton: {
+        width: '20%',
+        margin: '10px 10px'
+    }
+  });
+  
 var classNames = require('classnames');
 
+
+function HigherOrderComponentGuitarNeck(){
+
+    const classes = useStyles();
+
+    return <GuitarNeck classes={classes}></GuitarNeck>
+}
 class GuitarNeck extends React.Component{
 
     constructor(props) {
@@ -385,7 +418,7 @@ class GuitarNeck extends React.Component{
         })
 
         if(this.state.scale !== "unset"){
-      
+    
             const currentScale = guitar.scales[this.state.scale];
 
             var modes = null;
@@ -402,10 +435,10 @@ class GuitarNeck extends React.Component{
             }
         }
 
-        var buttonText = 'Switch to intervals'
+        var buttonText = 'Intervals'
 
         if(!this.state.displayNotes){
-            buttonText = 'Switch to notes';
+            buttonText = 'Notes';
         }
 
         var scalesNames = Object.keys(guitar.scales);
@@ -431,8 +464,8 @@ class GuitarNeck extends React.Component{
                     </tbody>
                 </table>
                 <section className="controls">
-                    <form>
-                        <FormControl variant="outlined" className="form-control select">
+                    <form className={this.props.classes.form}>
+                        <FormControl variant="outlined" margin="normal" className={this.props.classes.formControl}>
                             <InputLabel htmlFor="keys">Keys :</InputLabel>
                             <Select
                             native
@@ -444,7 +477,7 @@ class GuitarNeck extends React.Component{
                             { keys }
                             </Select>
                         </FormControl>
-                        <FormControl variant="outlined" className="form-control select">
+                        <FormControl variant="outlined" margin="normal" className={this.props.classes.formControl}>
                             <InputLabel htmlFor="scales">Scales :</InputLabel>
                             <Select
                             native
@@ -456,7 +489,7 @@ class GuitarNeck extends React.Component{
                             { scales }
                             </Select>
                         </FormControl>
-                        <FormControl variant="outlined" className="form-control select">
+                        <FormControl variant="outlined" margin="normal"  className={this.props.classes.formControl}>
                             <InputLabel htmlFor="modes">Modes :</InputLabel>
                             <Select
                             native
@@ -468,7 +501,7 @@ class GuitarNeck extends React.Component{
                             { modes }
                             </Select>
                         </FormControl>
-                        <FormControl variant="outlined" className="form-control select">
+                        <FormControl variant="outlined" margin="normal" className={this.props.classes.formControl}>
                             <InputLabel htmlFor="keys">Keys :</InputLabel>
                             <Select
                             native
@@ -489,9 +522,11 @@ class GuitarNeck extends React.Component{
                             color="primary"
                             size="medium"
                             onClick={this.displayNotesChange}
+                            className={this.props.classes.notesIntervalButton}
                         >
-                            { this.state.displayNotes ? 'Notes' : 'Intervals'} 
+                            { buttonText } 
                         </Button>
+                        
                     </form>
                 </section>
                 {/* <label>
@@ -528,4 +563,4 @@ class GuitarNeck extends React.Component{
     }
 }
 
-export default GuitarNeck;
+export default HigherOrderComponentGuitarNeck;
