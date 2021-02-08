@@ -90,12 +90,18 @@ class GuitarNeck extends React.Component{
 
             var intervals = this.state.scaleIntervals;
 
-            if(this.state.displayNotes){
-                newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
-            }else if(scaleNotes.includes(currentNote)){
-                newFretboard[i][j] = <span className={noteClassnames}>{intervals[scaleNotes.indexOf(currentNote)]}</span>;
+            var noteNameComponent = <span className={noteClassnames}>{currentNote}</span>;
+            
+            var noteIntervalComponent = <span className={noteClassnames}>{intervals[scaleNotes.indexOf(currentNote)]}</span>;
+            
+            if(scaleNotes.includes(currentNote)){
+                if(this.state.displayNotes){
+                    newFretboard[i][j] = noteNameComponent;
+                }else{
+                    newFretboard[i][j] = noteIntervalComponent;
+                }
             }else{
-                newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
+                newFretboard[i][j] = noteNameComponent;
             }
         }
 
