@@ -53,8 +53,6 @@ class GuitarNeck extends React.Component{
             newFretboard[i][j] = null;
         }else{
 
-            var noteIntervalIndex = this.state.scaleIntervals.indexOf(newFretboard[i][j]);
-
             var currentNote = this.getNoteFromFretboard(i, j);
 
             // Extract numberOfNotes & scaleNotes
@@ -78,6 +76,11 @@ class GuitarNeck extends React.Component{
                 step = parseInt(this.state.modeIndex);
                 scaleNotes = this.getModesNotes();
             }
+            var arppegioDegree = this.state.arppegioDegree;
+
+            if(arppegioDegree !== "unset"){
+                scaleNotes = this.getArppegioNotes();
+            }
 
             var noteClassnames = classNames({
                 "note": true,
@@ -87,7 +90,13 @@ class GuitarNeck extends React.Component{
                 "seventh": numberOfScaleNotes ? currentNote === scaleNotes[6]: false
             });
 
-            var intervals = this.state.scaleIntervals;
+            var intervals = null;
+
+            if(arppegioDegree !== "unset"){
+                intervals = guitar.arppegios[arppegioDegree].intervals
+            }else{
+                intervals = this.state.scaleIntervals;
+            }
 
             var noteNameComponent = <span className={noteClassnames}>{currentNote}</span>;
             
