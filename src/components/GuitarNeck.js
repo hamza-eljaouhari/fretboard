@@ -136,9 +136,16 @@ class GuitarNeck extends React.Component{
 
     displayScale(){
 
-        if(this.state.scale === "unset" || this.state.keyIndex === "unset" || this.state.modeIndex === "unset"){
+        if(this.state.scale === "unset" || this.state.keyIndex === "unset"){
             this.cleanFretboard()
             return;
+        }
+
+        if(guitar.scales[this.state.scale].isModal){
+            if(this.state.modeIndex === "unset"){
+                this.cleanFretboard()
+                return;
+            }
         }
 
         this.setState({scaleNotes: this.getScaleNotes()}, () => {
@@ -164,7 +171,6 @@ class GuitarNeck extends React.Component{
 
         const scale = guitar.scales[this.state.scale];
 
-        console.log(scale);
         if(scale.isModal){
             console.log(this.state.modeIndex)
             intervals = scale.modes[this.state.modeIndex].intervals;
@@ -230,6 +236,7 @@ class GuitarNeck extends React.Component{
         console.log("notes", notes);
 
         var rootNote = notes[this.state.modeIndex];
+        var scale = guitar.scales[this.state.scale];
 
         // if(!rootNote){
         //     rootNote = guitar.notes.sharps[this.state.keyIndex]; // C
@@ -243,12 +250,22 @@ class GuitarNeck extends React.Component{
                 var currentNote = this.getNoteFromFretboard(m, n);
                 
                 if(notes.includes(currentNote)){ // C major has C D E A F B G E C
+                    
+                    var numberOfNotes = this.state.scaleNotes.length;
+
+                    var step = 0;
+                    
+                    if(scale.isModal){
+                        step = parseInt(this.state.modeIndex);
+                    }
+                    
+
                     var noteStyling = classNames({
                         'note': true,
-                        'root': currentNote === notes[this.state.modeIndex],
-                        'third': currentNote === notes[(this.state.modeIndex + 2 ) % 7],
-                        'fifth': currentNote === notes[(this.state.modeIndex + 4) % 7],
-                        'seventh': currentNote === notes[(this.state.modeIndex + 6) % 7]
+                        'root': currentNote === notes[step],
+                        'third': currentNote === notes[(step + 2)  % numberOfNotes],
+                        'fifth': currentNote === notes[(step + 4) % numberOfNotes],
+                        'seventh': numberOfNotes === 7 ? (currentNote === notes[(step  + 6) % numberOfNotes]) : false
                     });
                     
                     var noteIntervalIndex = notes.indexOf(currentNote);
