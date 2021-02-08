@@ -159,18 +159,41 @@ const config = {
 
     },
     "arppegios": {
-        "major": {
-            "intervals": [1, 3, 5],
+        "M7": {
+            "formula": [4, 3, 4, 1],
+            "intervals": ['1', '3', '5', '7']
         },
         "minor": {
-            "formula": [],
-            "intervals": []
+            "formula": [3, 4, 5],
+            "intervals": ['1', 'b3', '5']
         },
         "m7": {
-            "intevals": [1, 3, 5, 7]
+            "formula": [3, 4, 4, 2],
+            "intervals": ['1', 'b3', '5', 'b7']
         },
         "7": {
-            "intervals": [1, 3, 5, 7]
+            "formula": [4, 3, 3, 2],
+            "intervals": ['1', '3', '5', 'b7']
+        },
+        "D13th": {
+            "intervals": ['1', '3', '6', 'b7'],
+            "formula": [2, 2, 5, 1, 2]
+        },
+        "M": {
+            "formula": [4, 3, 4],
+            "intervals": ['1', '3', '5']
+        },
+        "M9th": {
+            "formula": [2, 2, 3, 4, 1],
+            "intervals": ['1', '9', '3', '5', '7']
+        },
+        "D7b5": {
+            "formula": [4, 2, 4, 2],
+            "intervals": ['1', '3', 'b5', 'b7']
+        },
+        "m9th": {
+            "formula": [2, 1, 4, 3],
+            "intervals": ['1', '9', 'b3', 'b7']
         },
     }
 }

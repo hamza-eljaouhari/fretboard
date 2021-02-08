@@ -181,7 +181,7 @@ class GuitarNeck extends React.Component{
         // key must chosen if not take the default
         const arppegioDegree = e.target.value;
 
-        this.setArppegioDegree({arppegioDegree: arppegioDegree});
+        this.setState({arppegioDegree: arppegioDegree});
         // find the notes using the intervals of tha arppegios
         var scaleNotes = this.getScaleNotes();
 
