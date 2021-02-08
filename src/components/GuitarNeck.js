@@ -453,6 +453,12 @@ class GuitarNeck extends React.Component{
             return <option key={arppegioName} value={arppegioName}>{arppegioName}</option>;
         });
 
+        var heads = [];
+
+        for(let i = 0; i < guitar.numberOfFrets; i++){
+            var width = guitar.numberOfFrets - i;
+            heads.push(<th width={width}><span className="fretNumber">{i}</span></th>)
+        }
 
         return(
             <div>
@@ -462,6 +468,11 @@ class GuitarNeck extends React.Component{
                             strings
                         }
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            { heads }
+                        </tr>
+                    </tfoot>
                 </table>
                 <section className="controls">
                     <form className={this.props.classes.form}>

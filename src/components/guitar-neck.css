@@ -8,10 +8,6 @@ table, tr {
     padding: 0;
 }
 
-/* 
-table tr {
-} */
-
 table tr td {
     height: 32px;
     padding: 0;
@@ -19,6 +15,10 @@ table tr td {
     vertical-align: middle;
     position: relative;  
     cursor: pointer;
+}
+
+table tr td:first-child {
+    border-right: 4px solid rgba(0, 0, 0, 0.6);
 }
 
 
@@ -33,13 +33,16 @@ table tbody tr td hr {
     background-color: teal;
     border-radius: 50%;
     border: 1px solid black;
-    width: 80%;
+    width: 28px;
+    height: 28px;
     position: absolute;
-    top: 0;
-    left: 3px;
+    top: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* margin: 0 auto; */
     cursor: pointer;
     text-align: center;
-    line-height: 32px;
+    line-height: 28px;
     font-size: 20px;
 }
 
@@ -68,3 +71,6 @@ table tbody tr td hr {
     justify-content: space-between;
     align-content: space-between;
 } */
+.fretNumber{
+    font-size: 8px;
+}

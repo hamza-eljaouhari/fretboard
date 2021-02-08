@@ -32,7 +32,7 @@ const config = {
         ]
     },
     "numberOfStrings": 6,
-    "numberOfFrets": 24,
+    "numberOfFrets": 25,
     "tuning": [
         4, 11, 7, 2, 9, 4
     ], // E, A, D, G, B, E standard tuning
