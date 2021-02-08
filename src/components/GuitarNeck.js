@@ -1,5 +1,10 @@
 import guitar from '../config/guitar';
 import React from 'react';
+import Button from '@material-ui/core/Button';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 import './guitar-neck.css';
 
 var classNames = require('classnames');
@@ -23,9 +28,6 @@ class GuitarNeck extends React.Component{
         this.keyChange = this.keyChange.bind(this);
         this.scaleChange = this.scaleChange.bind(this);
         this.arppegioChange = this.arppegioChange.bind(this);
-        this.toggleNote = this.toggleNote.bind(this);
-        this.getNoteFromFretboard = this.getNoteFromFretboard.bind(this);
-        this.getScaleNotes = this.getScaleNotes.bind(this);
         this.modeChange = this.modeChange.bind(this);
         this.displayNotesChange = this.displayNotesChange.bind(this);
     }
@@ -70,10 +72,8 @@ class GuitarNeck extends React.Component{
                 }
             }
 
-            var step = 0;
                     
             if(isModal){
-                step = parseInt(this.state.modeIndex);
                 scaleNotes = this.getModesNotes();
             }
             var arppegioDegree = this.state.arppegioDegree;
@@ -133,7 +133,7 @@ class GuitarNeck extends React.Component{
         while(modesNotes.length < scaleNotes.length){
             modesNotes.push(scaleNotes[modeIndex]);
             modeIndex++;
-            if(modeIndex == scaleNotes.length){
+            if(modeIndex === scaleNotes.length){
                 modeIndex = modeIndex % scaleNotes.length;
             }
         }
@@ -221,8 +221,6 @@ class GuitarNeck extends React.Component{
 
         const scale = guitar.scales[this.state.scale];
 
-        var intervals = [];
-
         return scale.intervals;
     }
 
@@ -294,7 +292,6 @@ class GuitarNeck extends React.Component{
 
         
         this.setState({arppegioDegree: arppegioDegree}, () => {
-            var arppegioNotes = this.getArppegioNotes();
             this.updateFretboard();
         });
 
@@ -352,6 +349,7 @@ class GuitarNeck extends React.Component{
     }
 
     render(){
+
         const strings = [];
 
         for(let i = 0; i < guitar.numberOfStrings; i++){
@@ -382,7 +380,7 @@ class GuitarNeck extends React.Component{
             )
         }
 
-        var notes = guitar.notes.sharps.map((note, index) => {
+        var keys = guitar.notes.sharps.map((note, index) => {
             return <option key={index} value={index}>{note}</option>
         })
 
@@ -404,7 +402,7 @@ class GuitarNeck extends React.Component{
             }
         }
 
-        var buttonText = 'Switch to intevals'
+        var buttonText = 'Switch to intervals'
 
         if(!this.state.displayNotes){
             buttonText = 'Switch to notes';
@@ -414,6 +412,12 @@ class GuitarNeck extends React.Component{
 
         var scales = scalesNames.map((scaleName) => {
             return <option key={scaleName} value={scaleName}>{guitar.scales[scaleName].name}</option>;
+        });
+
+        var arppegiosNames = Object.keys(guitar.arppegios);
+
+        var arppegios = arppegiosNames.map((arppegioName) => {
+            return <option key={arppegioName} value={arppegioName}>{arppegioName}</option>;
         });
 
 
@@ -426,12 +430,76 @@ class GuitarNeck extends React.Component{
                         }
                     </tbody>
                 </table>
-                <label>
+                <section className="controls">
+                    <form>
+                        <FormControl variant="outlined" className="form-control select">
+                            <InputLabel htmlFor="keys">Keys :</InputLabel>
+                            <Select
+                            native
+                            value={this.state.keyIndex}
+                            onChange={this.keyChange}
+                            label="Keys :"
+                            >
+                            <option value="unset">Select key</option>
+                            { keys }
+                            </Select>
+                        </FormControl>
+                        <FormControl variant="outlined" className="form-control select">
+                            <InputLabel htmlFor="scales">Scales :</InputLabel>
+                            <Select
+                            native
+                            value={this.state.scale}
+                            onChange={this.scaleChange}
+                            label="Scales :"
+                            >
+                            <option value="unset">Select scale</option>
+                            { scales }
+                            </Select>
+                        </FormControl>
+                        <FormControl variant="outlined" className="form-control select">
+                            <InputLabel htmlFor="modes">Modes :</InputLabel>
+                            <Select
+                            native
+                            value={this.state.modeIndex}
+                            onChange={this.modeChange}
+                            label="Modes :"
+                            >
+                            <option value="unset">Select mode</option>
+                            { modes }
+                            </Select>
+                        </FormControl>
+                        <FormControl variant="outlined" className="form-control select">
+                            <InputLabel htmlFor="keys">Keys :</InputLabel>
+                            <Select
+                            native
+                            value={this.state.arppegioDegree}
+                            onChange={this.arppegioChange}
+                            label="Keys :"
+                            inputProps={{
+                                name: 'age',
+                                id: 'keys',
+                            }}
+                            >
+                            <option value="unset">Select arppegio</option>
+                            { arppegios }
+                            </Select>
+                        </FormControl>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            size="medium"
+                            onClick={this.displayNotesChange}
+                        >
+                            { this.state.displayNotes ? 'Notes' : 'Intervals'} 
+                        </Button>
+                    </form>
+                </section>
+                {/* <label>
                     Keys :
                 </label>
                 <select value={this.state.keyIndex} onChange={this.keyChange}>
                     <option value="unset">Select key</option>
-                    { notes }
+                    { keys }
                 </select>
                 <label>
                     Scale :
@@ -452,12 +520,9 @@ class GuitarNeck extends React.Component{
                 </label>
                 <select value={this.state.arppegioDegree} onChange={this.arppegioChange}>
                     <option value="unset">Select arppegio</option>
-                    <option value="m">Minor</option>
-                    <option value="M">Major</option>
-                    <option value="m7">Minor 7th</option>
-                    <option value="M7">Major 7th</option>
-                </select>
-                <button onClick={this.displayNotesChange}>{ buttonText }</button>
+                    { arppegios }
+                </select> */}
+                {/* <button onClick={this.displayNotesChange}>{ buttonText }</button> */}
             </div>
         );
     }

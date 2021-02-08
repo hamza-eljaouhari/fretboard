@@ -58,3 +58,19 @@ table tbody tr td hr {
 .seventh{
     background-color: grey;
 }
+
+.controls{
+    margin-top: 35px;
+}
+
+.controls form{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.form-control {
+    margin-top: 20px;
+    width: 20%;
+    margin-right: 10px;
+}

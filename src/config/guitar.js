@@ -168,18 +168,22 @@ const config = {
             "intervals": ['1', '3', '5', '7']
         },
         "m": {
+            "name": "Minor",
             "formula": [3, 4, 5],
             "intervals": ['1', 'b3', '5']
         },
         "m7": {
+            "name": "Minor 7th",
             "formula": [3, 4, 3, 2],
             "intervals": ['1', 'b3', '5', 'b7']
         },
         "7": {
+            "name": "Dominant 7th",
             "formula": [4, 3, 3, 2],
             "intervals": ['1', '3', '5', 'b7']
         },
         "D13th": {
+            "name" : "",
             "intervals": ['1', '3', '6', 'b7'],
             "formula": [2, 2, 5, 1, 2]
         },
