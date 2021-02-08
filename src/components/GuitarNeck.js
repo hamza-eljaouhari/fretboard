@@ -65,24 +65,51 @@ class GuitarNeck extends React.Component{
 
     getScaleNotes(){
 
-        alert(this.state.keyIndex);
-     
-        alert(this.state.scale);
-   
-
         var scaleNotes = [];
 
-        var rootNote = guitar.notes.sharps[this.state.keyIndex]; // TODO: Color it later
+        // var rootNote = guitar.notes.sharps[this.state.keyIndex]; //
 
-        scaleNotes.push(rootNote);
+        // scaleNotes.push(rootNote);
+        var scaleFormula = guitar.scales[this.state.scale].formula;
+        
+        // var i = parseInt(this.state.keyIndex);
 
-        var i = parseInt(this.state.keyIndex);
+        var modeRootDistance = 0;
+        
+        var steps = 0; // 2
 
-        guitar.scales[this.state.scale].formula.forEach(function(step){
-            i = (i + step) % 12;
+        for(let k = 0; k < scaleFormula.length; k++){
+            if(k < this.state.modeIndex){
+                modeRootDistance = (k + 1);
+                steps += scaleFormula[k];
+            }
+        }
+        // 2, 2, 1, 2, 2, 2, 1
+        var i = modeRootDistance;
 
-            scaleNotes.push(guitar.notes.sharps[i])
-        })
+        // while((step % ( scaleFormula.length - 1) === parseInt(this.state.keyIndex)) )
+        while(scaleNotes.length < scaleFormula.length){
+            // looping the formula
+            // till i = i - 1
+
+            scaleNotes.push(guitar.notes.sharps[steps]); // D, 
+
+            steps = (steps + scaleFormula[i]);
+            if(steps > 11){
+                steps = steps % 11; // 11 is not displayed // 2 + 2 => F#
+                steps--;
+            }
+            
+            i++; // 6 % 6 6 is not played, 
+
+            if(i > 6){
+                i = i % (scaleFormula.length - 1) // 1 index , 1
+                i--;
+            }
+
+
+
+        }
 
         return scaleNotes;
     }
@@ -154,10 +181,12 @@ class GuitarNeck extends React.Component{
     }
 
     spreadNotesOnFretboard(notes, intervals){
-        console.log(intervals)
         var newFretboard = [...this.state.fretboard];
 
-        var rootNote = notes[this.state.modeIndex]; // D  dorian
+        console.log("intervals", intervals);
+        console.log("notes", notes);
+
+        var rootNote = notes[this.state.modeIndex];
 
         if(!rootNote){
             rootNote = guitar.notes.sharps[this.state.keyIndex]; // C
