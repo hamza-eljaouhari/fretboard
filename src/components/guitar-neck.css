@@ -30,8 +30,9 @@ table tbody tr td hr {
 
 .note {
     display: inline-block;
-    background-color: brown;
+    background-color: teal;
     border-radius: 50%;
+    border: 1px solid black;
     width: 80%;
     position: absolute;
     top: 0;
@@ -40,4 +41,20 @@ table tbody tr td hr {
     text-align: center;
     line-height: 32px;
     font-size: 20px;
+}
+
+.root{
+    background-color: orange;
+}
+
+.third{
+    background-color: olive;
+}
+
+.fifth{
+    background-color: brown;
+}
+
+.seventh{
+    background-color: grey;
 }

@@ -15,7 +15,9 @@ class GuitarNeck extends React.Component{
             arppegioDegree: 'unset',
             scale: 'unset',
             modeIndex: 0,
-            displayNotes: true
+            displayNotes: true,
+            scaleNotes: [],
+            scaleIntervals: []
         };
 
         this.keyChange = this.keyChange.bind(this);
@@ -37,9 +39,9 @@ class GuitarNeck extends React.Component{
     }
 
     displayNotesChange(e){
-        var displayNotes = e.target.value;
-
-        this.setState({displayNotes: displayNotes});
+        this.setState({displayNotes: !this.state.displayNotes}, () => {
+           this.displayScale();
+        });
     }
 
 
@@ -49,10 +51,26 @@ class GuitarNeck extends React.Component{
         if(newFretboard[i][j] != null){
             newFretboard[i][j] = null;
         }else{
-            newFretboard[i][j] = this.getNoteFromFretboard(i, j);
+
+            var noteIntervalIndex = this.state.scaleIntervals.indexOf(newFretboard[i][j]);
+
+            var currentNote = this.getNoteFromFretboard(i, j);
+
+            var scaleNotes = this.state.scaleNotes;
+
+            var noteClassnames = classNames({
+                "note": true,
+                "root": scaleNotes.length ? currentNote === scaleNotes[0] : false,
+                "third": scaleNotes.length ? currentNote === scaleNotes[2] : false,
+                "fifth": scaleNotes.length ? currentNote === scaleNotes[4]: false,
+                "seventh": scaleNotes.length ? currentNote === scaleNotes[6]: false
+            });
+
+            
+            newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
         }
 
-        this.setState({fretboard: newFretboard});
+        this.setState({ fretboard: newFretboard });
     }
 
     keyChange(e){
@@ -95,6 +113,7 @@ class GuitarNeck extends React.Component{
             scaleNotes.push(guitar.notes.sharps[steps]); // D, 
 
             steps = (steps + scaleFormula[i]);
+            
             if(steps > 11){
                 steps = steps % 11; // 11 is not displayed // 2 + 2 => F#
                 steps--;
@@ -106,9 +125,6 @@ class GuitarNeck extends React.Component{
                 i = i % (scaleFormula.length - 1) // 1 index , 1
                 i--;
             }
-
-
-
         }
 
         return scaleNotes;
@@ -121,11 +137,12 @@ class GuitarNeck extends React.Component{
             return;
         }
 
-        var scaleNotes = this.getScaleNotes();
-        var scaleIntervals = this.getScaleIntervals();
-
-        this.cleanFretboard(() => {
-            this.spreadNotesOnFretboard(scaleNotes, scaleIntervals)
+        this.setState({scaleNotes: this.getScaleNotes()}, () => {
+            this.setState({scaleIntervals: this.getScaleIntervals()}, () => {
+                this.cleanFretboard(() => {
+                    this.spreadNotesOnFretboard(this.state.scaleNotes, this.state.scaleIntervals);
+                });
+            });
         });
     }
 
@@ -193,18 +210,28 @@ class GuitarNeck extends React.Component{
         }
 
         for(var m = 0; m < guitar.numberOfStrings; m++){
+            // Get to E and the A D G B E
             for(var n = 0; n < guitar.numberOfFrets; n++){
+                // Get to each of notes "notes"
+                // steps are found in
                 var currentNote = this.getNoteFromFretboard(m, n);
-
+                
                 if(notes.includes(currentNote)){ // C major has C D E A F B G E C
                     var noteStyling = classNames({
                         'note': true,
-                        'root': rootNote === currentNote,
-                        'third': true,
-                        'fifth': true
+                        'root': currentNote === notes[0],
+                        'third': currentNote === notes[2],
+                        'fifth': currentNote === notes[4],
+                        'seventh': currentNote === notes[6]
                     });
+                    
+                    var noteIntervalIndex = notes.indexOf(currentNote);
 
-                    newFretboard[m][n] = <span className={noteStyling}>{currentNote}</span>;
+                    if(this.state.displayNotes){
+                        newFretboard[m][n] = <span className={noteStyling}>{currentNote}</span>;
+                    }else{
+                        newFretboard[m][n] = <span className={noteStyling}>{intervals[noteIntervalIndex]}</span>;
+                    }
                 }
             }
         }
@@ -230,7 +257,7 @@ class GuitarNeck extends React.Component{
 
                 var note = null;
                 if(this.state.fretboard[i][j]){
-                    note = <span className="note">{ this.state.fretboard[i][j] }</span>
+                    note = this.state.fretboard[i][j];
                 }
 
                 frets.push(
@@ -325,7 +352,7 @@ class GuitarNeck extends React.Component{
                     <option value="m7">Minor 7th</option>
                     <option value="7">Major 7th</option>
                 </select>
-                <button onClick={() => this.setState({displayNotes: !this.state.displayNotes})}>{ buttonText }</button>
+                <button onClick={this.displayNotesChange}>{ buttonText }</button>
             </div>
         );
     }
