@@ -457,7 +457,7 @@ class GuitarNeck extends React.Component{
 
         for(let i = 0; i < guitar.numberOfFrets; i++){
             var width = guitar.numberOfFrets - i;
-            heads.push(<th width={width}><span className="fretNumber">{i}</span></th>)
+            heads.push(<th key={i} width={width}><span className="fretNumber">{i}</span></th>)
         }
 
         return(

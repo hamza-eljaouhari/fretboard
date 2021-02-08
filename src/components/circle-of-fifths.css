@@ -1,0 +1,32 @@
+.circleOfFifths{
+    height: 800px;
+    width: 800px;
+}
+
+.outterCircle{
+    border: 1px solid black;
+    height: 100%;
+    width: 100%;
+    margin: 50px auto;
+    border-radius: 50%;
+    position: relative;
+}
+
+.innerCircle{
+    border: 1px solid black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    height: 70%;
+    border-radius: 50%;
+    width: 70%;
+}
+
+.key{
+    font-size: 100px;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    text-align: center;
+}
+
