@@ -77,18 +77,26 @@ class GuitarNeck extends React.Component{
                     
             if(isModal){
                 step = parseInt(this.state.modeIndex);
+                scaleNotes = this.getModesNotes();
             }
 
             var noteClassnames = classNames({
                 "note": true,
-                "root": numberOfScaleNotes ? currentNote === scaleNotes[step] : false,
-                "third": numberOfScaleNotes ? currentNote === scaleNotes[(step + 2) % numberOfScaleNotes] : false,
-                "fifth": numberOfScaleNotes ? currentNote === scaleNotes[(step + 4) % numberOfScaleNotes]: false,
-                "seventh": numberOfScaleNotes ? currentNote === scaleNotes[(step + 6) % numberOfScaleNotes]: false
+                "root": numberOfScaleNotes ? currentNote === scaleNotes[0] : false,
+                "third": numberOfScaleNotes ? currentNote === scaleNotes[2] : false,
+                "fifth": numberOfScaleNotes ? currentNote === scaleNotes[4]: false,
+                "seventh": numberOfScaleNotes ? currentNote === scaleNotes[6]: false
             });
 
-            
-            newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
+            var intervals = this.state.scaleIntervals;
+
+            if(this.state.displayNotes){
+                newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
+            }else if(scaleNotes.includes(currentNote)){
+                newFretboard[i][j] = <span className={noteClassnames}>{intervals[scaleNotes.indexOf(currentNote)]}</span>;
+            }else{
+                newFretboard[i][j] = <span className={noteClassnames}>{currentNote}</span>;
+            }
         }
 
         this.setState({ fretboard: newFretboard });
