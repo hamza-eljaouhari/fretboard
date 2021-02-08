@@ -10,10 +10,10 @@ const config = {
             "E",
             "F", 
             "F#",
-            "G", // 2
+            "G", 
             "G#",
-            "A", // 1
-            "A#",// 
+            "A", 
+            "A#",
             "B",
         ],
         "flats": [
@@ -76,6 +76,7 @@ const config = {
         "harmonic": {
             "name": "Harmonic scale",
             "formula": [2, 1, 2, 2, 1, 3, 1],
+            "intervals": ['1', '2', 'b3', '4', '5', 'b6', '7'],
             "isModal": true,
             "modes": [
                 {
@@ -111,6 +112,7 @@ const config = {
         "melodic": {
             "name": "Melodic scale",
             "formula": [2, 1, 2, 2, 2, 2, 1],
+            "intervals": ['1', '2', 'b3', '4', '5', '6', '7'],
             "isModal": true,
             "modes": [
                 {
@@ -165,12 +167,12 @@ const config = {
             "formula": [4, 3, 4, 1],
             "intervals": ['1', '3', '5', '7']
         },
-        "minor": {
+        "m": {
             "formula": [3, 4, 5],
             "intervals": ['1', 'b3', '5']
         },
         "m7": {
-            "formula": [3, 4, 4, 2],
+            "formula": [3, 4, 3, 2],
             "intervals": ['1', 'b3', '5', 'b7']
         },
         "7": {

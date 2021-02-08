@@ -32,17 +32,16 @@ class GuitarNeck extends React.Component{
 
     modeChange(e){
         var modeIndex = e.target.value;
-        console.log(this.getModesNotes())
 
         this.setState({modeIndex: modeIndex}, () => {
-            this.displayScale();
+            this.updateFretboard();
         });
 
     }
 
     displayNotesChange(e){
         this.setState({displayNotes: !this.state.displayNotes}, () => {
-            this.displayScale();
+            this.updateFretboard();
         });
     }
 
@@ -112,7 +111,7 @@ class GuitarNeck extends React.Component{
         const newKeyIndex = e.target.value;
 
         this.setState({ keyIndex: newKeyIndex}, () => {
-            this.displayScale();
+            this.updateFretboard();
         });
     }
 
@@ -120,7 +119,7 @@ class GuitarNeck extends React.Component{
         
         var modesNotes = [];
         var modeIndex = parseInt(this.state.modeIndex)  ;
-        var scaleNotes = this.state.scaleNotes;
+        var scaleNotes = this.getScaleNotes();
 
         while(modesNotes.length < scaleNotes.length){
             modesNotes.push(scaleNotes[modeIndex]);
@@ -150,71 +149,56 @@ class GuitarNeck extends React.Component{
         })
 
         return scaleNotes;
-
-        // var modeRootDistance = 0;
-        
-        // var steps = parseInt(this.state.keyIndex); // 2
-
-        // for(let k = 0; k < scaleFormula.length; k++){
-        //     if(k < this.state.modeIndex){
-        //         modeRootDistance = (k + 1);
-        //         steps += scaleFormula[k];
-        //     }
-        // }
-        // // 2, 2, 1, 2, 2, 2, 1
-        // var i = modeRootDistance;
-
-        // // while((step % ( scaleFormula.length - 1) === parseInt(this.state.keyIndex)) )
-        // while(scaleNotes.length < scaleFormula.length){
-        //     // looping the formula
-        //     // till i = i - 1
-
-        //     scaleNotes.push(guitar.notes.sharps[steps]); // D, 
-
-        //     steps = (steps + scaleFormula[i]);
-            
-        //     if(steps > 11){
-        //         steps = steps % 11; // 11 is not displayed // 2 + 2 => F#
-        //         steps--;
-        //     }
-            
-        //     i++; // 6 % 6 6 is not played, 
-
-        //     if(i > 6){
-        //         i = i % (scaleFormula.length - 1) // 1 index , 1
-        //         i--;
-        //     }
-        // }
-
     }
 
-    displayScale(){
+    updateFretboard(){
 
-        if(this.state.scale === "unset" || this.state.keyIndex === "unset"){
+        if(this.state.keyIndex === "unset"){
+            this.cleanFretboard()
+            return;
+        }
+        
+        var scale = this.state.scale; 
+        var arppegioDegree = this.state.arppegioDegree;
+        
+        if(scale === "unset" && arppegioDegree === "unset"){
             this.cleanFretboard()
             return;
         }
 
-        var isModal = guitar.scales[this.state.scale].isModal;
+        var scaleNotes = null;
+        var intervals = null;
+        
+        if(scale !== "unset"){
+            var isModal = guitar.scales[this.state.scale].isModal;
 
-        if(isModal){
-            if(this.state.modeIndex === "unset"){
-                this.cleanFretboard()
-                return;
+            scaleNotes = this.getScaleNotes();
+            intervals = this.getScaleIntervals();
+
+            if(isModal){
+                if(this.state.modeIndex === "unset"){
+                    this.cleanFretboard()
+                    return;
+                }
+
+                scaleNotes = this.getModesNotes();
+                intervals = this.getModeIntervals();
+
+                console.log("this.getModesNotes()", this.getModesNotes())
+
             }
         }
 
-        this.setState({scaleNotes: this.getScaleNotes()}, () => {
-            this.setState({scaleIntervals: this.getScaleIntervals()}, () => {
+        if(arppegioDegree !== "unset"){
+            scaleNotes = this.getArppegioNotes();
+            console.log("this.getArppegioNotes()", this.getArppegioNotes())
+            intervals = guitar.arppegios[arppegioDegree].intervals;
+        }
+
+        this.setState({scaleNotes: scaleNotes}, () => {
+            this.setState({scaleIntervals: intervals}, () => {
                 this.cleanFretboard(() => {
-
-                    var scaleNotes = this.state.scaleNotes
-                    
-                    if(isModal){
-                        scaleNotes = this.getModesNotes();
-                    }
-
-                    this.spreadNotesOnFretboard(scaleNotes, this.state.scaleIntervals);
+                    this.spreadNotesOnFretboard(this.state.scaleNotes, this.state.scaleIntervals);
                 });
             });
         });
@@ -222,23 +206,30 @@ class GuitarNeck extends React.Component{
 
     getScaleIntervals(){
 
-        if(this.state.modeIndex === "unset"){
+        if(this.state.scale === "unset"){
             return;
         }
+
+        const scale = guitar.scales[this.state.scale];
+
+        var intervals = [];
+
+        return scale.intervals;
+    }
+
+    getModeIntervals(){
 
         if(this.state.scale === "unset"){
             return;
         }
 
-        var intervals = [];
+        if(this.state.keyIndex === "unset"){
+            return;
+        }
 
         const scale = guitar.scales[this.state.scale];
-
-        if(scale.isModal){
-            intervals = scale.modes[this.state.modeIndex].intervals;
-        }else{
-            intervals = scale.intervals;
-        }
+        
+        var intervals = scale.modes[parseInt(this.state.modeIndex)].intervals;
 
         return intervals;
     }
@@ -247,7 +238,7 @@ class GuitarNeck extends React.Component{
         const newScale = e.target.value;
 
         this.setState({scale: newScale}, () => {
-            this.displayScale();
+            this.updateFretboard();
         });
         // Get all 7 notes from the scale and spread them across the fretboard
     }
@@ -258,31 +249,52 @@ class GuitarNeck extends React.Component{
         return guitar.notes.sharps[(stringNote + n) % 12];
     }
 
-    arppegioChange(e){
-        const arppegioDegree = e.target.value;
-
-        this.setState({arppegioDegree: arppegioDegree}, () => {
-            this.displayScale();
-        });
-
+    getArppegioNotes(){
         if(this.state.keyIndex === "unset"){
             return;
         }
 
-        if(this.state.scale === "unset"){
+        if(this.state.arppegioDegree === "unset"){
             return;
         }
+
+        var arppegioNotes = [];
+        var arppegioFormula = guitar.arppegios[this.state.arppegioDegree].formula;
+        
+        var steps = 0;
+
+        arppegioFormula.forEach((step) => {
+            arppegioNotes.push(guitar.notes.sharps[(parseInt(this.state.keyIndex) + steps) % 12]);
+            steps += step;
+        })
+
+        return arppegioNotes;
+        
+    }
+
+    arppegioChange(e){
+        const arppegioDegree = e.target.value;
+
+        // if(this.state.scale === "unset"){
+        //     return;
+        // }
         // key must chosen if not take the default
 
 
         // find the notes using the intervals of tha arppegios
-        var scaleNotes = this.getScaleNotes();
 
-        var arppegioNotes = [];
+        
+        this.setState({arppegioDegree: arppegioDegree}, () => {
+            var arppegioNotes = this.getArppegioNotes();
+            this.updateFretboard();
+        });
 
-        guitar.arppegios[arppegioDegree].intervals.forEach(function(step){
-            arppegioNotes.push(scaleNotes[step - 1]);
-        })
+
+        // var arppegioNotes = [];
+
+        // guitar.arppegios[arppegioDegree].intervals.forEach(function(step){
+        //     arppegioNotes.push(scaleNotes[step - 1]);
+        // })
 
     }
 
@@ -291,14 +303,6 @@ class GuitarNeck extends React.Component{
 
         console.log("intervals", intervals);
         console.log("notes", notes);
-
-        var rootNote = notes[this.state.modeIndex];
-        var scale = guitar.scales[this.state.scale];
-
-        var intervalStepIndex = 0;      
-        // if(!rootNote){
-        //     rootNote = guitar.notes.sharps[this.state.keyIndex]; // C
-        // }
 
         for(var m = 0; m < guitar.numberOfStrings; m++){
             // Get to E and the A D G B E
@@ -318,8 +322,6 @@ class GuitarNeck extends React.Component{
                         'fifth': currentNote === notes[4],
                         'seventh': numberOfNotes === 7 ? (currentNote === notes[6]) : false
                     });
-                    
-                    var noteIntervalIndex = notes.indexOf(currentNote);
                     
                     if(this.state.displayNotes){
                         newFretboard[m][n] = <span className={noteStyling}>{currentNote}</span>;
@@ -441,10 +443,10 @@ class GuitarNeck extends React.Component{
                 </label>
                 <select value={this.state.arppegioDegree} onChange={this.arppegioChange}>
                     <option value="unset">Select arppegio</option>
-                    <option value="minor">Minor</option>
-                    <option value="major">Major</option>
+                    <option value="m">Minor</option>
+                    <option value="M">Major</option>
                     <option value="m7">Minor 7th</option>
-                    <option value="7">Major 7th</option>
+                    <option value="M7">Major 7th</option>
                 </select>
                 <button onClick={this.displayNotesChange}>{ buttonText }</button>
             </div>
