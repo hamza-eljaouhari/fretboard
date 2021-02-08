@@ -32,14 +32,18 @@ class GuitarNeck extends React.Component{
 
     modeChange(e){
         var modeIndex = e.target.value;
+        console.log(this.getModesNotes())
 
-        this.setState({modeIndex: modeIndex},  () => {
+        this.setState({modeIndex: modeIndex}, () => {
             this.displayScale();
         });
+
     }
 
     displayNotesChange(e){
-        this.setState({displayNotes: !this.state.displayNotes});
+        this.setState({displayNotes: !this.state.displayNotes}, () => {
+            this.displayScale();
+        });
     }
 
 
@@ -96,6 +100,23 @@ class GuitarNeck extends React.Component{
         this.setState({ keyIndex: newKeyIndex}, () => {
             this.displayScale();
         });
+    }
+
+    getModesNotes(){
+        
+        var modesNotes = [];
+        var modeIndex = parseInt(this.state.modeIndex)  ;
+        var scaleNotes = this.state.scaleNotes;
+
+        while(modesNotes.length < scaleNotes.length){
+            modesNotes.push(scaleNotes[modeIndex]);
+            modeIndex++;
+            if(modeIndex == scaleNotes.length){
+                modeIndex = modeIndex % scaleNotes.length;
+            }
+        }
+
+        return modesNotes;
     }
 
     getScaleNotes(){
@@ -160,7 +181,9 @@ class GuitarNeck extends React.Component{
             return;
         }
 
-        if(guitar.scales[this.state.scale].isModal){
+        var isModal = guitar.scales[this.state.scale].isModal;
+
+        if(isModal){
             if(this.state.modeIndex === "unset"){
                 this.cleanFretboard()
                 return;
@@ -170,7 +193,14 @@ class GuitarNeck extends React.Component{
         this.setState({scaleNotes: this.getScaleNotes()}, () => {
             this.setState({scaleIntervals: this.getScaleIntervals()}, () => {
                 this.cleanFretboard(() => {
-                    this.spreadNotesOnFretboard(this.state.scaleNotes, this.state.scaleIntervals);
+
+                    var scaleNotes = this.state.scaleNotes
+                    
+                    if(isModal){
+                        scaleNotes = this.getModesNotes();
+                    }
+
+                    this.spreadNotesOnFretboard(scaleNotes, this.state.scaleIntervals);
                 });
             });
         });
@@ -191,7 +221,6 @@ class GuitarNeck extends React.Component{
         const scale = guitar.scales[this.state.scale];
 
         if(scale.isModal){
-            console.log(this.state.modeIndex)
             intervals = scale.modes[this.state.modeIndex].intervals;
         }else{
             intervals = scale.intervals;
@@ -241,12 +270,7 @@ class GuitarNeck extends React.Component{
             arppegioNotes.push(scaleNotes[step - 1]);
         })
 
-        // this.spreadNotesOnFretboard(arppegioNotes);
     }
-
-    // componentWillUpdate(){
-    //     console.log("Will update")
-    // }
 
     spreadNotesOnFretboard(notes, intervals){
         var newFretboard = [...this.state.fretboard];
@@ -257,6 +281,7 @@ class GuitarNeck extends React.Component{
         var rootNote = notes[this.state.modeIndex];
         var scale = guitar.scales[this.state.scale];
 
+        var intervalStepIndex = 0;      
         // if(!rootNote){
         //     rootNote = guitar.notes.sharps[this.state.keyIndex]; // C
         // }
@@ -272,27 +297,20 @@ class GuitarNeck extends React.Component{
                     
                     var numberOfNotes = this.state.scaleNotes.length;
 
-                    var step = 0;
-                    
-                    if(scale.isModal){
-                        step = parseInt(this.state.modeIndex);
-                    }
-                    
-
                     var noteStyling = classNames({
                         'note': true,
-                        'root': currentNote === notes[step],
-                        'third': currentNote === notes[(step + 2)  % numberOfNotes],
-                        'fifth': currentNote === notes[(step + 4) % numberOfNotes],
-                        'seventh': numberOfNotes === 7 ? (currentNote === notes[(step  + 6) % numberOfNotes]) : false
+                        'root': currentNote === notes[0],
+                        'third': currentNote === notes[2],
+                        'fifth': currentNote === notes[4],
+                        'seventh': numberOfNotes === 7 ? (currentNote === notes[6]) : false
                     });
                     
                     var noteIntervalIndex = notes.indexOf(currentNote);
-
+                    
                     if(this.state.displayNotes){
                         newFretboard[m][n] = <span className={noteStyling}>{currentNote}</span>;
                     }else{
-                        newFretboard[m][n] = <span className={noteStyling}>{intervals[noteIntervalIndex]}</span>;
+                        newFretboard[m][n] = <span className={noteStyling}>{intervals[notes.indexOf(currentNote)]}</span>;
                     }
                 }
             }
