@@ -21,16 +21,8 @@ function CircleOfFifths({pageX, pageY}){
 
         majorScalePointingCircle: 192,
 
-        keysRadius: 140,
-        relativesRadius: 215,
-
-        innerCircleRadius: 500 / 4 - 10, // 240
-        greenOutterOutlinePadding: 60,
-        outterCircleRadius: 200,
-        xPositionCenterCircle: 500 / 2, // 250
-        yPositionCenterCircle: 500 / 2, // 250
-        outterCircleCenter: Math.sqrt(230 / ( 2 * Math.PI)) + 500 / 2,
-        innerCircleCenter: Math.sqrt((500 / 4 - 10) / ( 2 * Math.PI)) + 500 / 2
+        keysRadius: 215,
+        relativesRadius: 140,
     })
 
     function getCircle(center, radius, steps = 12){
@@ -38,8 +30,8 @@ function CircleOfFifths({pageX, pageY}){
         
         for (var i = 0; i < steps; i++) {
             elements.push({
-                top: center + radius * Math.cos(2 * Math.PI * i / steps) - 26,
-                left: center + radius * Math.sin(2 * Math.PI * i / steps)
+                top: center + radius * Math.cos(2 * Math.PI * (( i - 3) % 12) / steps) - 26,
+                left: center + radius * Math.sin(2 * Math.PI * (( i - 3) % 12) / steps)
             })
         }
         
