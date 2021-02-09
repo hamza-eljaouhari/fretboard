@@ -4,35 +4,34 @@ import guitar from '../config/guitar';
  
 function CircleOfFifths({pageX, pageY}){
     
-    const circleOfFifths = useRef(null);
+    const [dimensions, setDimensions] = useState({
+        width: 500,
+        height: 500,
+        centerX: 250,
+        centerY: 250,
+        fontSize: 16, // yes
+        strokeWidth: 110,
+        
+        dashedStrokeWidth: 140,
 
-    const width = 500;
-    const height = 500;
-    const fontSize = 26;
-    const strokeWidth = 10;
-    const innerCircleRadius = width / 4 - 10; // 240
-    const greenOutterOutlinePadding = 60;
-    const outterOulineRadius = 230;
-    const greenCircleRadius = innerCircleRadius + greenOutterOutlinePadding;
-    const outterCircleRadius = 200;
-    const xPositionCenterCircle = width / 2; // 500
-    const yPositionCenterCircle = width / 2; // 500
-    const outterCircleCenter = Math.sqrt(outterCircleRadius / ( 2 * Math.PI)) + yPositionCenterCircle;
-    const innerCircleCenter = Math.sqrt(innerCircleRadius / ( 2 * Math.PI)) + xPositionCenterCircle;
-      
-    useEffect(() => {
-        function updateWidthAndHeight(e) {
-            console.log("eeeeeeeeeeeee", e)
-        }
+        outterOutlinedCircleRadius: 248,
+        firstInnerOutlinedCircleRadius: 110,
+        secondInnerOutlinedCircleRadius: 180,
+        innerDashedCircleRadius: 180,
 
-        if (circleOfFifths && circleOfFifths.current) {
-            circleOfFifths.current.addEventListener("onchange", updateWidthAndHeight, false);
-            
-            return function cleanup() {
-                circleOfFifths.current.removeEventListener("resize", updateWidthAndHeight, false);
-            };
-        }
-    }, [])
+        majorScalePointingCircle: 192,
+
+        keysRadius: 140,
+        relativesRadius: 215,
+
+        innerCircleRadius: 500 / 4 - 10, // 240
+        greenOutterOutlinePadding: 60,
+        outterCircleRadius: 200,
+        xPositionCenterCircle: 500 / 2, // 250
+        yPositionCenterCircle: 500 / 2, // 250
+        outterCircleCenter: Math.sqrt(230 / ( 2 * Math.PI)) + 500 / 2,
+        innerCircleCenter: Math.sqrt((500 / 4 - 10) / ( 2 * Math.PI)) + 500 / 2
+    })
 
     function getCircle(center, radius, steps = 12){
         var elements = []
@@ -47,37 +46,74 @@ function CircleOfFifths({pageX, pageY}){
         return elements;
     }
 
-    const relatives = getCircle(innerCircleCenter, innerCircleRadius).map((style, index) => {
+    const relatives = getCircle(dimensions.centerX + 10, dimensions.relativesRadius).map((style, index) => {
         const relativeMusicalKey = guitar.circleOfFifths[index].relative;
         // return <div className="musical-key" key={relativeMusicalKey} style={style}>{relativeMusicalKey}</div>
         return ( <text key={index} x={style.top} y={style.left}
                     fontFamily="Verdana"
-                    fontSize={fontSize}>
+                    fontSize={dimensions.fontSize}
+                    onClick={() => alert(relativeMusicalKey)}>
                 {relativeMusicalKey}
             </text> );
     })
 
-    const keys = getCircle(outterCircleCenter, outterCircleRadius).map((style, index) => {
+    const keys = getCircle(dimensions.centerX + 10, dimensions.keysRadius).map((style, index) => {
         const musicalKey = guitar.circleOfFifths[index].key;
-        return ( <text key={index} x={style.top } y={style.left}
+        return ( <text key={index} x={style.top} y={style.left}
             fontFamily="Verdana"
-            fontSize={fontSize}>
+            fontSize={dimensions.fontSize}>
         {musicalKey}
     </text> );
     })
 
     return(
-            <div id="circleOfFifths" style={{height: height, width: width}} >
-                <svg height="100%" width="100%" style={{transform: `scale(1, 1)`}}>
-                    <circle  r={outterOulineRadius} fill="white" strokeWidth="2" stroke="black" cx={xPositionCenterCircle} cy={yPositionCenterCircle}/>
-                    
-                    <circle transform="rotate(15, 250, 250)" r={greenCircleRadius} fill="#fff" strokeWidth={strokeWidth} stroke="darkslategrey" strokeDasharray="1107 1885" cx={xPositionCenterCircle} cy={yPositionCenterCircle}/>
-                    
-                    <circle  r={greenCircleRadius} fill="#fff" strokeWidth="2" stroke="darkslategrey" cx={xPositionCenterCircle} cy={yPositionCenterCircle}/>
-                    
-                    <circle id="dashes-circle" r={greenCircleRadius} fill="rgba(1,1,1,0.2)" strokeWidth={strokeWidth} stroke="#0F0F0F" strokeDasharray="1 157" transform="rotate(15, 250, 250)" cx={xPositionCenterCircle} cy={yPositionCenterCircle}/>
+            <div id="circleOfFifths" style={{height: dimensions.height, width: dimensions.width}} >
+                <svg height="100%" width="100%">
+                    <circle 
+                        r={dimensions.outterOutlinedCircleRadius} 
+                        fill="white" 
+                        strokeWidth="2" 
+                        stroke="black"
+                        cx={dimensions.centerX} 
+                        cy={dimensions.centerY}/>
 
-                    <circle  r={innerCircleRadius - 50} fill="white" strokeWidth="2" stroke="black" cx={xPositionCenterCircle} cy={yPositionCenterCircle}/>
+                    <circle  
+                        r={dimensions.majorScalePointingCircle} 
+                        fill="white" 
+                        stroke="darkgrey"
+                        strokeWidth={dimensions.strokeWidth} 
+                        strokeDasharray='710 1206'
+                        transform="rotate(15, 250, 250)" 
+                        cx={dimensions.centerY} 
+                        cy={dimensions.centerY}/>
+                    
+                
+
+                    <circle 
+                        r={dimensions.innerDashedCircleRadius} 
+                        fill="white" 
+                        strokeWidth={dimensions.dashedStrokeWidth} 
+                        stroke="black" 
+                        strokeDasharray="1 94" 
+                        transform="rotate(15, 250, 250)" 
+                        cx={dimensions.centerX} 
+                        cy={dimensions.centerY}/>
+
+                    <circle  
+                        r={dimensions.firstInnerOutlinedCircleRadius} 
+                        fill="#E0E0E0" 
+                        strokeWidth="2" 
+                        stroke="black" 
+                        cx={dimensions.centerX} 
+                        cy={dimensions.centerY}/>
+                   
+                   <circle  
+                        r={dimensions.secondInnerOutlinedCircleRadius} 
+                        fill="transparent" 
+                        strokeWidth="2" 
+                        stroke="black" 
+                        cx={dimensions.centerX} 
+                        cy={dimensions.centerY}/>
 
                     {relatives}
                     {keys}
