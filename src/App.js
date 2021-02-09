@@ -89,6 +89,7 @@ export default function MiniDrawer() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [menuOption, setMenuOption] = React.useState(0);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -144,8 +145,8 @@ export default function MiniDrawer() {
         </div>
         <Divider />
         <List>
-          {['Account', 'Fretboard', 'Circle Of Fifths', 'Compositions'].map((text, index) => (
-            <ListItem button key={text}>
+          {[ 'Circle Of Fifths', 'Fretboard', 'Account', 'Compositions'].map((text, index) => (
+            <ListItem button key={text} onClick={() => setMenuOption(index)}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -162,8 +163,13 @@ export default function MiniDrawer() {
         </List> */}
       </Drawer>
       <main className={classes.content}>
+        {
+          menuOption === 0 &&
           <CircleOfFifths></CircleOfFifths>
+        }
+        { menuOption === 1 &&
           <GuitarNeck></GuitarNeck>
+        }
       </main>
     </div>
   );

@@ -31,6 +31,59 @@ const config = {
             "B"
         ]
     },
+    "circleOfFifths": [
+        {
+            "key": "C",
+            "relative": "Am"
+        },
+        {
+            "key": "G",
+            "relative": "Em"
+        },
+        {
+            "key": "D",
+            "relative": "Bm"
+        },
+        {
+            "key": "A",
+            "relative": "F#m"
+        },
+        {
+            "key": "E",
+            "relative": "C#m"
+        },
+        {
+            "key": "B",
+            "flat": "Cb",
+            "relative": "G#m",
+        },
+        {
+            "key": "Gb",
+            "sharp": "F#",
+            "relative": "Ebm",
+        },
+        {
+            "key": "Db", 
+            "sharp": "C#",
+            "relative": "Bbm",
+        },
+        {
+            "key": "Ab", 
+            "relative": "Fm",
+        },
+        {
+            "key": "Eb", 
+            "relative": "Cm",
+        },
+        {
+            "key": "Bb",
+            "relative": "Gm"
+        },
+        {
+            "key": "F",
+            "relative": "Dm" 
+        }
+    ],
     "numberOfStrings": 6,
     "numberOfFrets": 25,
     "tuning": [

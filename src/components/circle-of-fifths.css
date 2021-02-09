@@ -1,32 +1,22 @@
-.circleOfFifths{
-    height: 800px;
-    width: 800px;
-}
-
-.outterCircle{
-    border: 1px solid black;
-    height: 100%;
-    width: 100%;
-    margin: 50px auto;
-    border-radius: 50%;
+.circleOfFifthsContainer{
+    display: block;
     position: relative;
 }
 
-.innerCircle{
-    border: 1px solid black;
+#resizer{
+    font-size: 24px;
+    cursor: pointer;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    height: 70%;
-    border-radius: 50%;
-    width: 70%;
+    bottom: -50px;
+    right: -50px;
+    height: 100px;
+    width: 100px;
+    background: black;
+    /* float: right; */
 }
 
-.key{
-    font-size: 100px;
+.circleOfFifths{
     position: absolute;
-    transform: translateX(-50%) translateY(-50%);
-    text-align: center;
+    top: 0;
+    left: 0;
 }
-
