@@ -1,22 +1,11 @@
 .circleOfFifthsContainer{
     display: block;
-    position: relative;
 }
 
-#resizer{
-    font-size: 24px;
-    cursor: pointer;
-    position: absolute;
-    bottom: -50px;
-    right: -50px;
-    height: 100px;
-    width: 100px;
-    background: black;
-    /* float: right; */
-}
-
-.circleOfFifths{
-    position: absolute;
-    top: 0;
-    left: 0;
+#circleOfFifths{
+    resize: both;
+    overflow: hidden;
+    background: #FCFCFC;
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.7);
+    border-radius: 10%;
 }
