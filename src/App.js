@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(12),
+    padding: '100px 20px',
   },
 }));
 
@@ -165,7 +165,10 @@ export default function MiniDrawer() {
       <main className={classes.content}>
         {
           menuOption === 0 &&
-          <CircleOfFifths></CircleOfFifths>
+          <section>
+            <CircleOfFifths></CircleOfFifths>
+            <h1>Compose progressions</h1>
+          </section>
         }
         { menuOption === 1 &&
           <GuitarNeck></GuitarNeck>

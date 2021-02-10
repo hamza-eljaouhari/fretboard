@@ -1,5 +1,5 @@
 import guitar from '../config/guitar';
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -40,7 +40,7 @@ function HigherOrderComponentGuitarNeck(){
 
     const classes = useStyles();
 
-    return <GuitarNeck classes={classes}></GuitarNeck>
+    return <GuitarNeck classes={classes} ></GuitarNeck>
 }
 class GuitarNeck extends React.Component{
 
@@ -280,7 +280,6 @@ class GuitarNeck extends React.Component{
         this.setState({scale: newScale}, () => {
             this.updateFretboard();
         });
-        // Get all 7 notes from the scale and spread them across the fretboard
     }
 
     getNoteFromFretboard(m, n){
@@ -328,29 +327,16 @@ class GuitarNeck extends React.Component{
             this.updateFretboard();
         });
 
-
-        // var arppegioNotes = [];
-
-        // guitar.arppegios[arppegioDegree].intervals.forEach(function(step){
-        //     arppegioNotes.push(scaleNotes[step - 1]);
-        // })
-
     }
 
     spreadNotesOnFretboard(notes, intervals){
         var newFretboard = [...this.state.fretboard];
 
-        console.log("intervals", intervals);
-        console.log("notes", notes);
-
         for(var m = 0; m < guitar.numberOfStrings; m++){
-            // Get to E and the A D G B E
             for(var n = 0; n < guitar.numberOfFrets; n++){
-                // Get to each of notes "notes"
-                // steps are found in
                 var currentNote = this.getNoteFromFretboard(m, n);
                 
-                if(notes.includes(currentNote)){ // C major has C D E A F B G E C
+                if(notes.includes(currentNote)){
                     
                     var numberOfNotes = this.state.scaleNotes.length;
 
@@ -383,32 +369,40 @@ class GuitarNeck extends React.Component{
 
     render(){
 
-        const strings = [];
+        const rows = [];
 
-        for(let i = 0; i < guitar.numberOfStrings; i++){
-            const frets = [];
+        var rowsNumber = guitar.numberOfStrings;
+        var columnsNumber = guitar.numberOfFrets;
 
+        // rows , rotated => colums 24
+        for(let i = 0; i < rowsNumber; i++){
+            const columns = [];
 
-            for(let j = 0; j < guitar.numberOfFrets; j++){
+            // columns // rotated => strings
+            for(let j = 0; j < columnsNumber; j++){
 
                 var note = null;
-                if(this.state.fretboard[i][j]){
+                // if(this.state.fretboard[i][j]){
                     note = this.state.fretboard[i][j];
-                }
+                // }
 
-                frets.push(
+                columns.push(
                     <td
-                        key={j + '-' + i} id={j + '-' + i}
-                        onClick={(e) => this.toggleNote(i, j, e)}>
+                        key={i + '-' + j} id={i + '-' + j}
+                        onClick={(e) => {
+                                this.toggleNote(i, j, e)
+                            }
+                        }>
                             { note }
                         <hr ></hr>
                     </td>
                 );
+                
             }
 
-            strings.push(
+            rows.push(
                 <tr key={i}>
-                    { frets }
+                    { columns }
                 </tr>
             )
         }
@@ -461,11 +455,11 @@ class GuitarNeck extends React.Component{
         }
 
         return(
-            <div>
+            <div className="fretboard-container">
                 <table>
                     <tbody>
                         {
-                            strings
+                            rows
                         }
                     </tbody>
                     <tfoot>
