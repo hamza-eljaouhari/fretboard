@@ -40,10 +40,15 @@ const useStyles = makeStyles({
 var classNames = require('classnames');
 
 
-function HigherOrderComponentGuitarNeck(){
+function HigherOrderComponentGuitarNeck(props){
     const classes = useStyles();
 
-    return <GuitarNeck classes={classes}></GuitarNeck>
+    return (
+        <GuitarNeck 
+            classes={classes}
+            onChangeKey={props.onChangeKey}
+            ></GuitarNeck>
+    );
 }
 class GuitarNeck extends React.Component{
 
@@ -74,6 +79,9 @@ class GuitarNeck extends React.Component{
 
         this.setState({ key: newkey}, () => {
             this.updateFretboard();
+            // Communicate change to parent and then to circle of fifths
+            this.props.onChangeKey(this.state.key === "unset" ? 0 : this.state.key);
+
         });
     }
 

@@ -108,7 +108,9 @@ export default function App() {
   const theme = useTheme();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [rightOpen, setRightOpen] = React.useState(false);
-
+  const [circleOfFifthsRotation, setCircleOfFifthsRotation] = React.useState(222);
+  const [dashesRotation, setDashesRotation] = React.useState(10);
+  
   const handleLeftDrawerClose = () => {
     setLeftOpen(false);
   };
@@ -124,6 +126,20 @@ export default function App() {
   const handleRightDrawerOpen = () => {
     setRightOpen(true);
   };
+
+  const onChangeKey = (key) => {
+    var k = parseInt(key);
+    var orderOfNote = k;
+
+    if(k % 2 !== 0){
+      orderOfNote = k > 6 ? k - 6 : k + 6;
+    }
+
+    var value = (((orderOfNote / 12 ) * 360) + 222) % 360;
+    console.log(value)
+    setCircleOfFifthsRotation(value);
+    setDashesRotation(((orderOfNote + 1) * 30) + 10);
+  }
 
   return (
     <div className={classes.root}>
@@ -206,8 +222,8 @@ export default function App() {
       </Drawer>
 
       <main className={classes.content}>
-        <Fretboard></Fretboard>
-        <CircleOfFifths></CircleOfFifths>
+        <Fretboard onChangeKey={onChangeKey}></Fretboard>
+        <CircleOfFifths circleOfFifthsRotation={circleOfFifthsRotation} dashesRotation={dashesRotation}></CircleOfFifths>
       </main>
 
       <Drawer

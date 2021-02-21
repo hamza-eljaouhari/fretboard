@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './circle-of-fifths.css'
 import guitar from '../config/guitar';
  
-function CircleOfFifths({pageX, pageY}){
+function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
     
     const [dimensions, setDimensions] = useState({
         width: 500,
@@ -20,7 +20,6 @@ function CircleOfFifths({pageX, pageY}){
         innerDashedCircleRadius: 180,
 
         majorScalePointingCircle: 192,
-
         keysRadius: 215,
         relativesRadius: 140,
     })
@@ -30,7 +29,7 @@ function CircleOfFifths({pageX, pageY}){
         
         for (var i = 0; i < steps; i++) {
             elements.push({
-                top: center + radius * Math.cos(2 * Math.PI * (( i - 3) % 12) / steps) - 26,
+                top: center + radius * Math.cos(2 * Math.PI * (( i - 3  ) % 12) / steps) - 26,
                 left: center + radius * Math.sin(2 * Math.PI * (( i - 3) % 12) / steps)
             })
         }
@@ -69,25 +68,25 @@ function CircleOfFifths({pageX, pageY}){
                         cx={dimensions.centerX} 
                         cy={dimensions.centerY}/>
 
-                    <circle  
+                    <circle
+                        className="rotation-effect"
                         r={dimensions.majorScalePointingCircle} 
                         fill="white" 
                         stroke="darkgrey"
                         strokeWidth={dimensions.strokeWidth} 
                         strokeDasharray='700 1206'
-                        transform="rotate(227, 250, 250)" 
+                        transform={`rotate(${circleOfFifthsRotation}, 250, 250)`} 
                         cx={dimensions.centerY} 
                         cy={dimensions.centerY}/>
-                    
-                
 
-                    <circle 
+                    <circle
+                        className="rotation-effect"
                         r={dimensions.innerDashedCircleRadius} 
                         fill="white" 
                         strokeWidth={dimensions.dashedStrokeWidth} 
                         stroke="black" 
                         strokeDasharray="1 94" 
-                        transform="rotate(15, 250, 250)" 
+                        transform={`rotate(${dashesRotation}, 250, 250)`}
                         cx={dimensions.centerX} 
                         cy={dimensions.centerY}/>
 
