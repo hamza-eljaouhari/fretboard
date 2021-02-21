@@ -1,6 +1,10 @@
-table {
-    width: 100%;
+.fretboard-container{
+    width: 1000px;
+}
+
+.table {
     border-spacing: 0;
+    width: 100%;
 }
 
 table, tr {

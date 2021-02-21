@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import './circle-of-fifths.css'
 import guitar from '../config/guitar';
  
@@ -74,8 +74,8 @@ function CircleOfFifths({pageX, pageY}){
                         fill="white" 
                         stroke="darkgrey"
                         strokeWidth={dimensions.strokeWidth} 
-                        strokeDasharray='710 1206'
-                        transform="rotate(15, 250, 250)" 
+                        strokeDasharray='700 1206'
+                        transform="rotate(227, 250, 250)" 
                         cx={dimensions.centerY} 
                         cy={dimensions.centerY}/>
                     

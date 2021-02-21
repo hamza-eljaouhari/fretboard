@@ -18,25 +18,35 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
-import GuitarNeck from './components/GuitarNeck';
+import Fretboard from './components/Fretboard';
 import CircleOfFifths from './components/CircleOfFifths';
 
-const drawerWidth = 240;
+const leftDrawerWidth = 240;
+const rightDrawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
   appBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: "no-wrap",
+    justifyContent: 'space-between',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
+  appBarShiftRight:{
+    marginLeft: leftDrawerWidth
+  },
+  appBarShiftLeft:{
+    marginRight: leftDrawerWidth
+  },
   appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100% - ${leftDrawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -48,13 +58,18 @@ const useStyles = makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  drawer: {
-    width: drawerWidth,
+  leftDrawer: {
+    width: leftDrawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+  },
+  rightDrawer: {
+    width: rightDrawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
   },
   drawerOpen: {
-    width: drawerWidth,
+    width: leftDrawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -71,6 +86,9 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(9) + 1,
     },
   },
+  drawerPaper: {
+    width: rightDrawerWidth,
+  },
   toolbar: {
     display: 'flex',
     alignItems: 'center',
@@ -81,22 +99,30 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: '100px 20px',
+    padding: '100px 20px'
   },
 }));
 
-export default function MiniDrawer() {
+export default function App() {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-  const [menuOption, setMenuOption] = React.useState(0);
+  const [leftOpen, setLeftOpen] = React.useState(false);
+  const [rightOpen, setRightOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleLeftDrawerClose = () => {
+    setLeftOpen(false);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleRightDrawerClose = () => {
+    setRightOpen(false);
+  };
+
+  const handleLeftDrawerOpen = () => {
+    setLeftOpen(true);
+  };
+
+  const handleRightDrawerOpen = () => {
+    setRightOpen(true);
   };
 
   return (
@@ -105,48 +131,64 @@ export default function MiniDrawer() {
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
+          [classes.appBarShift]: leftOpen || rightOpen,
+          [classes.appBarShiftRight]: leftOpen,
+          [classes.appBarShiftLeft]: rightOpen
         })}
       >
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
+            onClick={handleLeftDrawerOpen}
             edge="start"
             className={clsx(classes.menuButton, {
-              [classes.hide]: open,
+              [classes.hide]: leftOpen,
             })}
           >
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            Menu
           </Typography>
+        </Toolbar>
+        <Toolbar>
+          <Typography variant="h6" noWrap className={classes.title}>
+            Controls
+          </Typography>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="end"
+            onClick={handleRightDrawerOpen}
+            className={clsx(rightOpen && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
         variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
+        className={clsx(classes.leftDrawer, {
+          [classes.drawerOpen]: leftOpen,
+          [classes.drawerClose]: !leftOpen,
         })}
         classes={{
           paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
+            [classes.drawerOpen]: leftOpen,
+            [classes.drawerClose]: !leftOpen,
           }),
         }}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleLeftDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
         <Divider />
         <List>
           {[ 'Circle Of Fifths', 'Fretboard', 'Account', 'Compositions'].map((text, index) => (
-            <ListItem button key={text} onClick={() => setMenuOption(index)}>
+            <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -162,18 +204,45 @@ export default function MiniDrawer() {
           ))}
         </List> */}
       </Drawer>
+
       <main className={classes.content}>
-        {
-          menuOption === 0 &&
-          <section>
-            <CircleOfFifths></CircleOfFifths>
-            <h1>Compose progressions</h1>
-          </section>
-        }
-        { menuOption === 1 &&
-          <GuitarNeck></GuitarNeck>
-        }
+        <Fretboard></Fretboard>
+        <CircleOfFifths></CircleOfFifths>
       </main>
+
+      <Drawer
+        className={classes.rightDrawer}
+        variant="persistent"
+        anchor="right"
+        open={rightOpen}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleRightDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
     </div>
   );
 }
