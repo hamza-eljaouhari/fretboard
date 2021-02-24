@@ -14,19 +14,25 @@ function TabsParser(props){
         setTabs(e.target.value);
     }
 
+    function format(){
+
+    }
+    
     function play(){
+
+        format();
 
         var strings = tabs.split('\n');
         
-        var cursor = 0;
+        var cursor = 2;
         
         var character = '';
 
-        console.log(strings)
+        var count = 0;
+
         while(character !== '|'){
             for(let i = 0; i < strings.length; i++){
                 character = strings[i][cursor]
-
                 let next = strings[i][cursor + 1]
                 let prev = strings[i][cursor - 1];
                 
@@ -34,8 +40,17 @@ function TabsParser(props){
                     if(!isNaN(next)){
                         character = parseInt(character.toString() + next.toString());
                     }
+
                     if(isNaN(prev)){
-                        props.displayNote(i, parseInt(character));
+                        count++;
+                        // props.displayNote(i, parseInt(character));
+                        
+                        function emitDisplay(i, j){
+                            console.log([i, j]);
+                            props.displayNote(i, j);
+                        }
+
+                        setTimeout(emitDisplay, count * 500, i, parseInt(character))  
                     }
                 }
             }   
