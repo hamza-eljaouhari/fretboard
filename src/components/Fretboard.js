@@ -5,13 +5,17 @@ import { connect } from "react-redux";
 import { 
     fillFretboard,
     toggleNote, 
-    setScale, 
+    setScale,
+    setScaleFormula,
+    setScaleNotes,
+    setScaleIntervals,
     setKey, 
     setMode,
+    setModeNotes,
+    setModeIntervals,
     setChord,
     setArppegio,
     setPosition,
-    setScaleFormula,
     setIsNotesDisplay
 } from "../redux/actions";
 
@@ -20,8 +24,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-import { getIsNotesDisplay } from "../redux/selectors";
 import { getNoteFromFretboard } from '../redux/helpers';
+
+import classNames from "classnames";
 
 import './guitar-neck.css';
 
@@ -126,9 +131,13 @@ function GuitarNeck(props){
 
     function getScaleNotes(){
 
+        if(props.scale === "unset"){
+            return [];
+        }
+
         var scaleNotes = [];
         
-        var scaleFormula = guitar.scales[scale].formula;
+        var scaleFormula = guitar.scales[props.scale].formula;
         
         var steps = 0;
 
@@ -236,13 +245,19 @@ function GuitarNeck(props){
             var isModal = guitar.scales[scale].isModal;
 
             notes = getScaleNotes();
+            props.setScaleNotes(notes);
+
             intervals = getScaleIntervals();
+            props.setScaleIntervals(intervals);
 
             if(isModal){
                 // If scale is modal and no more is chosen, display nothing
                 if(props.mode !== "unset"){
                     notes = getModeNotes();
+                    props.setModeNotes(notes)
+
                     intervals = getModeIntervals();
+                    props.setModeIntervals(intervals);
                 }
 
             }
@@ -251,7 +266,10 @@ function GuitarNeck(props){
         // If both a scale and an arppegio are chosen we display the arppegio
         if(arppegio !== "unset"){
             notes = getArppegioNotes();
+            props.setArppegioNotes(notes)
+
             intervals = guitar.arppegios[arppegio].intervals;
+            props.setArppegioIntervals(intervals);
         }
 
         spread(notes, intervals)
@@ -282,6 +300,34 @@ function GuitarNeck(props){
         props.fillFretboard(nf);
     }
 
+    function getCurrentDisplayableScaleNote(){
+        
+        var scale = props.scale;
+        var mode = props.mode;
+        var arppegio = props.arppegio;
+
+        var scaleNotes = [];
+
+        if(scale !== "unset"){
+            scaleNotes = props.scaleNotes;
+            if(guitar.scales[scale].isModal && mode !== "unset"){
+                scaleNotes = props.modeNotes;
+            }
+        }
+
+        if(arppegio !== "unset"){
+            scaleNotes = props.arppegioNotes;
+        }
+
+        console.log(scaleNotes);
+        return scaleNotes;
+        
+    }
+
+    function getNoteIndex(currentNote){
+        return getCurrentDisplayableScaleNote().indexOf(currentNote);
+    }
+
     const rows = [];
 
     var rowsCount = guitar.numberOfStrings;
@@ -302,7 +348,16 @@ function GuitarNeck(props){
                             props.toggleNote(i, j);
                         }
                     }>
-                        { note.show && note.current }
+                        <span 
+                            className={classNames({
+                                'note': note.show === true,
+                                'root': getNoteIndex(note.current) === 0,
+                                "third": getNoteIndex(note.current) === 2,
+                                'fifth': getNoteIndex(note.current) === 4,
+                                'seventh': getNoteIndex(note.current) === 6
+                            })}>
+                            { note.show && note.current }
+                        </span>
                     <hr ></hr>
                 </td>
             );
@@ -370,7 +425,6 @@ function GuitarNeck(props){
     return(
         
         <div className="fretboard-container">
-        {props.isNotesDiplay}
             <table>
                 <tbody>
                     {
@@ -507,11 +561,23 @@ const mapStateToProps = state => {
     return { 
         fretboard: state.fretboard.fretboard,
         keySignature: state.fretboard.keySignature,
+        
         scale : state.fretboard.scale,
+        scaleNotes: state.fretboard.scaleNotes,
+        scaleIntervals: state.fretboard.scaleIntervals,
+        
         mode: state.fretboard.mode,
+        modeNotes: state.fretboard.modeNotes,
+        modeIntervals: state.fretboard.modeIntervals,
+        
         arppegio: state.fretboard.arppegio,
+        arppegioNotes: state.fretboard.arppegioNotes,
+        arppegioIntervals: state.fretboard.arppegioIntervals,
+
         chord: state.fretboard.chord,
+        
         position: state.fretboard.position,
+        
         isNotesDisplay: state.fretboard.isNotesDisplay
     };
 };
@@ -523,8 +589,12 @@ export default connect(
         toggleNote, 
         setScale, 
         setScaleFormula,
+        setScaleNotes,
+        setScaleIntervals,
         setKey, 
         setMode,
+        setModeNotes,
+        setModeIntervals,
         setChord,
         setArppegio,
         setPosition,

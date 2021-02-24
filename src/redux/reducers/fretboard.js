@@ -1,24 +1,30 @@
-
-import React from 'react';
-import {
+import { 
     FILL_FRETBOARD,
-    CLEAN_FRETBOARD,
+    
     DISPLAY_NOTE,
     TOGGLE_NOTE, 
-    SET_SCALE, 
-    SET_MODE, 
-    SET_SCALE_NOTES, 
-    SET_MODE_NOTES, 
-    SET_SCALE_INTERVALS, 
-    SET_MODE_INTERVALS,
+    
     SET_KEY,
+  
+    SET_SCALE,
+    SET_SCALE_NOTES,
+    SET_SCALE_FORMULA, 
+    SET_SCALE_INTERVALS,
+    
+    SET_MODE, 
+    SET_MODE_NOTES, 
+    SET_MODE_INTERVALS,
+    
     SET_ARPPEGIO,
+    SET_MODEARPPEGIO_NOTES, 
+    SET_ARPPEGIO_INTERVALS,
+    
+    SET_CHORD,
+    SET_POSITION,
     SET_IS_NOTES_DISPLAY
-} from '../actionTypes';
+  } from "../actionTypes";
 
 import guitar from '../../config/guitar'
-
-var classNames = require('classnames');
 
 function newFretboard(){
     return Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill({
@@ -29,14 +35,22 @@ function newFretboard(){
 
 const initialState = {
     fretboard: newFretboard(),
+    
     keySignature: 'unset',
+    
     scale: 'unset',
+    scaleFormula: [],
     scaleNotes: [],
     scaleIntervals: [],
+    
     mode: 'unset',
-    modesNotes: [],
+    modeNotes: [],
+    modeIntervals : [],
+    
     arppegio: 'unset',
     arppegioNotes: [],
+    arppegioIntervals: [],
+    
     isNotesDisplay: true
 };
 
@@ -48,14 +62,8 @@ const fretboard = (state = initialState, action) => {
             fretboard: action.payload.fretboard
         };
     }
-    case CLEAN_FRETBOARD:{
-        return {
-            ...state,
-            fretboard: action.payload.fretboard
-        };
-    }
     case TOGGLE_NOTE: {
-        var nf = [...state.fretboard];
+        let nf = [...state.fretboard];
 
         nf[action.payload.i][action.payload.j].show = !nf[action.payload.i][action.payload.j].show;
 
@@ -65,7 +73,7 @@ const fretboard = (state = initialState, action) => {
         };
     }
     case DISPLAY_NOTE: {
-        var nf = [...state.fretboard];
+        let nf = [...state.fretboard];
 
         nf[action.payload.i][action.payload.j].show = true;
 
