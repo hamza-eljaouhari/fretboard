@@ -231,6 +231,23 @@ function GuitarNeck(props){
         
     }
 
+    function getArppegioIntervals(){
+
+        if(props.keySignature === "unset"){
+            return;
+        }
+
+        if(props.arppegio === "unset"){
+            return;
+        }
+
+        const arppegio = guitar.arppegios[props.arppegio];
+        
+        var intervals = arppegio.intervals;
+
+        return intervals;
+    }
+
     function displayData(){
 
         if(props.keySignature === "unset"){
@@ -307,7 +324,7 @@ function GuitarNeck(props){
         props.fillFretboard(nf);
     }
 
-    function getCurrentDisplayableScaleNote(){
+    function getCurrentDisplayableScaleNotes(){
         
         var scale = props.scale;
         var mode = props.mode;
@@ -330,8 +347,39 @@ function GuitarNeck(props){
         
     }
 
+    function getCurrentDisplayableScaleIntervals(){
+        
+        var scale = props.scale;
+        var mode = props.mode;
+        var arppegio = props.arppegio;
+
+        var scaleIntervals = [];
+
+        if(scale !== "unset"){
+            scaleIntervals = getScaleIntervals();
+            if(guitar.scales[scale].isModal && mode !== "unset"){
+                scaleIntervals = getModeIntervals();
+            }
+        }
+
+        if(arppegio !== "unset"){
+            scaleIntervals = getArppegioIntervals();
+        }
+
+        return scaleIntervals;
+        
+    }
+
     function getNoteIndex(currentNote){
-        return getCurrentDisplayableScaleNote().indexOf(currentNote);
+
+        var scaleNotes =  getCurrentDisplayableScaleNotes();
+
+        if(props.isNotesDisplay){
+            return scaleNotes.indexOf(currentNote);
+        }
+        
+        return getCurrentDisplayableScaleIntervals().indexOf(currentNote);
+
     }
 
     const rows = [];
