@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { 
     fillFretboard,
+    cleanFretboard,
     toggleNote, 
     setScale, 
     setKey, 
@@ -50,6 +51,18 @@ function GuitarNeck(props){
         displayData();
     }, [props.keySignature, props.scale, props.mode, props.arppegio, props.chord, props.position]);
 
+    function cleanFretboard(){
+        var nf = [...props.fretboard];
+        
+        for(let i = 0; i < guitar.numberOfStrings; i++){
+            for(let j = 0; j < guitar.numberOfFrets; j++){
+                nf[i][j].show = false;
+            }
+        }
+
+        props.cleanFretboard(nf);
+    }
+
     function onKeyChange(e){
         const newKey = e.target.value;
 
@@ -92,6 +105,10 @@ function GuitarNeck(props){
 
     function onDisplayNotesChange(){
         props.setIsNotesDisplay(!getIsNotesDisplay());
+    }
+
+    function onCleanFretboard(){
+        cleanFretboard();
     }
 
     function getScaleFormula(){
@@ -239,17 +256,13 @@ function GuitarNeck(props){
 
                 if(notes.includes(currentNote)){
                     if(props.isNotesDisplay){
-                        props.toggleNote(m, n, currentNote);
+                        props.displayNote(m, n, currentNote);
                     }else{
-                        props.toggleNote(m, n, intervals[notes.indexOf(currentNote)])
+                        props.displayNote(m, n, intervals[notes.indexOf(currentNote)])
                     }
                 }
             }
         }
-    }
-
-    function cleanFretboard(callback){
-        var newFretboard = Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill(null));
     }
 
     const rows = [];
@@ -462,6 +475,15 @@ function GuitarNeck(props){
                     >
                         { buttonText } 
                     </Button>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={onCleanFretboard}
+                    >
+                        Clean
+                    </Button>
                 </form>
             </section>
         </div>
@@ -485,6 +507,7 @@ export default connect(
     mapStateToProps,
     { 
         fillFretboard,
+        cleanFretboard,
         toggleNote, 
         setScale, 
         setScaleFormula,

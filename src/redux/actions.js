@@ -1,5 +1,7 @@
 import { 
   FILL_FRETBOARD,
+  CLEAN_FRETBOARD,
+  DISPLAY_NOTE,
   TOGGLE_NOTE, 
   SET_SCALE, 
   SET_MODE_NOTES, 
@@ -16,6 +18,11 @@ export const fillFretboard = (fretboard) => ({
   type: FILL_FRETBOARD,
   payload: { fretboard }
 });   
+
+export const cleanFretboard = (fretboard) => ({
+  type: CLEAN_FRETBOARD,
+  payload: { fretboard }
+});
 
 export const toggleNote = (i, j, current) => ({
     type: TOGGLE_NOTE,
