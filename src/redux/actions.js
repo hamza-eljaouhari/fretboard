@@ -29,9 +29,14 @@ export const fillFretboard = (fretboard) => ({
   payload: { fretboard }
 });   
 
-export const toggleNote = (i, j, current) => ({
+export const toggleNote = (i, j) => ({
   type: TOGGLE_NOTE,
-  payload: { i, j, current }
+  payload: { i, j }
+});   
+
+export const displayNote = (i, j) => ({
+  type: DISPLAY_NOTE,
+  payload: { i, j }
 });   
 
 export const setKey = (keySignature) => ({

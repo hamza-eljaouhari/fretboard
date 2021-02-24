@@ -1,7 +1,7 @@
 import {useState} from 'react';
 
 import { connect } from "react-redux";
-import { toggleNote } from "../redux/actions";
+import { displayNote } from "../redux/actions";
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -15,29 +15,33 @@ function TabsParser(props){
     }
 
     function play(){
-        console.log(tabs);
 
-        var lines = tabs.split('\n');
+        var strings = tabs.split('\n');
         
         var cursor = 0;
+        
+        var character = '';
+
+        console.log(strings)
         while(character !== '|'){
-            // read one character per line
-            for(let i = 0; i < lines.length; i++){
-                var character = lines[i][cursor];
+            for(let i = 0; i < strings.length; i++){
+                character = strings[i][cursor]
+
+                let next = strings[i][cursor + 1]
+                let prev = strings[i][cursor - 1];
+                
                 if(!isNaN(character)){
-                    // display on fretboard 
-                    props.toggleNote(i, cursor)
+                    if(!isNaN(next)){
+                        character = parseInt(character.toString() + next.toString());
+                    }
+                    if(isNaN(prev)){
+                        props.displayNote(i, parseInt(character));
+                    }
                 }
-            }
+            }   
 
             cursor++;
         }
-        // map((line) => {
-        //     return line.split('');
-        // })
-
-        // for each non empty 6 lines
-            // read from latest line
     }
 
     return (
@@ -58,4 +62,4 @@ function TabsParser(props){
     );
 }
 
-export default connect(null, { toggleNote })(TabsParser);
+export default connect(null, { displayNote })(TabsParser);

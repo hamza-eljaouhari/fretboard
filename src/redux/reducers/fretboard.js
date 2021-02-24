@@ -64,8 +64,16 @@ const fretboard = (state = initialState, action) => {
     }
     case TOGGLE_NOTE: {
         let nf = [...state.fretboard];
-
         nf[action.payload.i][action.payload.j].show = !nf[action.payload.i][action.payload.j].show;
+
+        return {
+            ...state,
+            fretboard: nf
+        };
+    }
+    case DISPLAY_NOTE: {
+        let nf = [...state.fretboard];
+        nf[action.payload.i][action.payload.j].show = true;
 
         return {
             ...state,

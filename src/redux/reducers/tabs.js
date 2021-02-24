@@ -1,10 +1,22 @@
+import { 
 
-const initialState = 0;
+  } from "../actionTypes";
 
-const tabs = (state = initialState, action) => {
+import guitar from '../../config/guitar'
+
+const initialState = {
+    tabs: [
+
+    ]
+};
+
+const fretboard = (state = initialState, action) => {
   switch (action.type) {
-    case SET_FILTER: {
-      return action.payload.filter;
+    case FILL_FRETBOARD: {
+        return {
+            ...state,
+            fretboard: action.payload.fretboard
+        };
     }
     default: {
       return state;
@@ -12,4 +24,4 @@ const tabs = (state = initialState, action) => {
   }
 };
 
-export default tabs;
+export default fretboard;

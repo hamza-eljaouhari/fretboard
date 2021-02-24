@@ -62,7 +62,7 @@ function GuitarNeck(props){
 
     useEffect(() => {
         cleanFretboard();
-        displayData();
+        update();
     }, [props.keySignature, 
         props.scale, 
         props.mode, 
@@ -248,7 +248,7 @@ function GuitarNeck(props){
         return intervals;
     }
 
-    function displayData(){
+    function update(){
 
         if(props.keySignature === "unset"){
             return;
@@ -377,7 +377,7 @@ function GuitarNeck(props){
         if(props.isNotesDisplay){
             return scaleNotes.indexOf(currentNote);
         }
-        
+
         return getCurrentDisplayableScaleIntervals().indexOf(currentNote);
 
     }
