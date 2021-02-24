@@ -2,7 +2,9 @@ import guitar from '../config/guitar';
 import React, { useEffect } from 'react';
 
 import { connect } from "react-redux";
-import { toggleNote, 
+import { 
+    fillFretboard,
+    toggleNote, 
     setScale, 
     setKey, 
     setMode,
@@ -17,13 +19,32 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 import { getIsNotesDisplay } from "../redux/selectors";
-import { getNoteFromFretboard } from '../redux/helpers'
+import { getNoteFromFretboard } from '../redux/helpers';
 
 import './guitar-neck.css';
 
 // var classNames = require('classnames');
 
 function GuitarNeck(props){
+
+    useEffect(() => {
+        fillFretboard();
+    }, []);
+
+    function fillFretboard(){
+        var nf = [...props.fretboard];
+        
+        for(let i = 0; i < guitar.numberOfStrings; i++){
+            for(let j = 0; j < guitar.numberOfFrets; j++){
+                nf[i][j] = {
+                    show: false,
+                    current: guitar.notes.sharps[(guitar.tuning[i] + j ) % 12]
+                };
+            }
+        }
+
+        props.fillFretboard(nf);
+    }
 
     useEffect(() => {
         displayData();
@@ -233,25 +254,25 @@ function GuitarNeck(props){
 
     const rows = [];
 
-    var rowsNumber = guitar.numberOfStrings;
-    var columnsNumber = guitar.numberOfFrets;
+    var rowsCount = guitar.numberOfStrings;
+    var columnsCount = guitar.numberOfFrets;
 
     // rows , rotated => colums 24
-    for(let i = 0; i < rowsNumber; i++){
+    for(let i = 0; i < rowsCount; i++){
         const columns = [];
 
         // columns // rotated => strings
-        for(let j = 0; j < columnsNumber; j++){
+        for(let j = 0; j < columnsCount; j++){
 
             var note = props.fretboard[i][j];
             columns.push(
                 <td
                     key={i + '-' + j} id={i + '-' + j}
                     onClick={() => {
-                            props.toggleNote(i, j)
+                            props.toggleNote(i, j);
                         }
                     }>
-                        { note }
+                        { note.show && note.current }
                     <hr ></hr>
                 </td>
             );
@@ -463,6 +484,7 @@ const mapStateToProps = state => {
 export default connect(
     mapStateToProps,
     { 
+        fillFretboard,
         toggleNote, 
         setScale, 
         setScaleFormula,

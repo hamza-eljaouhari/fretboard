@@ -1,4 +1,5 @@
 import { 
+  FILL_FRETBOARD,
   TOGGLE_NOTE, 
   SET_SCALE, 
   SET_MODE_NOTES, 
@@ -10,6 +11,11 @@ import {
   SET_POSITION,
   SET_KEY
 } from "./actionTypes";
+
+export const fillFretboard = (fretboard) => ({
+  type: FILL_FRETBOARD,
+  payload: { fretboard }
+});   
 
 export const toggleNote = (i, j, current) => ({
     type: TOGGLE_NOTE,

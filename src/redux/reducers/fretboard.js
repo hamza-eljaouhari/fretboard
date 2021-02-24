@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { 
+import {
+    FILL_FRETBOARD,
     TOGGLE_NOTE, 
     SET_SCALE, 
     SET_MODE, 
@@ -15,7 +16,10 @@ import guitar from '../../config/guitar'
 var classNames = require('classnames');
 
 const initialState = {
-    fretboard: Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill(null)),
+    fretboard: Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill({
+        show: false,
+        current: ''
+    })),
     keySignature: 'unset',
     scale: 'unset',
     scaleNotes: [],
@@ -29,21 +33,22 @@ const initialState = {
 
 const fretboard = (state = initialState, action) => {
   switch (action.type) {
+    case FILL_FRETBOARD: {
+        return {
+            ...state,
+            fretboard: action.payload.fretboard
+        };
+    }
     case TOGGLE_NOTE: {
-            console.log()
-            var newFretboard = [...state.fretboard];
-    
-            if(newFretboard[action.payload.i][action.payload.j] !== null){
-                newFretboard[action.payload.i][action.payload.j] = null;
-            }else{
-                newFretboard[action.payload.i][action.payload.j] = action.payload.current;
-            }
-    
-            return {
-                ...state,
-                fretboard: newFretboard
-            };
-        }
+        var nf = [...state.fretboard];
+
+        nf[action.payload.i][action.payload.j].show = !nf[action.payload.i][action.payload.j].show;
+
+        return {
+            ...state,
+            fretboard: nf
+        };
+    }
     case SET_SCALE: {
         return {
             ...state,
