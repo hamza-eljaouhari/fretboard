@@ -216,14 +216,68 @@ const config = {
 
     },
     "arppegios": {
-        "M7": {
-            "formula": [4, 3, 4, 1],
-            "intervals": ['1', '3', '5', '7']
+        "M": {
+            "formula": [4, 3, 4],
+            "intervals": ['1', '3', '5']
         },
         "m": {
             "name": "Minor",
             "formula": [3, 4, 5],
             "intervals": ['1', 'b3', '5']
+        },
+        "aug": {
+            "name": "Augmented",
+            "intervals": ['1', '3', '#5'],
+            "formula": [4, 4, 4]
+        },
+        "dim": {
+            "name": "Diminished",
+            "intervals": ['1', 'b3', 'b5'],
+            "formula": [3, 3, 3]
+        },
+        "sus2": {
+            "name": "sus2",
+            "intervals": ['1', '2', 'b5'],
+            "formula": [5, 2, 5]
+        },
+        "sus4": {
+            "name": "sus4",
+            "intervals": ['1', '4', '5'],
+            "formula": [2, 5, 5]
+        },
+        "add4": {
+            "name": "add4",
+            "intervals": ['1', '3', '4', '5'],
+            "formula": [4, 1, 2, 2]
+        },
+        "add2": {
+            "name": "add4",
+            "intervals": ['1', '2', '3', '5'],
+            "formula": [2, 2, 3, 3]
+        },
+        "6": {
+            "name": "6th",
+            "intervals": ['1', '3', '5', '6'],
+            "formula": [4, 3, 2, 3]
+        },
+        "min6": {
+            "name": "min6th",
+            "intervals": ['1', 'b3', '5', '6'],
+            "formula": [3, 4, 2, 3]
+        },
+        "minb6": {
+            "name": "minb6th",
+            "intervals": ['1', 'b3', '5', 'b6'],
+            "formula": [3, 4, 1, 4]
+        },
+        "M7": {
+            "formula": [4, 3, 4, 1],
+            "intervals": ['1', '3', '5', '7']
+        },
+        "M7b5": {
+            "name": "Major 7b5",
+            "formula": [4, 2, 5, 1],
+            "intervals": ['1', '3', 'b5', '7']
         },
         "m7": {
             "name": "Minor 7th",
@@ -235,15 +289,43 @@ const config = {
             "formula": [4, 3, 3, 2],
             "intervals": ['1', '3', '5', 'b7']
         },
+        "minMaj7": {
+            "name": "Minor Major 7th",
+            "intervals": ['1', 'b3', '5', '7'],
+            "formula": [3, 4, 4, 4]
+        },
+        "min7b5": {
+            "name": "Half diminished",
+            "intervals": ['1', 'b3', 'b5', 'b7'],
+            "formula": [3, 3, 4, 4]
+        },
+        "dim7": {
+            "name": "Full Diminished",
+            "intervals": ['1', 'b3', 'b5', 'bb7'],
+            "formula": [3, 3, 3, 4]
+        },
+        "D7": {
+            "name": "Dominant 7th",
+            "intervals": ['1', '3', '5', 'b7'],
+            "formula": [4, 3, 4, 2],
+        },
+
+        "7sus4": {
+            "name": "7th sus4",
+            "intervals": ['1', '4', '5', 'b7'],
+            "formula": [5, 2, 3, 2]
+        },
+        "7b5": {
+            "name": "7b5",
+            "intervals": ['1', '3', '5', 'b7'],
+            "formula": [4, 2, 4, 1],
+        },
         "D13th": {
             "name" : "",
             "intervals": ['1', '3', '6', 'b7'],
             "formula": [2, 2, 5, 1, 2]
         },
-        "M": {
-            "formula": [4, 3, 4],
-            "intervals": ['1', '3', '5']
-        },
+        
         "M9th": {
             "formula": [2, 2, 3, 4, 1],
             "intervals": ['1', '9', '3', '5', '7']

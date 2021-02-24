@@ -21,6 +21,8 @@ import MailIcon from '@material-ui/icons/Mail';
 import Fretboard from './components/Fretboard';
 import CircleOfFifths from './components/CircleOfFifths';
 
+import TabsParser from './components/TabsParser'
+
 const leftDrawerWidth = 240;
 const rightDrawerWidth = 240;
 
@@ -101,6 +103,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     padding: '100px 100px'
   },
+  circleOfFifths: {
+    marginBottom: "25px"
+  }
 }));
 
 export default function App() {
@@ -108,9 +113,9 @@ export default function App() {
   const theme = useTheme();
   const [leftOpen, setLeftOpen] = React.useState(false);
   const [rightOpen, setRightOpen] = React.useState(false);
-  const [circleOfFifthsRotation, setCircleOfFifthsRotation] = React.useState(222);
+  const [circleOfFifthsRotation, setCircleOfFifthsRotation] = React.useState(221.5);
   const [dashesRotation, setDashesRotation] = React.useState(10);
-  
+
   const handleLeftDrawerClose = () => {
     setLeftOpen(false);
   };
@@ -135,10 +140,14 @@ export default function App() {
       orderOfNote = k > 6 ? k - 6 : k + 6;
     }
 
-    var value = (((orderOfNote / 12 ) * 360) + 222) % 360;
-    console.log(value)
+    var value = (((orderOfNote / 12 ) * 360) + 221.5) % 360;
+
     setCircleOfFifthsRotation(value);
     setDashesRotation(((orderOfNote + 1) * 30) + 10);
+  }
+
+  function toggleNote(i, j){
+    // fretboardRef.current.toggleNote(i, j);
   }
 
   return (
@@ -223,7 +232,8 @@ export default function App() {
 
       <main className={classes.content}>
         <Fretboard onChangeKey={onChangeKey}></Fretboard>
-        <CircleOfFifths circleOfFifthsRotation={circleOfFifthsRotation} dashesRotation={dashesRotation}></CircleOfFifths>
+        <CircleOfFifths className={classes.circleOfFifths} circleOfFifthsRotation={circleOfFifthsRotation} dashesRotation={dashesRotation}></CircleOfFifths>
+        <TabsParser toggleNote={toggleNote} ></TabsParser>
       </main>
 
       <Drawer

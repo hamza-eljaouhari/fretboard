@@ -58,7 +58,7 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
     })
 
     return(
-            <div id="circleOfFifths" style={{height: dimensions.height, width: dimensions.width}} >
+            <div id="circleOfFifths" style={{height: dimensions.height, minWidth: dimensions.width}} >
                 <svg height="100%" width="100%">
                     <circle 
                         r={dimensions.outterOutlinedCircleRadius} 
@@ -72,7 +72,7 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
                         className="rotation-effect"
                         r={dimensions.majorScalePointingCircle} 
                         fill="white" 
-                        stroke="darkgrey"
+                        stroke="#cd5c5c"
                         strokeWidth={dimensions.strokeWidth} 
                         strokeDasharray='700 1206'
                         transform={`rotate(${circleOfFifthsRotation}, 250, 250)`} 
