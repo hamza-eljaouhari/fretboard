@@ -13,6 +13,7 @@ export const SET_POSITION = "SET_POSITION";
 export const SET_KEY = "SET_KEY";
 export const FILL_FRETBOARD = "FILL_FRETBOARD";
 export const CLEAN_FRETBOARD = "CLEAN_FRETBOARD";
+export const SET_IS_NOTES_DISPLAY = "SET_IS_NOTES_DISPLAY";
 
 export const TOGGLE_TODO = "TOGGLE_TODO";
 export const SET_FILTER = "SET_FILTER";

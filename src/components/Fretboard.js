@@ -11,7 +11,9 @@ import {
     setChord,
     setArppegio,
     setPosition,
-    setScaleFormula } from "../redux/actions";
+    setScaleFormula,
+    setIsNotesDisplay
+} from "../redux/actions";
 
 import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -49,7 +51,14 @@ function GuitarNeck(props){
     useEffect(() => {
         cleanFretboard();
         displayData();
-    }, [props.keySignature, props.scale, props.mode, props.arppegio, props.chord, props.position]);
+    }, [props.keySignature, 
+        props.scale, 
+        props.mode, 
+        props.arppegio, 
+        props.chord, 
+        props.position,
+        props.isNotesDisplay
+    ]);
 
     function cleanFretboard(){
         var nf = [...props.fretboard];
@@ -103,7 +112,8 @@ function GuitarNeck(props){
     }
 
     function onDisplayNotesChange(){
-        props.setIsNotesDisplay(!getIsNotesDisplay());
+        alert(!props.isNotesDisplay)
+        props.setIsNotesDisplay(!props.isNotesDisplay);
     }
 
     function onCleanFretboard(){
@@ -332,7 +342,7 @@ function GuitarNeck(props){
 
     var buttonText = 'Intervals'
 
-    if(!props.isNotesDiplate){
+    if(!props.isNotesDiplay){
         buttonText = 'Notes';
     }
 
@@ -360,11 +370,7 @@ function GuitarNeck(props){
     return(
         
         <div className="fretboard-container">
-        {props.keySignature}
-        {props.scale}
-        {props.mode}
-        {props.arppegio}
-        {props.chord}
+        {props.isNotesDiplay}
             <table>
                 <tbody>
                     {
@@ -521,5 +527,6 @@ export default connect(
         setMode,
         setChord,
         setArppegio,
-        setPosition
+        setPosition,
+        setIsNotesDisplay
     })(GuitarNeck);

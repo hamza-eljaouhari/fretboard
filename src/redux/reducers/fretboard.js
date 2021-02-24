@@ -12,7 +12,8 @@ import {
     SET_SCALE_INTERVALS, 
     SET_MODE_INTERVALS,
     SET_KEY,
-    SET_ARPPEGIO
+    SET_ARPPEGIO,
+    SET_IS_NOTES_DISPLAY
 } from '../actionTypes';
 
 import guitar from '../../config/guitar'
@@ -119,6 +120,12 @@ const fretboard = (state = initialState, action) => {
         return {
             ...state,
             arppegio: action.payload.arppegio
+        };
+    }
+    case SET_IS_NOTES_DISPLAY: {
+        return {
+            ...state,
+            isNotesDisplay: action.payload.isNotesDisplay
         };
     }
     default: {

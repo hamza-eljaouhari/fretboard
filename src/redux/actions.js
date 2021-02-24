@@ -1,7 +1,5 @@
 import { 
   FILL_FRETBOARD,
-  CLEAN_FRETBOARD,
-  DISPLAY_NOTE,
   TOGGLE_NOTE, 
   SET_SCALE, 
   SET_MODE_NOTES, 
@@ -11,7 +9,8 @@ import {
   SET_ARPPEGIO,
   SET_CHORD,
   SET_POSITION,
-  SET_KEY
+  SET_KEY,
+  SET_IS_NOTES_DISPLAY
 } from "./actionTypes";
 
 export const fillFretboard = (fretboard) => ({
@@ -32,6 +31,11 @@ export const toggleNote = (i, j, current) => ({
   export const setScale = (scale) => ({
     type: SET_SCALE,
     payload: { scale }
+  });   
+
+  export const setIsNotesDisplay = (isNotesDisplay) => ({
+    type: SET_IS_NOTES_DISPLAY,
+    payload: { isNotesDisplay }
   });   
 
   
