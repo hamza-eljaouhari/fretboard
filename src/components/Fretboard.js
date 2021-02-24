@@ -3,20 +3,27 @@ import React, { useEffect } from 'react';
 
 import { connect } from "react-redux";
 import { 
-    fillFretboard,
-    toggleNote, 
-    setScale,
-    setScaleFormula,
-    setScaleNotes,
-    setScaleIntervals,
-    setKey, 
-    setMode,
-    setModeNotes,
-    setModeIntervals,
-    setChord,
-    setArppegio,
-    setPosition,
-    setIsNotesDisplay
+          fillFretboard,
+        toggleNote, 
+        setKey, 
+
+        setScale, 
+        setScaleFormula,
+        setScaleNotes,
+        setScaleIntervals,
+        
+        setMode,
+        setModeNotes,
+        setModeIntervals,
+        setArppegio,
+        setArppegioNotes,
+        setArppegioIntervals,
+
+        setChord,
+
+        setPosition,
+
+        setIsNotesDisplay
 } from "../redux/actions";
 
 import Button from '@material-ui/core/Button';
@@ -309,17 +316,16 @@ function GuitarNeck(props){
         var scaleNotes = [];
 
         if(scale !== "unset"){
-            scaleNotes = props.scaleNotes;
+            scaleNotes = getScaleNotes();
             if(guitar.scales[scale].isModal && mode !== "unset"){
-                scaleNotes = props.modeNotes;
+                scaleNotes = getModeNotes();
             }
         }
 
         if(arppegio !== "unset"){
-            scaleNotes = props.arppegioNotes;
+            scaleNotes = getArppegioNotes();
         }
 
-        console.log(scaleNotes);
         return scaleNotes;
         
     }
@@ -587,16 +593,23 @@ export default connect(
     { 
         fillFretboard,
         toggleNote, 
+        setKey, 
+
         setScale, 
         setScaleFormula,
         setScaleNotes,
         setScaleIntervals,
-        setKey, 
+        
         setMode,
         setModeNotes,
         setModeIntervals,
-        setChord,
         setArppegio,
+        setArppegioNotes,
+        setArppegioIntervals,
+
+        setChord,
+
         setPosition,
+
         setIsNotesDisplay
     })(GuitarNeck);
