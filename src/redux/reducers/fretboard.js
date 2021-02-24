@@ -11,8 +11,10 @@ import {
     SET_MODE_NOTES, 
     SET_SCALE_INTERVALS, 
     SET_MODE_INTERVALS,
-    SET_KEY
+    SET_KEY,
+    SET_ARPPEGIO
 } from '../actionTypes';
+
 import guitar from '../../config/guitar'
 
 var classNames = require('classnames');
@@ -111,6 +113,12 @@ const fretboard = (state = initialState, action) => {
         return {
             ...state,
             keySignature: action.payload.keySignature
+        };
+    }
+    case SET_ARPPEGIO: {
+        return {
+            ...state,
+            arppegio: action.payload.arppegio
         };
     }
     default: {

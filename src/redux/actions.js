@@ -19,11 +19,6 @@ export const fillFretboard = (fretboard) => ({
   payload: { fretboard }
 });   
 
-export const cleanFretboard = (fretboard) => ({
-  type: CLEAN_FRETBOARD,
-  payload: { fretboard }
-});
-
 export const toggleNote = (i, j, current) => ({
     type: TOGGLE_NOTE,
     payload: { i, j, current }

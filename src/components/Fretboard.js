@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 import { connect } from "react-redux";
 import { 
     fillFretboard,
-    cleanFretboard,
     toggleNote, 
     setScale, 
     setKey, 
@@ -48,6 +47,7 @@ function GuitarNeck(props){
     }
 
     useEffect(() => {
+        cleanFretboard();
         displayData();
     }, [props.keySignature, props.scale, props.mode, props.arppegio, props.chord, props.position]);
 
@@ -60,7 +60,7 @@ function GuitarNeck(props){
             }
         }
 
-        props.cleanFretboard(nf);
+        props.fillFretboard(nf);
     }
 
     function onKeyChange(e){
@@ -83,7 +83,6 @@ function GuitarNeck(props){
 
     function onArppegioChange(e){
         const newArppegio = e.target.value;
-
         props.setArppegio(newArppegio);
     }
 
@@ -215,7 +214,7 @@ function GuitarNeck(props){
         var scale = props.scale; 
         
         var arppegio = props.arppegio;
-        
+        console.log(props.arppegio)
         if(scale === "unset" && arppegio === "unset"){
             return;
         }
@@ -231,12 +230,11 @@ function GuitarNeck(props){
 
             if(isModal){
                 // If scale is modal and no more is chosen, display nothing
-                if(props.mode === "unset"){
-                    return;
+                if(props.mode !== "unset"){
+                    notes = getModeNotes();
+                    intervals = getModeIntervals();
                 }
 
-                notes = getModeNotes();
-                intervals = getModeIntervals();
             }
         }
 
@@ -250,19 +248,28 @@ function GuitarNeck(props){
     }
 
     function spread(notes, intervals){
+
+        var nf = [...props.fretboard];
+
         for(var m = 0; m < guitar.numberOfStrings; m++){
             for(var n = 0; n < guitar.numberOfFrets; n++){
                 var currentNote = getNoteFromFretboard(m, n);
 
                 if(notes.includes(currentNote)){
+
+                    console.log([m , n])
+                    nf[m][n].show = true;
+
                     if(props.isNotesDisplay){
-                        props.displayNote(m, n, currentNote);
+                        nf[m][n].current = currentNote;
                     }else{
-                        props.displayNote(m, n, intervals[notes.indexOf(currentNote)])
+                        nf[m][n].current = intervals[notes.indexOf(currentNote)];
                     }
                 }
             }
         }
+
+        props.fillFretboard(nf);
     }
 
     const rows = [];
@@ -417,8 +424,8 @@ function GuitarNeck(props){
                         onChange={onArppegioChange}
                         label="Keys :"
                         inputProps={{
-                            name: 'age',
-                            id: 'keys',
+                            name: 'arppegio',
+                            id: 'arppegios',
                         }}
                         >
                         <option value="unset">Select arppegio</option>
@@ -507,7 +514,6 @@ export default connect(
     mapStateToProps,
     { 
         fillFretboard,
-        cleanFretboard,
         toggleNote, 
         setScale, 
         setScaleFormula,
