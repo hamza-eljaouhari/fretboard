@@ -124,7 +124,6 @@ function GuitarNeck(props){
     }
 
     function onDisplayNotesChange(){
-        alert(!props.isNotesDisplay)
         props.setIsNotesDisplay(!props.isNotesDisplay);
     }
 
@@ -257,7 +256,7 @@ function GuitarNeck(props){
         var scale = props.scale; 
         
         var arppegio = props.arppegio;
-        console.log(props.arppegio)
+
         if(scale === "unset" && arppegio === "unset"){
             return;
         }
@@ -309,7 +308,6 @@ function GuitarNeck(props){
 
                 if(notes.includes(currentNote)){
 
-                    console.log([m , n])
                     nf[m][n].show = true;
 
                     if(props.isNotesDisplay){
