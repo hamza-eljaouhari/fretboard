@@ -3,8 +3,9 @@ import React, { useEffect } from 'react';
 
 import { connect } from "react-redux";
 import { 
-          fillFretboard,
+        fillFretboard,
         toggleNote, 
+        
         setKey, 
 
         setScale, 
@@ -30,16 +31,33 @@ import Button from '@material-ui/core/Button';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { makeStyles } from '@material-ui/core/styles';
 
 import { getNoteFromFretboard } from '../redux/helpers';
-
 import classNames from "classnames";
-
 import './guitar-neck.css';
+import { Typography } from '@material-ui/core';
 
-// var classNames = require('classnames');
 
+const useStyles = makeStyles((theme) => ({
+    form: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    formElement: {
+        flex: '1 0 21%',
+        margin: '10px'
+    },
+    seperator: {
+        width: '100%',
+        fontSize: '14px',
+        margin: '10px',
+    }
+}));
+  
 function GuitarNeck(props){
+
+    const classes = useStyles();
 
     useEffect(() => {
         fillFretboard();
@@ -115,10 +133,6 @@ function GuitarNeck(props){
 
     function onPositionChange(e){
         const newPosition = e.target.value;
-
-        // setState({position: newPosition}, () => {
-        //     updateFretboard();
-        // });
 
         props.setPosition(newPosition);
     }
@@ -449,7 +463,7 @@ function GuitarNeck(props){
 
     var buttonText = 'Intervals'
 
-    if(!props.isNotesDiplay){
+    if(!props.isNotesDisplay){
         buttonText = 'Notes';
     }
 
@@ -491,8 +505,10 @@ function GuitarNeck(props){
             </table>
                     
             <section className="controls">
-                <form>
-                    <FormControl variant="outlined" margin="normal">
+                <form  className={classes.form}>
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal">
                         <InputLabel htmlFor="keys">Keys :</InputLabel>
                         <Select
                         native
@@ -504,7 +520,9 @@ function GuitarNeck(props){
                         { keys }
                         </Select>
                     </FormControl>
-                    <FormControl variant="outlined" margin="normal" >
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal" >
                         <InputLabel htmlFor="scales">Scales :</InputLabel>
                         <Select
                         native
@@ -516,7 +534,9 @@ function GuitarNeck(props){
                         { scales }
                         </Select>
                     </FormControl>
-                    <FormControl variant="outlined" margin="normal"  >
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal"  >
                         <InputLabel htmlFor="modes">Modes :</InputLabel>
                         <Select
                         native
@@ -528,7 +548,9 @@ function GuitarNeck(props){
                         { modes }
                         </Select>
                     </FormControl>
-                    <FormControl variant="outlined" margin="normal" >
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal" >
                         <InputLabel htmlFor="keys">Arrpegios :</InputLabel>
                         <Select
                         native
@@ -544,7 +566,9 @@ function GuitarNeck(props){
                         { arppegios }
                         </Select>
                     </FormControl>
-                    <FormControl variant="outlined" margin="normal" >
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal" >
                         <InputLabel htmlFor="keys">Chords :</InputLabel>
                         <Select
                         native
@@ -560,7 +584,9 @@ function GuitarNeck(props){
                         { chords }
                         </Select>
                     </FormControl>
-                    <FormControl variant="outlined" margin="normal" >
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal" >
                         <InputLabel htmlFor="positions">Positions :</InputLabel>
                         <Select
                         native
@@ -578,15 +604,9 @@ function GuitarNeck(props){
                         }) }
                         </Select>
                     </FormControl>
+                    
                     <Button
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={onDisplayNotesChange}
-                    >
-                        Detect chord 
-                    </Button>
-                    <Button
+                        className={classes.formElement}
                         variant="contained"
                         color="primary"
                         size="medium"
@@ -596,12 +616,53 @@ function GuitarNeck(props){
                     </Button>
 
                     <Button
+                        className={classes.formElement}
                         variant="contained"
                         color="primary"
                         size="medium"
                         onClick={onCleanFretboard}
                     >
                         Clean
+                    </Button>
+                    
+                    <Typography 
+                        className={classes.seperator}
+                        variant="h6">
+                        Coming soon :
+                    </Typography>
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                    >
+                        Detect
+                    </Button>
+
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                    >
+                         Print
+                    </Button>
+
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                    >
+                         Save
+                    </Button>
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                    >
+                         Share
                     </Button>
                 </form>
             </section>

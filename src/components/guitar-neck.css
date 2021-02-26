@@ -7,12 +7,12 @@
     width: 100%;
 }
 
-table, tr {
+.fretboard-container table, tr {
     margin: 0;
     padding: 0;
 }
 
-table tr td {
+.fretboard-container  table tr td {
     height: 32px;
     padding: 0;
     border-right: 1px solid black;
@@ -21,12 +21,12 @@ table tr td {
     cursor: pointer;
 }
 
-table tr td:first-child {
+.fretboard-container  table tr td:first-child {
     border-right: 4px solid rgba(0, 0, 0, 0.6);
 }
 
 
-table tbody tr td hr {
+.fretboard-container table tbody tr td hr {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -69,12 +69,16 @@ table tbody tr td hr {
 .controls{
     margin-top: 35px;
 }
- /* .controls form{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: space-between;
-} */
+
 .fretNumber{
     font-size: 8px;
+}
+
+.content-table th, .content-table tr{
+    vertical-align: top;
+    text-align: left;
+}
+
+.content-table th {
+    height: 25%;
 }
