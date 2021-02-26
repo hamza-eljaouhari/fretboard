@@ -94,7 +94,7 @@ export default function App() {
           className={classes.button}
           startIcon={<FavoriteIcon />}
         >
-        Have fun!  
+        Have fun
       </Button>
       </AppBar>
       <main className={classes.content}>
