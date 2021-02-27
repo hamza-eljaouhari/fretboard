@@ -326,26 +326,22 @@ function GuitarNeck(props){
 
             }
         }
-        
-        if(chord !== "unset"){
-            notes = getArppegioNotes(false);
-            intervals = guitar.arppegios[chord].intervals;
-
-            if(props.fret !== "unset" || props.shape !== "unset"){
-                displayChordPortion(notes, intervals);
-                return;
-            }
-        }
-
+    
         if(arppegio !== "unset"){
             notes = getArppegioNotes(true);
             props.setArppegioNotes(notes)
 
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
+        }
 
-            if(props.fret !== "unset"){
-                displayArppegioPortion(notes, intervals);
+            
+        if(chord !== "unset"){
+            notes = getArppegioNotes(false);
+            intervals = guitar.arppegios[chord].intervals;
+
+            if(props.fret !== "unset" || props.shape !== "unset"){
+                displayChordPortion(notes, intervals);
                 return;
             }
         }
@@ -393,10 +389,6 @@ function GuitarNeck(props){
         });
         
         props.fillFretboard(nf);
-    }
-
-    function displayArppegioPortion(notes, intervals){
-        console.log("Fret", props.fret)
     }
 
     function spread(notes, intervals){

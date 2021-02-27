@@ -67,11 +67,14 @@ export default function App() {
               <td>
                 <Typography variant="h6" className={classes.title}>
                   <ol>
-                    <li>Choose a key</li>
-                    <li>Then choose a scale and a mode if given the option</li>
-                    <li>Or choose an arppegio or a chord</li>
-                    <li>Then choose one of the five positions on the fretboard</li>
-                    <li>Practice makes perfect <Mood/></li>
+                    <li>You always need to choose a key</li>
+                    <li>You can choose whether (1) a scale, (2) an arppegio or (3) a chord formula to display</li>
+                    <li>If you choose a scale you can then choose on of its modes</li>
+                    <li>You can restrict display by frets of 4 or by position according to the CAGED system</li>
+                    <li>You can display intervals whenever you want and toggle notes whenever you want</li>
+                    <li>There's a difficulty displapying the comming chord shapes but I'm gonna fix it, no worries</li>
+                    <li>I'm going to the remaining arppegios and degrees in the future</li>
+                    <li>Enjoy</li>
                   </ol>
                 </Typography>
               </td>
