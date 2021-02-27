@@ -18,7 +18,9 @@ import {
 
     SET_CHORD,
 
-    SET_POSITION,
+    SET_SHAPE,
+    SET_FRET,
+
     SET_IS_NOTES_DISPLAY
   } from "../actionTypes";
 
@@ -52,7 +54,8 @@ const initialState = {
     chord: 'unset',
     isNotesDisplay: true,
 
-    position: 'unset'
+    fret: 'unset',
+    shape: 'unset'
 };
 
 const fretboard = (state = initialState, action) => {
@@ -135,10 +138,16 @@ const fretboard = (state = initialState, action) => {
             chord: action.payload.chord
         };
     }
-    case SET_POSITION: {
+    case SET_SHAPE: {
         return {
             ...state,
-            position: action.payload.position
+            shape: action.payload.shape
+        };
+    }
+    case SET_FRET: {
+        return {
+            ...state,
+            fret: action.payload.fret
         };
     }
     case SET_IS_NOTES_DISPLAY: {

@@ -89,13 +89,40 @@ const config = {
     "tuning": [
         4, 11, 7, 2, 9, 4
     ], // E, A, D, G, B, E standard tuning
-    "positions": [
-        'C',
-        'A',
-        'G',
-        'E',
-        'D'
-    ],
+    "shapes": {
+        "names": [
+            'C',
+            'A',
+            'G',
+            'E',
+            'D'
+        ],
+        "indexes": [
+            {
+                "start": 0,
+                "end": 3
+            },
+            {
+                "start": 2,
+                "end": 6
+            },
+            
+            {
+                "start": 4,
+                "end": 8
+            },
+            
+            {
+                "start": 7,
+                "end": 10
+            },
+            
+            {
+                "start": 9,
+                "end": 13
+            }
+        ]
+    },
     "scales": {
         "major": {
             "name": "Major scale",
@@ -218,9 +245,6 @@ const config = {
             "intervals": ['1', '2', 'b3', '3', '5', '6'],
 
         }
-    },
-    "chords": {
-
     },
     "arppegios": {
         "M": {

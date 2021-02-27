@@ -18,7 +18,10 @@ import {
   SET_ARPPEGIO_INTERVALS,
   
   SET_CHORD,
-  SET_POSITION,
+
+  SET_SHAPE,
+  SET_FRET,
+
   SET_IS_NOTES_DISPLAY,
   
   SET_CIRCLE_OF_FIFTHS_ROTATION,
@@ -100,9 +103,14 @@ export const setChord = (chord) => ({
   payload: { chord }
 });
 
-export const setPosition = (position) => ({
-  type: SET_POSITION,
-  payload: { position }
+export const setShape = (shape) => ({
+  type: SET_SHAPE,
+  payload: { shape }
+});
+
+export const setFret = (fret) => ({
+  type: SET_FRET,
+  payload: { fret }
 });
 
 export const setIsNotesDisplay = (isNotesDisplay) => ({

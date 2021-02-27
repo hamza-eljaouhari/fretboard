@@ -22,7 +22,8 @@ import {
 
         setChord,
 
-        setPosition,
+        setShape,
+        setFret,
 
         setIsNotesDisplay
 } from "../redux/actions";
@@ -86,8 +87,9 @@ function GuitarNeck(props){
         props.mode, 
         props.arppegio, 
         props.chord, 
-        props.position,
-        props.isNotesDisplay
+        props.fret,
+        props.isNotesDisplay,
+        props.shape
     ]);
 
     function cleanFretboard(){
@@ -131,10 +133,16 @@ function GuitarNeck(props){
         props.setChord(newChord);
     }
 
-    function onPositionChange(e){
-        const newPosition = e.target.value;
+    function onShapeChange(e){
+        const newShape = e.target.value;
 
-        props.setPosition(newPosition);
+        props.setShape(newShape);
+    }
+
+    function onFretChange(e){
+        const newFret = e.target.value;
+
+        props.setFret(newFret);
     }
 
     function onDisplayNotesChange(){
@@ -323,7 +331,7 @@ function GuitarNeck(props){
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
-            if(props.position !== "unset"){
+            if(props.fret !== "unset"){
                 displayChordPortion(notes, intervals);
                 return;
             }
@@ -336,7 +344,7 @@ function GuitarNeck(props){
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
 
-            if(props.position !== "unset"){
+            if(props.fret !== "unset"){
                 displayArppegioPortion(notes, intervals);
                 return;
             }
@@ -346,19 +354,15 @@ function GuitarNeck(props){
     }
 
     function displayChordPortion(notes, intervals){
-        console.log("position", props.position);
-        console.log([notes, intervals]);
-
-        
         var nf = [...props.fretboard];
 
-    var startingPositionIndex = parseInt(props.position) - 1;
+        var startingFretIndex = parseInt(props.fret) - 1;
 
         var visitedStrings = [];
 
         notes.forEach((note) => {
             for(var m = 0; m < guitar.numberOfStrings; m++){
-                for(var n = startingPositionIndex; n < startingPositionIndex + 4; n++){
+                for(var n = startingFretIndex; n < startingFretIndex + 4; n++){
                     console.log([m, n])
                     var currentNote = getNoteFromFretboard(m, n);
                     if(!visitedStrings[m]){
@@ -381,15 +385,29 @@ function GuitarNeck(props){
     }
 
     function displayArppegioPortion(notes, intervals){
-        console.log("position", props.position)
+        console.log("Fret", props.fret)
     }
 
     function spread(notes, intervals){
 
         var nf = [...props.fretboard];
 
+        var startingIndex = 0;
+        var lastIndex = guitar.numberOfFrets;
+
+        if(props.shape !== "unset"){
+            console.log(props.shape)
+            startingIndex = guitar.shapes.indexes[parseInt(props.shape)].start;
+            lastIndex = guitar.shapes.indexes[parseInt(props.shape)].end + 1;
+        }
+
+        if(props.fret !== "unset"){
+            startingIndex = parseInt(props.fret) - 1;
+            lastIndex = startingIndex + 4;
+        }
+
         for(var m = 0; m < guitar.numberOfStrings; m++){
-            for(var n = 0; n < guitar.numberOfFrets; n++){
+            for(var n = startingIndex; n < lastIndex; n++){
                 var currentNote = getNoteFromFretboard(m, n);
 
                 if(notes.includes(currentNote)){
@@ -667,11 +685,31 @@ function GuitarNeck(props){
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
+                        <InputLabel htmlFor="shapes">Shapes :</InputLabel>
+                        <Select
+                        native
+                        value={props.shape}
+                        onChange={onShapeChange}
+                        label="Shapes :"
+                        inputProps={{
+                            name: 'shape',
+                            id: 'shapes',
+                        }}
+                        >
+                        <option value="unset">Select shape</option>
+                        { guitar.shapes.names.map((shape, index) => {
+                            return <option key={index} value={index}>{shape}</option>
+                        }) }
+                        </Select>
+                    </FormControl>
+                    <FormControl 
+                        className={classes.formElement}
+                        variant="outlined" margin="normal" >
                         <InputLabel htmlFor="positions">Positions :</InputLabel>
                         <Select
                         native
-                        value={props.position}
-                        onChange={onPositionChange}
+                        value={props.fret}
+                        onChange={onFretChange}
                         label="Positions :"
                         inputProps={{
                             name: 'position',
@@ -769,7 +807,8 @@ const mapStateToProps = state => {
 
         chord: state.fretboard.chord,
         
-        position: state.fretboard.position,
+        shape: state.fretboard.shape,
+        fret: state.fretboard.fret,
         
         isNotesDisplay: state.fretboard.isNotesDisplay
     };
@@ -796,7 +835,8 @@ export default connect(
 
         setChord,
 
-        setPosition,
+        setShape,
+        setFret,
 
         setIsNotesDisplay
     })(GuitarNeck);
