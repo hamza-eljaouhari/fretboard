@@ -127,7 +127,7 @@ export default function App() {
               </td>
             </tr>
             <tr>
-              <th>Circle of fifth :</th>
+              <th>Circle of fifths :</th>
               <td>
                 <Typography variant="h6" className={classes.seperator}>
                   Please change the key to point to the next scale.
@@ -143,12 +143,12 @@ export default function App() {
               <th>Also coming soon :</th>
               <td>
                 <ol>
-                <li>Showing scale degrees on the circle of fifths</li>
-                <li>Composing chord progressions, store and share them via a simple link</li>
-                <li>Detecting chords and scales</li>
-                <li>A tabs reader that plays animation of the note on the fretboard ( why not? )</li>
-                <li>Allowing to customize the guitar tuning and maybe support of more than 6 strings</li>
-                <li>Adding sound to the fretboard</li>
+                  <li>Showing scale degrees on the circle of fifths</li>
+                  <li>Composing chord progressions, store and share them via a simple link</li>
+                  <li>Detecting chords and scales</li>
+                  <li>A tabs reader that plays animation of the note on the fretboard ( why not? )</li>
+                  <li>Allowing to customize the guitar tuning and maybe support of more than 6 strings</li>
+                  <li>Adding sound to the fretboard</li>
                 </ol>
               </td>
             </tr>
