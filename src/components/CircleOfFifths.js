@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './circle-of-fifths.css'
 import guitar from '../config/guitar';
 import { connect } from "react-redux";
@@ -11,7 +11,7 @@ import {
 
 function CircleOfFifths(props){
     
-    const [dimensions, setDimensions] = useState({
+    const dimensions =  {
         width: 500,
         height: 500,
         
@@ -32,7 +32,7 @@ function CircleOfFifths(props){
         majorScalePointingCircle: 180,
         keysRadius: 215,
         relativesRadius: 140,
-    })
+    };
 
     function pointToKey(index, isMajor){
         var keySignature = guitar.notes.flats.indexOf(guitar.circleOfFifths[index].key);

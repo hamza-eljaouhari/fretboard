@@ -1,5 +1,3 @@
-import { TOGGLE_NOTE, SET_FILTER } from "../actionTypes";
-
 import { 
   SET_CIRCLE_OF_FIFTHS_ROTATION,
   SET_DASHED_CIRCLE_ROTATION

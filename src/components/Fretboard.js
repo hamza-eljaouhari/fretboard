@@ -106,7 +106,6 @@ function GuitarNeck(props){
         const newKey = e.target.value;
 
         props.setKey(newKey);
-        props.onKeyChange(newKey);
     }
 
     function onScaleChange(e){
@@ -146,9 +145,9 @@ function GuitarNeck(props){
         cleanFretboard();
     }
 
-    function getScaleFormula(){
-        var scaleFormula = guitar.scales[props.scale].formula;
-    }
+    // function getScaleFormula(){
+    //     var scaleFormula = guitar.scales[props.scale].formula;
+    // }
 
     function getScaleNotes(){
 
@@ -222,17 +221,30 @@ function GuitarNeck(props){
         return intervals;
     }
 
-    function getArppegioNotes(){
+    function getArppegioNotes(fromArppegio){
         if(props.keySignature === "unset"){
             return;
         }
+        
+        var arppegioFormula = [];
 
-        if(props.arppegio === "unset"){
-            return;
+        if(fromArppegio){
+            if(props.arppegio === "unset"){
+                return;
+            }
+            
+            arppegioFormula = guitar.arppegios[props.arppegio].formula;
+
+        }else{
+            if(props.chord === "unset"){
+                return;
+            }
+
+            console.log(props.chord)
+            arppegioFormula = guitar.arppegios[props.chord].formula
         }
 
         var arppegioNotes = [];
-        var arppegioFormula = guitar.arppegios[props.arppegio].formula;
         
         var steps = 0;
 
@@ -303,14 +315,25 @@ function GuitarNeck(props){
 
         // If both a scale and an arppegio are chosen we display the arppegio
         if(arppegio !== "unset"){
-            notes = getArppegioNotes();
+            notes = getArppegioNotes(true);
             props.setArppegioNotes(notes)
 
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
         }
 
-        spread(notes, intervals)
+        var chord = props.chord;
+
+        if(chord !== "unset"){
+            notes = getArppegioNotes(false);
+            intervals = guitar.arppegios[chord].intervals;
+        }
+
+        if(props.position !== "unset"){
+            
+        }else{
+            spread(notes, intervals)
+        }
     }
 
     function spread(notes, intervals){
@@ -353,7 +376,7 @@ function GuitarNeck(props){
         }
 
         if(arppegio !== "unset"){
-            scaleNotes = getArppegioNotes();
+            scaleNotes = getArppegioNotes(true);
         }
 
         return scaleNotes;

@@ -8,7 +8,6 @@ import {
   
     SET_SCALE,
     SET_SCALE_NOTES,
-    SET_SCALE_FORMULA, 
     SET_SCALE_INTERVALS,
     
     SET_MODE, 
@@ -16,11 +15,6 @@ import {
     SET_MODE_INTERVALS,
     
     SET_ARPPEGIO,
-    SET_RPPEGIO_NOTES, 
-    SET_ARPPEGIO_INTERVALS,
-    
-    SET_CHORD,
-    SET_POSITION,
     SET_IS_NOTES_DISPLAY
   } from "../actionTypes";
 
@@ -51,7 +45,10 @@ const initialState = {
     arppegioNotes: [],
     arppegioIntervals: [],
     
-    isNotesDisplay: true
+    chord: 'unset',
+    isNotesDisplay: true,
+
+    position: 'unset'
 };
 
 const fretboard = (state = initialState, action) => {
@@ -73,16 +70,6 @@ const fretboard = (state = initialState, action) => {
     }
     case DISPLAY_NOTE: {
         let nf = [...state.fretboard];
-        nf[action.payload.i][action.payload.j].show = true;
-
-        return {
-            ...state,
-            fretboard: nf
-        };
-    }
-    case DISPLAY_NOTE: {
-        let nf = [...state.fretboard];
-
         nf[action.payload.i][action.payload.j].show = true;
 
         return {

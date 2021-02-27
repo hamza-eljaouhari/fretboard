@@ -1,5 +1,4 @@
 import guitar from '../config/guitar';
-import { getScale, getKey } from './selectors'
 
 export const getNoteFromFretboard = (m, n) => {
     var stringNote = guitar.tuning[m];

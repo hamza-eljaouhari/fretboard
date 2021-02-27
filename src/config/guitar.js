@@ -89,6 +89,13 @@ const config = {
     "tuning": [
         4, 11, 7, 2, 9, 4
     ], // E, A, D, G, B, E standard tuning
+    "positions": [
+        'C',
+        'A',
+        'G',
+        'E',
+        'D'
+    ],
     "scales": {
         "major": {
             "name": "Major scale",

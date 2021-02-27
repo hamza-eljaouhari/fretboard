@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,10 +10,7 @@ import Mood from '@material-ui/icons/Mood';
 import Fretboard from './components/Fretboard';
 import CircleOfFifths from './components/CircleOfFifths';
 
-const leftDrawerWidth = 240;
-const rightDrawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
   },
@@ -22,12 +19,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '15px',  
     flexDirection: 'row',
     flexWrap: "no-wrap",
-    justifyContent: 'space-between',
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+    justifyContent: 'space-between'
   },
   content: {
     margin: ' 100px auto'
@@ -47,43 +39,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
-  const theme = useTheme();
-  const [leftOpen, setLeftOpen] = React.useState(false);
-  const [rightOpen, setRightOpen] = React.useState(false);
-  const [circleOfFifthsRotation, setCircleOfFifthsRotation] = React.useState(221.5);
-  const [dashesRotation, setDashesRotation] = React.useState(10);
-
-  const handleLeftDrawerClose = () => {
-    setLeftOpen(false);
-  };
-
-  const handleRightDrawerClose = () => {
-    setRightOpen(false);
-  };
-
-  const handleLeftDrawerOpen = () => {
-    setLeftOpen(true);
-  };
-
-  const handleRightDrawerOpen = () => {
-    setRightOpen(true);
-  };
-
-  const onKeyChange = (key) => {
-
-    // convert from sharps to order of fifths
-    var k = parseInt(key);
-    var orderOfNote = k;
-
-    if(k % 2 !== 0){
-      orderOfNote = k > 6 ? k - 6 : k + 6;
-    }
-
-    var circleOfFifthsRotation = (((orderOfNote / 12 ) * 360) + 221.5) % 360;
-    var dashedCircleRotaiton = ((orderOfNote + 1) * 30) + 10;
-    setCircleOfFifthsRotation(circleOfFifthsRotation);
-    setDashesRotation(dashedCircleRotaiton);
-  }
 
   return (
     <div className={classes.root}>
@@ -106,6 +61,7 @@ export default function App() {
       </AppBar>
       <main className={classes.content}>
         <table className="content-table">
+          <tbody>
             <tr>
               <th>Help :</th>
               <td>
@@ -123,9 +79,7 @@ export default function App() {
             <tr>
               <th>Fretboard :</th>
               <td>
-                <Fretboard 
-                  onKeyChange={onKeyChange}
-                  ></Fretboard>
+                <Fretboard></Fretboard>
               </td>
             </tr>
             <tr>
@@ -136,8 +90,6 @@ export default function App() {
                 </Typography>
                 <CircleOfFifths 
                   className={classes.circleOfFifths} 
-                  circleOfFifthsRotation={circleOfFifthsRotation} 
-                  dashesRotation={dashesRotation}
                   ></CircleOfFifths>
               </td>
             </tr>
@@ -154,6 +106,7 @@ export default function App() {
                 </ol>
               </td>
             </tr>
+          </tbody>
         </table>
         
       </main>
