@@ -87,9 +87,6 @@ export default function App(props) {
             <tr>
               <th>Circle of fifths :</th>
               <td>
-                <Typography variant="h6" className={classes.seperator}>
-                  Please change the key to point to the next scale.
-                </Typography>
                 <CircleOfFifths 
                   className={classes.circleOfFifths} 
                   ></CircleOfFifths>

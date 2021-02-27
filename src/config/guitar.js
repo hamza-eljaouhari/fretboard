@@ -352,20 +352,23 @@ const config = {
             "formula": [4, 2, 4, 1],
         },
         "D13th": {
-            "name" : "",
+            "name" : "Domiannt 13th",
             "intervals": ['1', '3', '6', 'b7'],
             "formula": [2, 2, 5, 1, 2]
         },
         
         "M9th": {
+            "name": "Major 9th",
             "formula": [2, 2, 3, 4, 1],
             "intervals": ['1', '9', '3', '5', '7']
         },
         "D7b5": {
+            "name": "Dominant 7 b5",
             "formula": [4, 2, 4, 2],
             "intervals": ['1', '3', 'b5', 'b7']
         },
         "m9th": {
+            "name": "minor 9th",
             "formula": [2, 1, 4, 3],
             "intervals": ['1', '9', 'b3', 'b7']
         },

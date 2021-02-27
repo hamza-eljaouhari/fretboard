@@ -498,7 +498,7 @@ const Fretboard = withRouter((props) => {
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
 
-            name = guitar.arppegios[arppegio].name + ' arppegio.';
+            name = notes[0] + ' ' + guitar.arppegios[arppegio].name + ' arppegio.';
         }
 
             
@@ -506,7 +506,7 @@ const Fretboard = withRouter((props) => {
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
-            name = guitar.arppegios[arppegio].name + ' chord.';
+            name = notes[0] + ' ' + guitar.arppegios[arppegio].name + ' chord.';
 
             if(props.fret !== "unset" || props.shape !== "unset"){
                 displayChordPortion(notes, intervals);
