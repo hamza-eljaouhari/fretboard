@@ -139,6 +139,19 @@ export default function App() {
                   ></CircleOfFifths>
               </td>
             </tr>
+            <tr>
+              <th>Also coming soon :</th>
+              <td>
+                <ol>
+                <li>Showing scale degrees on the circle of fifths</li>
+                <li>Composing chord progressions, store and share them via a simple link</li>
+                <li>Detecting chords and scales</li>
+                <li>A tabs reader that plays animation of the note on the fretboard ( why not? )</li>
+                <li>Allowing to customize the guitar tuning and maybe support of more than 6 strings</li>
+                <li>Adding sound to the fretboard</li>
+                </ol>
+              </td>
+            </tr>
         </table>
         
       </main>
