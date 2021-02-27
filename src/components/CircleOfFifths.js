@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './circle-of-fifths.css'
 import guitar from '../config/guitar';
+import { connect } from "react-redux";
  
 function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
     
@@ -113,4 +114,14 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
     );
 }
 
-export default CircleOfFifths;
+
+
+const mapStateToProps = state => {
+    return { 
+        keySignature: state.fretboard.keySignature,
+    };
+};
+  
+export default connect(
+    mapStateToProps,
+    {})(CircleOfFifths);

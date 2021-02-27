@@ -64,7 +64,7 @@ export default function App() {
     setRightOpen(true);
   };
 
-  const onChangeKey = (key) => {
+  const onKeyChange = (key) => {
     var k = parseInt(key);
     var orderOfNote = k;
 
@@ -116,13 +116,19 @@ export default function App() {
             <tr>
               <th>Fretboard :</th>
               <td>
-                <Fretboard onChangeKey={onChangeKey}></Fretboard>
+                <Fretboard 
+                  onKeyChange={onKeyChange}
+                  ></Fretboard>
               </td>
             </tr>
             <tr>
               <th>Circle of fifth :</th>
               <td>
-                <CircleOfFifths className={classes.circleOfFifths} circleOfFifthsRotation={circleOfFifthsRotation} dashesRotation={dashesRotation}></CircleOfFifths>
+                <CircleOfFifths 
+                  className={classes.circleOfFifths} 
+                  circleOfFifthsRotation={circleOfFifthsRotation} 
+                  dashesRotation={dashesRotation}
+                  ></CircleOfFifths>
               </td>
             </tr>
         </table>

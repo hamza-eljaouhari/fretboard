@@ -106,6 +106,7 @@ function GuitarNeck(props){
         const newKey = e.target.value;
 
         props.setKey(newKey);
+        props.onKeyChange(newKey);
     }
 
     function onScaleChange(e){
@@ -398,12 +399,10 @@ function GuitarNeck(props){
 
     var rowsCount = guitar.numberOfStrings;
     var columnsCount = guitar.numberOfFrets;
-
-    // rows , rotated => colums 24
+    
     for(let i = 0; i < rowsCount; i++){
         const columns = [];
 
-        // columns // rotated => strings
         for(let j = 0; j < columnsCount; j++){
 
             var note = props.fretboard[i][j];
