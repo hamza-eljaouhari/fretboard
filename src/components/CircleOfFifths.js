@@ -30,7 +30,7 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
         
         for (var i = 0; i < steps; i++) {
             elements.push({
-                top: center + radius * Math.cos(2 * Math.PI * (( i - 3  ) % 12) / steps) - 26,
+                top: center + radius * Math.cos(2 * Math.PI * (( i - 3 ) % 12) / steps) - 26,
                 left: center + radius * Math.sin(2 * Math.PI * (( i - 3) % 12) / steps)
             })
         }
@@ -43,8 +43,7 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
         // return <div className="musical-key" key={relativeMusicalKey} style={style}>{relativeMusicalKey}</div>
         return ( <text key={index} x={style.top} y={style.left}
                     fontFamily="Verdana"
-                    fontSize={dimensions.fontSize}
-                    onClick={() => alert(relativeMusicalKey)}>
+                    fontSize={dimensions.fontSize}>
                 {relativeMusicalKey}
             </text> );
     })

@@ -38,6 +38,11 @@ const useStyles = makeStyles((theme) => ({
   title: {
     fontSize: '14px'
   },
+  seperator: {
+    width: '100%',
+    fontSize: '14px',
+    margin: '10px',
+}
 }));
 
 export default function App() {
@@ -124,6 +129,9 @@ export default function App() {
             <tr>
               <th>Circle of fifth :</th>
               <td>
+                <Typography variant="h6" className={classes.seperator}>
+                  Please change the key to point to the next scale.
+                </Typography>
                 <CircleOfFifths 
                   className={classes.circleOfFifths} 
                   circleOfFifthsRotation={circleOfFifthsRotation} 
