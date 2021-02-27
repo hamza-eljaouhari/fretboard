@@ -70,6 +70,8 @@ export default function App() {
   };
 
   const onKeyChange = (key) => {
+
+    // convert from sharps to order of fifths
     var k = parseInt(key);
     var orderOfNote = k;
 
@@ -77,10 +79,10 @@ export default function App() {
       orderOfNote = k > 6 ? k - 6 : k + 6;
     }
 
-    var value = (((orderOfNote / 12 ) * 360) + 221.5) % 360;
-
-    setCircleOfFifthsRotation(value);
-    setDashesRotation(((orderOfNote + 1) * 30) + 10);
+    var circleOfFifthsRotation = (((orderOfNote / 12 ) * 360) + 221.5) % 360;
+    var dashedCircleRotaiton = ((orderOfNote + 1) * 30) + 10;
+    setCircleOfFifthsRotation(circleOfFifthsRotation);
+    setDashesRotation(dashedCircleRotaiton);
   }
 
   return (

@@ -21,7 +21,10 @@ import {
   
   SET_CHORD,
   SET_POSITION,
-  SET_IS_NOTES_DISPLAY
+  SET_IS_NOTES_DISPLAY,
+  
+  SET_CIRCLE_OF_FIFTHS_ROTATION,
+  SET_DASHED_CIRCLE_ROTATION
 } from "./actionTypes";
 
 export const fillFretboard = (fretboard) => ({
@@ -108,3 +111,14 @@ export const setIsNotesDisplay = (isNotesDisplay) => ({
   type: SET_IS_NOTES_DISPLAY,
   payload: { isNotesDisplay }
 });   
+
+export const setCircleOfFifthsRotation = (circleOfFifthsRotation) => ({
+  type: SET_CIRCLE_OF_FIFTHS_ROTATION,
+  payload: { circleOfFifthsRotation }
+});   
+
+export const setDashedCircleRotation = (dashedCircleRotation) => ({
+  type: SET_DASHED_CIRCLE_ROTATION,
+  payload: { dashedCircleRotation }
+});   
+

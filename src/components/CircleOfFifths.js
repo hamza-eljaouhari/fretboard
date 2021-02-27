@@ -2,57 +2,76 @@ import React, { useState } from 'react'
 import './circle-of-fifths.css'
 import guitar from '../config/guitar';
 import { connect } from "react-redux";
- 
-function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
+
+import { 
+    setKey,
+    setScale,
+    setMode
+} from "../redux/actions";
+
+function CircleOfFifths(props){
     
     const [dimensions, setDimensions] = useState({
         width: 500,
         height: 500,
+        
         centerX: 250,
         centerY: 250,
+        
         fontSize: 16, // yes
-        strokeWidth: 110,
+        strokeWidth: 140 - 2 * 3,
         
         dashedStrokeWidth: 140,
 
-        outterOutlinedCircleRadius: 248,
-        firstInnerOutlinedCircleRadius: 110,
-        secondInnerOutlinedCircleRadius: 180,
-        innerDashedCircleRadius: 180,
-
-        majorScalePointingCircle: 192,
+        
+        outterOutlinedCircleRadius: 248, // stoke with 2
+        
+        secondInnerOutlinedCircleRadius: 180, // - 68
+        innerMaskingDashedCircleRadius: 180, // - 68 for text
+        firstInnerOutlinedCircleRadius: 110, // - 70 for text
+        majorScalePointingCircle: 180,
         keysRadius: 215,
         relativesRadius: 140,
     })
 
+    function pointToKey(index, isMajor){
+        var keySignature = guitar.notes.flats.indexOf(guitar.circleOfFifths[index].key);
+        props.setKey(keySignature);
+        props.setScale("major");
+        props.setMode(isMajor === true ? 0 : 5);
+        
+    }
+
     function getCircle(center, radius, steps = 12){
         var elements = []
         
-        for (var i = 0; i < steps; i++) {
+        for (var i = steps; i > 0; i--) {
             elements.push({
-                top: center + radius * Math.cos(2 * Math.PI * (( i - 3 ) % 12) / steps) - 26,
-                left: center + radius * Math.sin(2 * Math.PI * (( i - 3) % 12) / steps)
+                top: center + radius * Math.cos(2 * Math.PI * (( i + 6) % 12) / steps),
+                left: center + radius * Math.sin(2 * Math.PI * (( i + 6) % 12) / steps)
             })
         }
         
         return elements;
     }
 
-    const relatives = getCircle(dimensions.centerX + 10, dimensions.relativesRadius).map((style, index) => {
+    const relatives = getCircle(dimensions.centerX, dimensions.relativesRadius).map((style, index) => {
         const relativeMusicalKey = guitar.circleOfFifths[index].relative;
         // return <div className="musical-key" key={relativeMusicalKey} style={style}>{relativeMusicalKey}</div>
-        return ( <text key={index} x={style.top} y={style.left}
+        return ( <text key={index} y={style.top} x={style.left - (dimensions.fontSize * relativeMusicalKey.length) / 2 }
                     fontFamily="Verdana"
-                    fontSize={dimensions.fontSize}>
+                    fontSize={dimensions.fontSize}
+                    onClick={() => { pointToKey(index, false)}}>
                 {relativeMusicalKey}
             </text> );
     })
 
-    const keys = getCircle(dimensions.centerX + 10, dimensions.keysRadius).map((style, index) => {
+    const keys = getCircle(dimensions.centerX, dimensions.keysRadius).map((style, index) => {
         const musicalKey = guitar.circleOfFifths[index].key;
-        return ( <text key={index} x={style.top} y={style.left}
+        return ( <text key={index} y={style.top} x={style.left - (dimensions.fontSize * musicalKey.length) / 2 }
             fontFamily="Verdana"
-            fontSize={dimensions.fontSize}>
+            fontSize={dimensions.fontSize}
+            onClick={() => { pointToKey(index, true)}}>
         {musicalKey}
     </text> );
     })
@@ -74,19 +93,19 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
                         fill="white" 
                         stroke="#cd5c5c"
                         strokeWidth={dimensions.strokeWidth} 
-                        strokeDasharray='700 1206'
-                        transform={`rotate(${circleOfFifthsRotation}, 250, 250)`} 
+                        strokeDasharray='656 1206'
+                        transform={`rotate(${props.circleOfFifthsRotation}, 250, 250)`} 
                         cx={dimensions.centerY} 
                         cy={dimensions.centerY}/>
 
                     <circle
                         className="rotation-effect"
-                        r={dimensions.innerDashedCircleRadius} 
+                        r={dimensions.innerMaskingDashedCircleRadius} 
                         fill="white" 
                         strokeWidth={dimensions.dashedStrokeWidth} 
                         stroke="black" 
                         strokeDasharray="1 94" 
-                        transform={`rotate(${dashesRotation}, 250, 250)`}
+                        transform={`rotate(${props.dashedCircleRotation}, 250, 250)`}
                         cx={dimensions.centerX} 
                         cy={dimensions.centerY}/>
 
@@ -116,11 +135,34 @@ function CircleOfFifths({circleOfFifthsRotation, dashesRotation}){
 
 
 const mapStateToProps = state => {
+
+    var keySignature = state.fretboard.keySignature;
+
+    var circleOfFifthsRotation = state.circleOfFifths.circleOfFifthsRotation;
+    var dashedCircleRotation = state.circleOfFifths.dashedCircleRotation;
+
+    if(keySignature !== "unset"){
+
+        var orderOfNote = parseInt(keySignature);
+
+        if(orderOfNote % 2 !== 0){
+            orderOfNote = orderOfNote > 6 ? orderOfNote - 6 : orderOfNote + 6;
+        }
+
+        circleOfFifthsRotation = (((orderOfNote / 12 ) * 360) + 226) % 360;
+        dashedCircleRotation = ((orderOfNote + 1) * 30) + 14;
+    }
+
     return { 
-        keySignature: state.fretboard.keySignature,
+        circleOfFifthsRotation: circleOfFifthsRotation,
+        dashedCircleRotation: dashedCircleRotation 
     };
 };
   
 export default connect(
     mapStateToProps,
-    {})(CircleOfFifths);
+    {
+        setKey,
+        setScale,
+        setMode
+    })(CircleOfFifths);
