@@ -223,24 +223,23 @@ function GuitarNeck(props){
 
     function getArppegioNotes(fromArppegio){
         if(props.keySignature === "unset"){
-            return;
+            return [];
         }
         
         var arppegioFormula = [];
 
         if(fromArppegio){
             if(props.arppegio === "unset"){
-                return;
+                return [];
             }
             
             arppegioFormula = guitar.arppegios[props.arppegio].formula;
 
         }else{
             if(props.chord === "unset"){
-                return;
+                return [];
             }
 
-            console.log(props.chord)
             arppegioFormula = guitar.arppegios[props.chord].formula
         }
 
@@ -257,17 +256,23 @@ function GuitarNeck(props){
         
     }
 
-    function getArppegioIntervals(){
+    function getArppegioIntervals(isFromArppegio){
 
         if(props.keySignature === "unset"){
             return;
         }
 
-        if(props.arppegio === "unset"){
+        if(props.arppegio === "unset" && props.chord === "unset"){
             return;
         }
+        
+        var arppegio = null;
 
-        const arppegio = guitar.arppegios[props.arppegio];
+        if(isFromArppegio){
+            arppegio = guitar.arppegios[props.arppegio];
+        }else{
+            arppegio = guitar.arppegios[props.chord];
+        }
         
         var intervals = arppegio.intervals;
 
@@ -284,7 +289,9 @@ function GuitarNeck(props){
         
         var arppegio = props.arppegio;
 
-        if(scale === "unset" && arppegio === "unset"){
+        var chord = props.chord;
+
+        if(scale === "unset" && arppegio === "unset" && chord === "unset"){
             return;
         }
 
@@ -301,7 +308,6 @@ function GuitarNeck(props){
             props.setScaleIntervals(intervals);
 
             if(isModal){
-                // If scale is modal and no more is chosen, display nothing
                 if(props.mode !== "unset"){
                     notes = getModeNotes();
                     props.setModeNotes(notes)
@@ -312,28 +318,70 @@ function GuitarNeck(props){
 
             }
         }
+        
+        if(chord !== "unset"){
+            notes = getArppegioNotes(false);
+            intervals = guitar.arppegios[chord].intervals;
 
-        // If both a scale and an arppegio are chosen we display the arppegio
+            if(props.position !== "unset"){
+                displayChordPortion(notes, intervals);
+                return;
+            }
+        }
+
         if(arppegio !== "unset"){
             notes = getArppegioNotes(true);
             props.setArppegioNotes(notes)
 
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
+
+            if(props.position !== "unset"){
+                displayArppegioPortion(notes, intervals);
+                return;
+            }
         }
 
-        var chord = props.chord;
+        spread(notes, intervals)
+    }
 
-        if(chord !== "unset"){
-            notes = getArppegioNotes(false);
-            intervals = guitar.arppegios[chord].intervals;
-        }
+    function displayChordPortion(notes, intervals){
+        console.log("position", props.position);
+        console.log([notes, intervals]);
 
-        if(props.position !== "unset"){
-            
-        }else{
-            spread(notes, intervals)
-        }
+        
+        var nf = [...props.fretboard];
+
+    var startingPositionIndex = parseInt(props.position) - 1;
+
+        var visitedStrings = [];
+
+        notes.forEach((note) => {
+            for(var m = 0; m < guitar.numberOfStrings; m++){
+                for(var n = startingPositionIndex; n < startingPositionIndex + 4; n++){
+                    console.log([m, n])
+                    var currentNote = getNoteFromFretboard(m, n);
+                    if(!visitedStrings[m]){
+                        if(note === currentNote){
+                            visitedStrings[m] = true;
+
+                            nf[m][n].show = true;
+                            if(props.isNotesDisplay){
+                                nf[m][n].current = currentNote;
+                            }else{
+                                nf[m][n].current = intervals[notes.indexOf(currentNote)];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        props.fillFretboard(nf);
+    }
+
+    function displayArppegioPortion(notes, intervals){
+        console.log("position", props.position)
     }
 
     function spread(notes, intervals){
@@ -365,6 +413,7 @@ function GuitarNeck(props){
         var scale = props.scale;
         var mode = props.mode;
         var arppegio = props.arppegio;
+        var chord = props.chord;
 
         var scaleNotes = [];
 
@@ -378,6 +427,10 @@ function GuitarNeck(props){
         if(arppegio !== "unset"){
             scaleNotes = getArppegioNotes(true);
         }
+        
+        if(chord !== "unset"){
+            scaleNotes = getArppegioNotes(false);
+        }
 
         return scaleNotes;
         
@@ -388,6 +441,7 @@ function GuitarNeck(props){
         var scale = props.scale;
         var mode = props.mode;
         var arppegio = props.arppegio;
+        var chord = props.chord;
 
         var scaleIntervals = [];
 
@@ -400,6 +454,10 @@ function GuitarNeck(props){
 
         if(arppegio !== "unset"){
             scaleIntervals = getArppegioIntervals();
+        }
+
+        if(chord !== "unset"){
+            scaleIntervals = getArppegioIntervals(false);
         }
 
         return scaleIntervals;
@@ -621,7 +679,7 @@ function GuitarNeck(props){
                         }}
                         >
                         <option value="unset">Select position</option>
-                        { [1, 2, 3, 4, 5].map((position) => {
+                        { Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((position) => {
                             return <option key={position}>{position}</option>
                         }) }
                         </Select>

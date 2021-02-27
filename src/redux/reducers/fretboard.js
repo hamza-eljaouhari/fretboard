@@ -15,6 +15,10 @@ import {
     SET_MODE_INTERVALS,
     
     SET_ARPPEGIO,
+
+    SET_CHORD,
+
+    SET_POSITION,
     SET_IS_NOTES_DISPLAY
   } from "../actionTypes";
 
@@ -123,6 +127,18 @@ const fretboard = (state = initialState, action) => {
         return {
             ...state,
             arppegio: action.payload.arppegio
+        };
+    }
+    case SET_CHORD: {
+        return {
+            ...state,
+            chord: action.payload.chord
+        };
+    }
+    case SET_POSITION: {
+        return {
+            ...state,
+            position: action.payload.position
         };
     }
     case SET_IS_NOTES_DISPLAY: {
