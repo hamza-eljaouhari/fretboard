@@ -331,7 +331,7 @@ function GuitarNeck(props){
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
-            if(props.fret !== "unset"){
+            if(props.fret !== "unset" || props.shape !== "unset"){
                 displayChordPortion(notes, intervals);
                 return;
             }
@@ -356,14 +356,25 @@ function GuitarNeck(props){
     function displayChordPortion(notes, intervals){
         var nf = [...props.fretboard];
 
-        var startingFretIndex = parseInt(props.fret) - 1;
+
+        var startingIndex = 0;
+        var lastIndex = null;
+       
+        if(props.shape !== "unset"){
+            startingIndex = guitar.shapes.indexes[parseInt(props.shape)].start;
+            lastIndex = guitar.shapes.indexes[parseInt(props.shape)].end + 1;
+        }
+
+        if(props.fret !== "unset"){
+            startingIndex = parseInt(props.fret) - 1;
+            lastIndex = startingIndex + 4;
+        }
 
         var visitedStrings = [];
 
         notes.forEach((note) => {
             for(var m = 0; m < guitar.numberOfStrings; m++){
-                for(var n = startingFretIndex; n < startingFretIndex + 4; n++){
-                    console.log([m, n])
+                for(var n = startingIndex; n < lastIndex; n++){
                     var currentNote = getNoteFromFretboard(m, n);
                     if(!visitedStrings[m]){
                         if(note === currentNote){
@@ -396,7 +407,6 @@ function GuitarNeck(props){
         var lastIndex = guitar.numberOfFrets;
 
         if(props.shape !== "unset"){
-            console.log(props.shape)
             startingIndex = guitar.shapes.indexes[parseInt(props.shape)].start;
             lastIndex = guitar.shapes.indexes[parseInt(props.shape)].end + 1;
         }
