@@ -68,41 +68,41 @@ const Fretboard = withRouter((props) => {
 
     function fillStore(){
         const { 
-            key, 
-            scale, 
-            mode, 
-            arppegio, 
-            chord, 
-            shape, 
-            fret 
+            k, 
+            sc, 
+            m, 
+            a, 
+            c, 
+            sh, 
+            f 
         } = queryString.parse(props.history.location.search);
         
-        if(parseInt(key) >= 0 && parseInt(key) < 12){
-            props.setKey(parseInt(key));
+        if(parseInt(k) >= 0 && parseInt(KeyboardEvent) < 12){
+            props.setKey(parseInt(k));
         }
 
-        if(Object.keys(guitar.scales).includes(scale)){
-            props.setScale(scale)
+        if(Object.keys(guitar.scales).includes(sc)){
+            props.setScale(sc)
         }
 
-        if(parseInt(mode) >= 0 && parseInt(mode) <= 6){
-            props.setMode(mode);
+        if(parseInt(m) >= 0 && parseInt(m) <= 6){
+            props.setMode(m);
         }
 
-        if(Object.keys(guitar.arppegios).includes(arppegio)){
-            props.setArppegio(arppegio);
+        if(Object.keys(guitar.arppegios).includes(a)){
+            props.setArppegio(a);
         }
 
-        if(Object.keys(guitar.arppegios).includes(chord)){
-            props.setChord(chord)
+        if(Object.keys(guitar.arppegios).includes(c)){
+            props.setChord(c)
         }
 
-        if(shape >= 0 && shape <= 4){
-            props.setShape(shape);
+        if(sh >= 0 && sh <= 4){
+            props.setShape(sh);
         }
 
-        if(fret > 0 && fret < 22){
-            props.setFret(fret);
+        if(f > 0 && f < 22){
+            props.setFret(f);
         }
     }
 
@@ -153,7 +153,7 @@ const Fretboard = withRouter((props) => {
         
         var search = queryString.parse(props.history.location.search);
         
-        search.key = newKey;
+        search.k = newKey;
 
         const newLocation = queryString.stringify(search);
 
@@ -167,7 +167,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.scale = newScale;
+        search.sc = newScale;
 
         const newLocation = queryString.stringify(search);
 
@@ -182,7 +182,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.mode = newMode;
+        search.m = newMode;
 
         const newLocation = queryString.stringify(search);
 
@@ -196,7 +196,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.arppegio = newArppegio;
+        search.a = newArppegio;
 
         const newLocation = queryString.stringify(search);
 
@@ -210,7 +210,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.chord = newChord;
+        search.c = newChord;
 
         const newLocation = queryString.stringify(search);
 
@@ -224,7 +224,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.shape = newShape;
+        search.sh = newShape;
 
         const newLocation = queryString.stringify(search);
 
@@ -238,7 +238,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.fret = newFret;
+        search.f = newFret;
 
         const newLocation = queryString.stringify(search);
 
@@ -251,7 +251,7 @@ const Fretboard = withRouter((props) => {
 
         var search = queryString.parse(props.history.location.search);
         
-        search.notes = !isNotesDiplay;
+        search.n = !isNotesDiplay;
 
         const newLocation = queryString.stringify(search);
 
@@ -807,7 +807,7 @@ const Fretboard = withRouter((props) => {
                             id: 'shapes',
                         }}
                         >
-                        <option value="unset">Select shape</option>
+                        <option value="unset">Select all</option>
                         { guitar.shapes.names.map((shape, index) => {
                             return <option key={index} value={index}>{shape}</option>
                         }) }
@@ -827,7 +827,7 @@ const Fretboard = withRouter((props) => {
                             id: 'positions',
                         }}
                         >
-                        <option value="unset">Select position</option>
+                        <option value="unset">Select all</option>
                         { Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((fret) => {
                             return <option key={fret}>{fret}</option>
                         }) }
