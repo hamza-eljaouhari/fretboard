@@ -1,5 +1,6 @@
 import guitar from '../config/guitar';
 import React, { useEffect } from 'react';
+import { withRouter } from 'react-router-dom'
 
 import { connect } from "react-redux";
 import { 
@@ -38,7 +39,7 @@ import { getNoteFromFretboard } from '../redux/helpers';
 import classNames from "classnames";
 import './guitar-neck.css';
 import { Typography } from '@material-ui/core';
-
+const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -56,13 +57,54 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
   
-function GuitarNeck(props){
+const Fretboard = withRouter((props) => {
 
     const classes = useStyles();
 
     useEffect(() => {
         fillFretboard();
+        fillStore();
     }, []);
+
+    function fillStore(){
+        const { 
+            key, 
+            scale, 
+            mode, 
+            arppegio, 
+            chord, 
+            shape, 
+            fret 
+        } = queryString.parse(props.history.location.search);
+        
+        if(parseInt(key) >= 0 && parseInt(key) < 12){
+            props.setKey(parseInt(key));
+        }
+
+        if(Object.keys(guitar.scales).includes(scale)){
+            props.setScale(scale)
+        }
+
+        if(parseInt(mode) >= 0 && parseInt(mode) <= 6){
+            props.setMode(mode);
+        }
+
+        if(Object.keys(guitar.arppegios).includes(arppegio)){
+            props.setArppegio(arppegio);
+        }
+
+        if(Object.keys(guitar.arppegios).includes(chord)){
+            props.setChord(chord)
+        }
+
+        if(shape >= 0 && shape <= 4){
+            props.setShape(shape);
+        }
+
+        if(fret > 0 && fret < 22){
+            props.setFret(fret);
+        }
+    }
 
     function fillFretboard(){
         var nf = [...props.fretboard];
@@ -78,10 +120,10 @@ function GuitarNeck(props){
 
         props.fillFretboard(nf);
     }
-
     useEffect(() => {
         cleanFretboard();
         update();
+
     }, [props.keySignature, 
         props.scale, 
         props.mode, 
@@ -108,45 +150,112 @@ function GuitarNeck(props){
         const newKey = e.target.value;
 
         props.setKey(newKey);
+        
+        var search = queryString.parse(props.history.location.search);
+        
+        search.key = newKey;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
     }
 
     function onScaleChange(e){
         const newScale = e.target.value;
 
-        props.setScale(newScale)
+        props.setScale(newScale);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.scale = newScale;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
+        
     }
 
     function onModeChange(e){
         var newMode = e.target.value;
 
         props.setMode(newMode);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.mode = newMode;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
     }
 
     function onArppegioChange(e){
         const newArppegio = e.target.value;
+
         props.setArppegio(newArppegio);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.arppegio = newArppegio;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
     }
 
     function onChordChange(e){
         const newChord = e.target.value;
 
         props.setChord(newChord);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.chord = newChord;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
     }
 
     function onShapeChange(e){
         const newShape = e.target.value;
 
         props.setShape(newShape);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.shape = newShape;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation);
     }
 
     function onFretChange(e){
         const newFret = e.target.value;
 
         props.setFret(newFret);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.fret = newFret;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation)
     }
 
     function onDisplayNotesChange(){
-        props.setIsNotesDisplay(!props.isNotesDisplay);
+        var isNotesDiplay = props.isNotesDisplay;
+        props.setIsNotesDisplay(!isNotesDiplay);
+
+        var search = queryString.parse(props.history.location.search);
+        
+        search.notes = !isNotesDiplay;
+
+        const newLocation = queryString.stringify(search);
+
+        props.history.push('/?' + newLocation)
     }
 
     function onCleanFretboard(){
@@ -473,7 +582,7 @@ function GuitarNeck(props){
         }
 
         if(arppegio !== "unset"){
-            scaleIntervals = getArppegioIntervals();
+            scaleIntervals = getArppegioIntervals(true);
         }
 
         if(chord !== "unset"){
@@ -719,8 +828,8 @@ function GuitarNeck(props){
                         }}
                         >
                         <option value="unset">Select position</option>
-                        { Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((position) => {
-                            return <option key={position}>{position}</option>
+                        { Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((fret) => {
+                            return <option key={fret}>{fret}</option>
                         }) }
                         </Select>
                     </FormControl>
@@ -788,7 +897,7 @@ function GuitarNeck(props){
             </section>
         </div>
     );
-}
+})
 
 const mapStateToProps = state => {
     return { 
@@ -841,4 +950,4 @@ export default connect(
         setFret,
 
         setIsNotesDisplay
-    })(GuitarNeck);
+    })(Fretboard);

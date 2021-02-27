@@ -1,14 +1,16 @@
-import React from 'react';
+import React, {useEffect}from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import Mood from '@material-ui/icons/Mood';
 
 import Fretboard from './components/Fretboard';
 import CircleOfFifths from './components/CircleOfFifths';
+import {
+  BrowserRouter as Router,
+} from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -37,7 +39,7 @@ const useStyles = makeStyles(() => ({
 }
 }));
 
-export default function App() {
+export default function App(props) {
   const classes = useStyles();
 
   return (
@@ -60,6 +62,7 @@ export default function App() {
       </Button>
       </AppBar>
       <main className={classes.content}>
+        <Router>
         <table className="content-table">
           <tbody>
             <tr>
@@ -111,8 +114,9 @@ export default function App() {
             </tr>
           </tbody>
         </table>
+      </Router>
         
       </main>
     </div>
   );
-}
+};
