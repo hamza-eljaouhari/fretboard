@@ -248,6 +248,7 @@ const config = {
     },
     "arppegios": {
         "M": {
+            "name": "Major",
             "formula": [4, 3, 4],
             "intervals": ['1', '3', '5']
         },
@@ -292,16 +293,17 @@ const config = {
             "formula": [4, 3, 2, 3]
         },
         "min6": {
-            "name": "min6th",
+            "name": "Minor 6th",
             "intervals": ['1', 'b3', '5', '6'],
             "formula": [3, 4, 2, 3]
         },
         "minb6": {
-            "name": "minb6th",
+            "name": "Minor b6th",
             "intervals": ['1', 'b3', '5', 'b6'],
             "formula": [3, 4, 1, 4]
         },
         "M7": {
+            "name": "Major 7th",
             "formula": [4, 3, 4, 1],
             "intervals": ['1', '3', '5', '7']
         },

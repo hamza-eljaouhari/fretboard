@@ -73,7 +73,7 @@ export default function App(props) {
             <tr>
               <th>Pointing to :</th>
               <td>
-                <Typography variant="h2" className={classes.title}>
+                <Typography variant="h6" >
                   { title }
                 </Typography>
               </td>

@@ -57,7 +57,6 @@ function CircleOfFifths(props){
 
     const relatives = getCircle(dimensions.centerX, dimensions.relativesRadius).map((style, index) => {
         const relativeMusicalKey = guitar.circleOfFifths[index].relative;
-        // return <div className="musical-key" key={relativeMusicalKey} style={style}>{relativeMusicalKey}</div>
         return ( <text key={index} y={style.top} x={style.left - (dimensions.fontSize * relativeMusicalKey.length) / 2 }
                     fontFamily="Verdana"
                     fontSize={dimensions.fontSize}

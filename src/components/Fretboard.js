@@ -106,8 +106,6 @@ const Fretboard = withRouter((props) => {
             props.setFret(f);
         }   
 
-        console.log(n)
-        
         if(n === "true" || n === "false"){
             props.setIsNotesDisplay(n === "true");
         }
@@ -254,6 +252,7 @@ const Fretboard = withRouter((props) => {
 
     function onDisplayNotesChange(){
         var isNotesDiplay = props.isNotesDisplay;
+        
         props.setIsNotesDisplay(!isNotesDiplay);
 
         var search = queryString.parse(props.history.location.search);
@@ -275,6 +274,7 @@ const Fretboard = withRouter((props) => {
 
     function onCopyLink(){
         const url = window.location.href;
+
         var textArea = document.createElement("textarea");
 
         textArea.style.position = 'fixed';
@@ -284,17 +284,13 @@ const Fretboard = withRouter((props) => {
         textArea.style.width = '2em';
         textArea.style.height = '2em';
         
-        // We don't need padding, reducing the size if it does flash render.
         textArea.style.padding = 0;
         
-        // Clean up any borders.
         textArea.style.border = 'none';
         textArea.style.outline = 'none';
         textArea.style.boxShadow = 'none';
         
-        // Avoid flash of white box if rendered for any reason.
         textArea.style.background = 'transparent';
-        
         
         textArea.value = url;
         
@@ -303,9 +299,10 @@ const Fretboard = withRouter((props) => {
         textArea.select();
         
         try {
-            var successful = document.execCommand('copy');
+            document.execCommand('copy');
+            alert("The link has been copied successfully.")
         } catch (err) {
-            console.log('Oops, unable to copy');
+            alert("Oop, something wrong happened. You can copy the link directly.")
         }
         
         document.body.removeChild(textArea);
@@ -443,6 +440,8 @@ const Fretboard = withRouter((props) => {
 
     function update(){
 
+        props.onSetTitle('...')
+
         if(props.keySignature === "unset"){
             return;
         }
@@ -506,7 +505,7 @@ const Fretboard = withRouter((props) => {
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
-            name = notes[0] + ' ' + guitar.arppegios[arppegio].name + ' chord.';
+            name = notes[0] + ' ' + guitar.arppegios[chord].name + ' chord.';
 
             if(props.fret !== "unset" || props.shape !== "unset"){
                 displayChordPortion(notes, intervals);
