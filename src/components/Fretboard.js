@@ -74,10 +74,11 @@ const Fretboard = withRouter((props) => {
             a, 
             c, 
             sh, 
-            f 
+            f,
+            n
         } = queryString.parse(props.history.location.search);
         
-        if(parseInt(k) >= 0 && parseInt(KeyboardEvent) < 12){
+        if(parseInt(k) >= 0 && parseInt(k) < 12){
             props.setKey(parseInt(k));
         }
 
@@ -103,6 +104,12 @@ const Fretboard = withRouter((props) => {
 
         if(f > 0 && f < 22){
             props.setFret(f);
+        }   
+
+        console.log(n)
+        
+        if(n === "true" || n === "false"){
+            props.setIsNotesDisplay(n === "true");
         }
     }
 
@@ -265,6 +272,44 @@ const Fretboard = withRouter((props) => {
     // function getScaleFormula(){
     //     var scaleFormula = guitar.scales[props.scale].formula;
     // }
+
+    function onCopyLink(){
+        const url = window.location.href;
+        var textArea = document.createElement("textarea");
+
+        textArea.style.position = 'fixed';
+        textArea.style.top = 0;
+        textArea.style.left = 0;
+        
+        textArea.style.width = '2em';
+        textArea.style.height = '2em';
+        
+        // We don't need padding, reducing the size if it does flash render.
+        textArea.style.padding = 0;
+        
+        // Clean up any borders.
+        textArea.style.border = 'none';
+        textArea.style.outline = 'none';
+        textArea.style.boxShadow = 'none';
+        
+        // Avoid flash of white box if rendered for any reason.
+        textArea.style.background = 'transparent';
+        
+        
+        textArea.value = url;
+        
+        document.body.appendChild(textArea);
+        
+        textArea.select();
+        
+        try {
+            var successful = document.execCommand('copy');
+        } catch (err) {
+            console.log('Oops, unable to copy');
+        }
+        
+        document.body.removeChild(textArea);
+    }
 
     function getScaleNotes(){
 
@@ -853,6 +898,15 @@ const Fretboard = withRouter((props) => {
                     >
                         Clean
                     </Button>
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={onCopyLink}
+                    >
+                         Copy link
+                    </Button>
                     
                     <Typography 
                         className={classes.seperator}
@@ -885,14 +939,7 @@ const Fretboard = withRouter((props) => {
                     >
                          Save
                     </Button>
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                    >
-                         Share
-                    </Button>
+
                 </form>
             </section>
         </div>
