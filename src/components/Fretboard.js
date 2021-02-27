@@ -440,7 +440,7 @@ const Fretboard = withRouter((props) => {
 
     function update(){
 
-        props.onSetTitle('...')
+        props.onSetTitle('Choose something to display...')
 
         if(props.keySignature === "unset"){
             return;
