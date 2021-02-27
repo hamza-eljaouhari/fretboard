@@ -1,4 +1,4 @@
-import React, {useEffect}from 'react';
+import React, { useState }  from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
@@ -41,6 +41,11 @@ const useStyles = makeStyles(() => ({
 
 export default function App(props) {
   const classes = useStyles();
+  const [title, setTitle] = useState('Choose something to display...');
+
+  function onSetTitle(title){
+    setTitle(title);
+  }
 
   return (
     <div className={classes.root}>
@@ -66,26 +71,17 @@ export default function App(props) {
         <table className="content-table">
           <tbody>
             <tr>
-              <th>Help :</th>
+              <th>Pointing to :</th>
               <td>
-                <Typography variant="h6" className={classes.title}>
-                  <ol>
-                    <li>You always need to choose a key</li>
-                    <li>You can choose whether (1) a scale, (2) an arppegio or (3) a chord formula to display</li>
-                    <li>If you choose a scale you can then choose on of its modes</li>
-                    <li>You can restrict display by frets of 4 or by position according to the CAGED system</li>
-                    <li>You can display intervals whenever you want and toggle notes whenever you want</li>
-                    <li>There's a difficulty displapying the comming chord shapes but I'm gonna fix it, no worries</li>
-                    <li>I'm going to the remaining arppegios and degrees in the future</li>
-                    <li>Enjoy</li>
-                  </ol>
+                <Typography variant="h2" className={classes.title}>
+                  { title }
                 </Typography>
               </td>
             </tr>
             <tr>
               <th>Fretboard :</th>
               <td>
-                <Fretboard></Fretboard>
+                <Fretboard onSetTitle={onSetTitle}></Fretboard>
               </td>
             </tr>
             <tr>

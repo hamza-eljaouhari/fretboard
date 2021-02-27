@@ -459,16 +459,20 @@ const Fretboard = withRouter((props) => {
 
         var notes = null;
         var intervals = null;
-        
+        var name = '';
+        var keyName = guitar.notes.sharps[props.keySignature];
+
         if(scale !== "unset"){
             var isModal = guitar.scales[scale].isModal;
 
             notes = getScaleNotes();
             props.setScaleNotes(notes);
-
+            
             intervals = getScaleIntervals();
             props.setScaleIntervals(intervals);
 
+            name = notes[0] + ' ' + guitar.scales[scale].name + ' scale';
+            
             if(isModal){
                 if(props.mode !== "unset"){
                     notes = getModeNotes();
@@ -476,8 +480,14 @@ const Fretboard = withRouter((props) => {
 
                     intervals = getModeIntervals();
                     props.setModeIntervals(intervals);
-                }
 
+                    let modeRootName = notes[0];
+
+                    let modeNumber = parseInt(props.mode) + 1;
+
+                    name = modeRootName + ' ' + guitar.scales[scale].modes[props.mode].name + ' from the ' + name + ' (Mode #' + modeNumber     + ')';
+
+                }
             }
         }
     
@@ -487,6 +497,8 @@ const Fretboard = withRouter((props) => {
 
             intervals = guitar.arppegios[arppegio].intervals;
             props.setArppegioIntervals(intervals);
+
+            name = guitar.arppegios[arppegio].name + ' arppegio.';
         }
 
             
@@ -494,12 +506,15 @@ const Fretboard = withRouter((props) => {
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
+            name = guitar.arppegios[arppegio].name + ' chord.';
+
             if(props.fret !== "unset" || props.shape !== "unset"){
                 displayChordPortion(notes, intervals);
                 return;
             }
         }
-
+        
+        props.onSetTitle(name);
         spread(notes, intervals)
     }
 

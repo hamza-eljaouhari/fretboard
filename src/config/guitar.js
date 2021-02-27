@@ -125,7 +125,7 @@ const config = {
     },
     "scales": {
         "major": {
-            "name": "Major scale",
+            "name": "Major",
             "formula": [2, 2, 1, 2, 2, 2, 1],
             "intervals": ['1', '2', '3', '4', '5', '6', '7'],
             "isModal": true,
@@ -161,7 +161,7 @@ const config = {
             ]
         },
         "harmonic": {
-            "name": "Harmonic scale",
+            "name": "Harmonic",
             "formula": [2, 1, 2, 2, 1, 3, 1],
             "intervals": ['1', '2', 'b3', '4', '5', 'b6', '7'],
             "isModal": true,
@@ -197,7 +197,7 @@ const config = {
             ]
         },
         "melodic": {
-            "name": "Melodic scale",
+            "name": "Melodic",
             "formula": [2, 1, 2, 2, 2, 2, 1],
             "intervals": ['1', '2', 'b3', '4', '5', '6', '7'],
             "isModal": true,
