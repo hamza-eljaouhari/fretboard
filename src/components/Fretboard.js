@@ -366,11 +366,11 @@ const Fretboard = withRouter((props) => {
     function getModeIntervals(){
 
         if(props.scale === "unset"){
-            return;
+            return [];
         }
 
         if(props.keySignature === "unset"){
-            return;
+            return [];
         }
 
         const scale = guitar.scales[props.scale];
@@ -418,11 +418,11 @@ const Fretboard = withRouter((props) => {
     function getArppegioIntervals(isFromArppegio){
 
         if(props.keySignature === "unset"){
-            return;
+            return [];
         }
 
         if(props.arppegio === "unset" && props.chord === "unset"){
-            return;
+            return [];
         }
         
         var arppegio = null;
@@ -605,6 +605,10 @@ const Fretboard = withRouter((props) => {
 
         var scaleNotes = [];
 
+        if(props.keySignature === "unset"){
+            return [];
+        }
+
         if(scale !== "unset"){
             scaleNotes = getScaleNotes();
             if(guitar.scales[scale].isModal && mode !== "unset"){
@@ -692,7 +696,7 @@ const Fretboard = withRouter((props) => {
                             })}>
                             { note.show && note.current }
                         </span>
-                    <hr ></hr>
+                    <hr></hr>
                 </td>
             );
             
