@@ -26,7 +26,7 @@ import {
         setShape,
         setFret,
 
-        setIsNotesDisplay
+        setNotesDisplay
 } from "../redux/actions";
 
 import Button from '@material-ui/core/Button';
@@ -68,62 +68,62 @@ const Fretboard = withRouter((props) => {
 
     function fillStore(){
         const { 
-            k, 
-            sc, 
-            m, 
-            a, 
-            c, 
-            sh, 
-            f,
-            n
+            key, 
+            scale, 
+            mode, 
+            arppegio, 
+            chord, 
+            shape, 
+            fret,
+            notesDisplay
         } = queryString.parse(props.history.location.search);
         
-        if(parseInt(k) >= 0 && parseInt(k) < 12){
-            props.setKey(parseInt(k));
+        if(parseInt(key) >= 0 && parseInt(key) < 12){
+            props.setKey(parseInt(key));
         }
 
-        if(Object.keys(guitar.scales).includes(sc)){
-            props.setScale(sc)
+        if(Object.keys(guitar.scales).includes(scale)){
+            props.setScale(scale)
         }
 
-        if(parseInt(m) >= 0 && parseInt(m) <= 6){
-            props.setMode(m);
+        if(parseInt(mode) >= 0 && parseInt(mode) <= 6){
+            props.setMode(mode);
         }
 
-        if(Object.keys(guitar.arppegios).includes(a)){
-            props.setArppegio(a);
+        if(Object.keys(guitar.arppegios).includes(arppegio)){
+            props.setArppegio(arppegio);
         }
 
-        if(Object.keys(guitar.arppegios).includes(c)){
-            props.setChord(c)
+        if(Object.keys(guitar.arppegios).includes(chord)){
+            props.setChord(chord)
         }
 
-        if(sh >= 0 && sh <= 4){
-            props.setShape(sh);
+        if(shape >= 0 && shape <= 4){
+            props.setShape(shape);
         }
 
-        if(f > 0 && f < 22){
-            props.setFret(f);
+        if(fret > 0 && fret < 22){
+            props.setFret(fret);
         }   
 
-        if(n === "true" || n === "false"){
-            props.setIsNotesDisplay(n === "true");
+        if(notesDisplay === "true" || notesDisplay === "false"){
+            props.setNotesDisplay(notesDisplay === "true");
         }
     }
 
     function fillFretboard(){
-        var nf = [...props.fretboard];
+        var newFretboard = [...props.fretboard];
         
         for(let i = 0; i < guitar.numberOfStrings; i++){
             for(let j = 0; j < guitar.numberOfFrets; j++){
-                nf[i][j] = {
+                newFretboard[i][j] = {
                     show: false,
                     current: guitar.notes.sharps[(guitar.tuning[i] + j ) % 12]
                 };
             }
         }
 
-        props.fillFretboard(nf);
+        props.fillFretboard(newFretboard);
     }
     useEffect(() => {
         cleanFretboard();
@@ -135,142 +135,45 @@ const Fretboard = withRouter((props) => {
         props.arppegio, 
         props.chord, 
         props.fret,
-        props.isNotesDisplay,
+        props.notesDisplay,
         props.shape
     ]);
 
     function cleanFretboard(){
-        var nf = [...props.fretboard];
+        var newFretboard = [...props.fretboard];
         
         for(let i = 0; i < guitar.numberOfStrings; i++){
             for(let j = 0; j < guitar.numberOfFrets; j++){
-                nf[i][j].show = false;
+                newFretboard[i][j].show = false;
             }
         }
 
-        props.fillFretboard(nf);
+        props.fillFretboard(newFretboard);
     }
 
-    function onKeyChange(e){
-        const newKey = e.target.value;
+    function onElementChange(e, elementsName){
+        var newElement = null;
 
-        props.setKey(newKey);
-        
+        if(elementsName === 'notesDisplay'){
+            newElement = !props[elementsName];
+        } else {
+            newElement = e.target.value;
+        }
+
+        props['set' + elementsName[0].toUpperCase() + elementsName.substring(1)](newElement);
+
         var search = queryString.parse(props.history.location.search);
         
-        search.k = newKey;
+        search[elementsName] = newElement;
 
         const newLocation = queryString.stringify(search);
 
         props.history.push('/?' + newLocation);
-    }
-
-    function onScaleChange(e){
-        const newScale = e.target.value;
-
-        props.setScale(newScale);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.sc = newScale;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation);
-        
-    }
-
-    function onModeChange(e){
-        var newMode = e.target.value;
-
-        props.setMode(newMode);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.m = newMode;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation);
-    }
-
-    function onArppegioChange(e){
-        const newArppegio = e.target.value;
-
-        props.setArppegio(newArppegio);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.a = newArppegio;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation);
-    }
-
-    function onChordChange(e){
-        const newChord = e.target.value;
-
-        props.setChord(newChord);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.c = newChord;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation);
-    }
-
-    function onShapeChange(e){
-        const newShape = e.target.value;
-
-        props.setShape(newShape);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.sh = newShape;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation);
-    }
-
-    function onFretChange(e){
-        const newFret = e.target.value;
-
-        props.setFret(newFret);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.f = newFret;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation)
-    }
-
-    function onDisplayNotesChange(){
-        var isNotesDiplay = props.isNotesDisplay;
-        
-        props.setIsNotesDisplay(!isNotesDiplay);
-
-        var search = queryString.parse(props.history.location.search);
-        
-        search.n = !isNotesDiplay;
-
-        const newLocation = queryString.stringify(search);
-
-        props.history.push('/?' + newLocation)
     }
 
     function onCleanFretboard(){
         cleanFretboard();
     }
-
-    // function getScaleFormula(){
-    //     var scaleFormula = guitar.scales[props.scale].formula;
-    // }
 
     function onCopyLink(){
         const url = window.location.href;
@@ -546,7 +449,7 @@ const Fretboard = withRouter((props) => {
                             visitedStrings[m] = true;
 
                             nf[m][n].show = true;
-                            if(props.isNotesDisplay){
+                            if(props.notesDisplay){
                                 nf[m][n].current = currentNote;
                             }else{
                                 nf[m][n].current = intervals[notes.indexOf(currentNote)];
@@ -585,7 +488,7 @@ const Fretboard = withRouter((props) => {
 
                     nf[m][n].show = true;
 
-                    if(props.isNotesDisplay){
+                    if(props.notesDisplay){
                         nf[m][n].current = currentNote;
                     }else{
                         nf[m][n].current = intervals[notes.indexOf(currentNote)];
@@ -661,7 +564,7 @@ const Fretboard = withRouter((props) => {
 
         var scaleNotes =  getCurrentDisplayableScaleNotes();
 
-        if(props.isNotesDisplay){
+        if(props.notesDisplay){
             return scaleNotes.indexOf(currentNote);
         }
 
@@ -736,7 +639,7 @@ const Fretboard = withRouter((props) => {
 
     var buttonText = 'Intervals'
 
-    if(!props.isNotesDisplay){
+    if(!props.notesDisplay){
         buttonText = 'Notes';
     }
 
@@ -786,7 +689,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.keySignature}
-                        onChange={onKeyChange}
+                        onChange={(e) => onElementChange(e, 'key')}
                         label="Keys :"
                         >
                         <option value="unset">Select key</option>
@@ -800,7 +703,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.scale}
-                        onChange={onScaleChange}
+                        onChange={(e) => onElementChange(e, 'scale')}
                         label="Scales :"
                         >
                         <option value="unset">Select scale</option>
@@ -814,7 +717,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.mode}
-                        onChange={onModeChange}
+                        onChange={(e) => onElementChange(e, 'mode')}
                         label="Modes :"
                         >
                         <option value="unset">Select mode</option>
@@ -828,7 +731,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.arppegio}
-                        onChange={onArppegioChange}
+                        onChange={(e) => onElementChange(e, 'arppegio')}
                         label="Keys :"
                         inputProps={{
                             name: 'arppegio',
@@ -846,7 +749,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.chord}
-                        onChange={onChordChange}
+                        onChange={(e) => onElementChange(e, 'chord')}
                         label="Chords :"
                         inputProps={{
                             name: 'chord',
@@ -864,7 +767,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.shape}
-                        onChange={onShapeChange}
+                        onChange={(e) => onElementChange(e, 'shape')}
                         label="Shapes :"
                         inputProps={{
                             name: 'shape',
@@ -884,7 +787,7 @@ const Fretboard = withRouter((props) => {
                         <Select
                         native
                         value={props.fret}
-                        onChange={onFretChange}
+                        onChange={(e) => onElementChange(e, 'fret')}
                         label="Positions :"
                         inputProps={{
                             name: 'position',
@@ -903,7 +806,7 @@ const Fretboard = withRouter((props) => {
                         variant="contained"
                         color="primary"
                         size="medium"
-                        onClick={onDisplayNotesChange}
+                        onClick={(e) => onElementChange(e, 'notesDisplay')}
                     >
                         { buttonText } 
                     </Button>
@@ -987,7 +890,7 @@ const mapStateToProps = state => {
         shape: state.fretboard.shape,
         fret: state.fretboard.fret,
         
-        isNotesDisplay: state.fretboard.isNotesDisplay
+        notesDisplay: state.fretboard.notesDisplay
     };
 };
   
@@ -1015,5 +918,5 @@ export default connect(
         setShape,
         setFret,
 
-        setIsNotesDisplay
+        setNotesDisplay
     })(Fretboard);

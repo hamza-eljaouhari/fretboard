@@ -21,7 +21,7 @@ import {
     SET_SHAPE,
     SET_FRET,
 
-    SET_IS_NOTES_DISPLAY
+    SET_NOTES_DISPLAY
   } from "../actionTypes";
 
 import guitar from '../../config/guitar'
@@ -52,7 +52,7 @@ const initialState = {
     arppegioIntervals: [],
     
     chord: 'unset',
-    isNotesDisplay: true,
+    notesDisplay: true,
 
     fret: 'unset',
     shape: 'unset'
@@ -150,10 +150,10 @@ const fretboard = (state = initialState, action) => {
             fret: action.payload.fret
         };
     }
-    case SET_IS_NOTES_DISPLAY: {
+    case SET_NOTES_DISPLAY: {
         return {
             ...state,
-            isNotesDisplay: action.payload.isNotesDisplay
+            notesDisplay: action.payload.notesDisplay
         };
     }
     default: {

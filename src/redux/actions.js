@@ -22,7 +22,7 @@ import {
   SET_SHAPE,
   SET_FRET,
 
-  SET_IS_NOTES_DISPLAY,
+  SET_NOTES_DISPLAY,
   
   SET_CIRCLE_OF_FIFTHS_ROTATION,
   SET_DASHED_CIRCLE_ROTATION
@@ -113,9 +113,9 @@ export const setFret = (fret) => ({
   payload: { fret }
 });
 
-export const setIsNotesDisplay = (isNotesDisplay) => ({
-  type: SET_IS_NOTES_DISPLAY,
-  payload: { isNotesDisplay }
+export const setNotesDisplay = (notesDisplay) => ({
+  type: SET_NOTES_DISPLAY,
+  payload: { notesDisplay }
 });   
 
 export const setCircleOfFifthsRotation = (circleOfFifthsRotation) => ({

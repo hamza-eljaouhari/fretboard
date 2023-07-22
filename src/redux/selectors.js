@@ -2,7 +2,7 @@ import guitar from '../config/guitar';
 
 export const getFretboard = store => store.fretboard;
 export const getScale = store => store.scale;
-export const getIsNotesDisplay = store => store.isNotesDisplay;
+export const getNotesDisplay = store => store.notesDisplay;
 export const getArppegio = store => store.arppegio;
 export const getArppegioNotes = store => store.arppegioNotes;
 export const getScaleIntervals = store => store.scaleIntervals;
