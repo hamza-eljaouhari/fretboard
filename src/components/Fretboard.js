@@ -41,9 +41,6 @@ import './guitar-neck.css';
 import { Typography } from '@material-ui/core';
 const queryString = require('query-string');
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -620,7 +617,8 @@ const Fretboard = withRouter((props) => {
             key: keySignature,
             chord,
             shape,
-            fret: parseInt(fret)
+            fret: parseInt(fret),
+            highlighted: false
         };
 
         const newChordProgression = [...chordProgression, chordObject];
@@ -642,6 +640,7 @@ const Fretboard = withRouter((props) => {
                 var search = queryString.parse(props.history.location.search);
             
                 search[key] = chordProgression[i][key];
+                search['chordOrder'] = i;
         
                 const newLocation = queryString.stringify(search);
         
@@ -665,9 +664,9 @@ const Fretboard = withRouter((props) => {
     useEffect(() => {
         const restoredChordProgression = JSON.parse(localStorage.getItem("progression"));
         if(restoredChordProgression && restoredChordProgression.length){
-            setChordProgression();
+            setChordProgression(restoredChordProgression);
         }
-    }, []);
+    }, [setChordProgression]);
 
 
     var keys = guitar.notes.sharps.map((note, index) => {
