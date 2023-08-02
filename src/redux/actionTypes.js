@@ -1,5 +1,5 @@
 
-export const FILL_FRETBOARD = "FILL_FRETBOARD";
+export const SET_FRETBOARD = "SET_FRETBOARD";
 
 export const TOGGLE_NOTE = "TOGGLE_NOTE";
 export const DISPLAY_NOTE = "DISPLAY_NOTE";

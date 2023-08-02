@@ -1,5 +1,5 @@
 import { 
-    FILL_FRETBOARD,
+    SET_FRETBOARD,
     
     DISPLAY_NOTE,
     TOGGLE_NOTE, 
@@ -27,10 +27,21 @@ import {
 import guitar from '../../config/guitar'
 
 function newFretboard(){
-    return Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill({
+    var newFretboard = Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill({
         show: false,
         current: ''
     }));
+
+    for(let i = 0; i < guitar.numberOfStrings; i++){
+        for(let j = 0; j < guitar.numberOfFrets; j++){
+            newFretboard[i][j] = {
+                show: false,
+                current: guitar.notes.sharps[(guitar.tuning[i] + j) % 12]
+            };
+        }
+    }
+
+    return newFretboard;
 }
 
 const initialState = {
@@ -60,13 +71,14 @@ const initialState = {
 
 const fretboard = (state = initialState, action) => {
   switch (action.type) {
-    case FILL_FRETBOARD: {
+    case SET_FRETBOARD: {
         return {
             ...state,
             fretboard: action.payload.fretboard
         };
     }
     case TOGGLE_NOTE: {
+        console.log("toggle note");
         let nf = [...state.fretboard];
         nf[action.payload.i][action.payload.j].show = !nf[action.payload.i][action.payload.j].show;
 

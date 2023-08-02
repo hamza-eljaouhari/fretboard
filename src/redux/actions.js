@@ -1,5 +1,5 @@
 import { 
-  FILL_FRETBOARD,
+  SET_FRETBOARD,
   
   DISPLAY_NOTE,
   TOGGLE_NOTE, 
@@ -28,8 +28,8 @@ import {
   SET_DASHED_CIRCLE_ROTATION
 } from "./actionTypes";
 
-export const fillFretboard = (fretboard) => ({
-  type: FILL_FRETBOARD,
+export const setFretboard = (fretboard) => ({
+  type: SET_FRETBOARD,
   payload: { fretboard }
 });   
 
