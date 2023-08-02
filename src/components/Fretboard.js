@@ -25,7 +25,8 @@ import {
         setShape,
         setFret,
 
-        setNotesDisplay
+        setNotesDisplay,
+        setChordProgression
 } from "../redux/actions";
 
 import Button from '@material-ui/core/Button';
@@ -39,6 +40,10 @@ import classNames from "classnames";
 import './guitar-neck.css';
 import { Typography } from '@material-ui/core';
 const queryString = require('query-string');
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -64,7 +69,7 @@ const Fretboard = withRouter((props) => {
 
     const search = props.history.location.search;
 
-    const {setFretboard, onSetTitle, notesDisplay, keySignature, fret, shape, scale, mode, arppegio, chord, fretboard, setNotesDisplay, setFret, setShape, setChord, setArppegio, setMode, setScale, setKey} = props;
+    const {chordProgression, setChordProgression, setFretboard, onSetTitle, notesDisplay, keySignature, fret, shape, scale, mode, arppegio, chord, fretboard, setNotesDisplay, setFret, setShape, setChord, setArppegio, setMode, setScale, setKey} = props;
 
     const cleanFretboard = useCallback(() => {
         var newFretboard = [...fretboard];
@@ -418,12 +423,9 @@ const Fretboard = withRouter((props) => {
             }
         } else {
             spread(notes, intervals);
+            onSetTitle(name);
         }
-        
-        onSetTitle(name);
-        
     }, [onSetTitle, mode, fret, shape, arppegio, chord, keySignature, scale, displayChordPortion, getArppegioNotes, getModeIntervals, getModeNotes, getScaleIntervals, getScaleNotes, spread])
-    
     
     const fillStoreFromURL = useCallback(() => {
         const { 
@@ -485,7 +487,6 @@ const Fretboard = withRouter((props) => {
 
         cleanFretboard();
         update();
-        console.log("rendered")
     }, [setNotesDisplay, setFret, setShape, setChord, setArppegio, setMode, setScale, setKey, search, cleanFretboard, update])
 
     const getCurrentDisplayableScaleNotes = useCallback(() => {
@@ -602,15 +603,72 @@ const Fretboard = withRouter((props) => {
         setHeads(newHeads);
     }, [setHeads, setRows, fretboard, getNoteIndex])
 
+    const addChordToProgression = () => {
+        if(keySignature === "unset"){
+            return;
+        }
+
+        if(chord === "unset"){
+            return;
+        }
+        
+        if(shape === "unset" && fret === "unset"){
+            return;
+        }
+        
+        let chordObject = {
+            key: keySignature,
+            chord,
+            shape,
+            fret: parseInt(fret)
+        };
+
+        const newChordProgression = [...chordProgression, chordObject];
+        
+        setChordProgression(newChordProgression);
+    }
+
+    const saveProgression = () => {
+        localStorage.setItem("progression", JSON.stringify(chordProgression));
+    }
+
+    const playChordProgression = async () => {
+        props.history.push('');
+
+        for(let i = 0; i < chordProgression.length; i++){
+            const chordProgressionParams = Object.keys(chordProgression[i]);
+
+            chordProgressionParams.forEach((key) => {
+                var search = queryString.parse(props.history.location.search);
+            
+                search[key] = chordProgression[i][key];
+        
+                const newLocation = queryString.stringify(search);
+        
+                props.history.push('/?' + newLocation);
+            });
+            
+            await new Promise(r => setTimeout(r, 4000));
+        }
+    }
+
     useEffect(() => {
 
         if(search.length){
             fillStoreFromURL();
+            console.log("fills from URL")
         }
         getFretboardTemplate();
 
-
     }, [fillStoreFromURL, search, getFretboardTemplate]);
+
+    useEffect(() => {
+        const restoredChordProgression = JSON.parse(localStorage.getItem("progression"));
+        if(restoredChordProgression && restoredChordProgression.length){
+            setChordProgression();
+        }
+    }, []);
+
 
     var keys = guitar.notes.sharps.map((note, index) => {
         return <option key={index} value={index}>{note}</option>
@@ -651,7 +709,6 @@ const Fretboard = withRouter((props) => {
     var arppegios = arppegiosNames.map((arppegioName) => {
         return <option key={arppegioName} value={arppegioName}>{arppegioName}</option>;
     });
-
 
     const chords = arppegios;
 
@@ -820,6 +877,38 @@ const Fretboard = withRouter((props) => {
                          Copy link
                     </Button>
                     
+
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={addChordToProgression}
+                    >
+                         Add chord to progression
+                    </Button>
+                    
+
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={playChordProgression}
+                    >
+                         Play progession
+                    </Button>
+
+                    <Button
+                        className={classes.formElement}
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={saveProgression}
+                    >
+                         Save progression
+                    </Button>
+
                     <Typography 
                         className={classes.seperator}
                         variant="h6">
@@ -843,14 +932,7 @@ const Fretboard = withRouter((props) => {
                          Print
                     </Button>
 
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                    >
-                         Save
-                    </Button>
+                 
 
                 </form>
             </section>
@@ -860,6 +942,7 @@ const Fretboard = withRouter((props) => {
 
 const mapStateToProps = state => {
     return { 
+        chordProgression: state.partitions.chordProgression,
         fretboard: state.fretboard.fretboard,
         keySignature: state.fretboard.keySignature,
         
@@ -907,6 +990,6 @@ export default connect(
 
         setShape,
         setFret,
-
+        setChordProgression,
         setNotesDisplay
 })(Fretboard);

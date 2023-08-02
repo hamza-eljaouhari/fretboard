@@ -25,7 +25,9 @@ import {
   SET_NOTES_DISPLAY,
   
   SET_CIRCLE_OF_FIFTHS_ROTATION,
-  SET_DASHED_CIRCLE_ROTATION
+  SET_DASHED_CIRCLE_ROTATION,
+
+  SET_CHORD_PROGRESSION
 } from "./actionTypes";
 
 export const setFretboard = (fretboard) => ({
@@ -126,5 +128,10 @@ export const setCircleOfFifthsRotation = (circleOfFifthsRotation) => ({
 export const setDashedCircleRotation = (dashedCircleRotation) => ({
   type: SET_DASHED_CIRCLE_ROTATION,
   payload: { dashedCircleRotation }
+});   
+
+export const setChordProgression = (chordProgression) => ({
+  type: SET_CHORD_PROGRESSION,
+  payload: { chordProgression }
 });   
 

@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import Fretboard from './components/Fretboard';
+import Partitions from './components/Partitions';
 import CircleOfFifths from './components/CircleOfFifths';
 import {
   BrowserRouter as Router,
@@ -85,6 +86,12 @@ export default function App(props) {
               </td>
             </tr>
             <tr>
+              <th>Chord progression :</th>
+              <td>
+                <Partitions></Partitions>
+              </td>
+            </tr>
+            <tr>
               <th>Circle of fifths :</th>
               <td>
                 <CircleOfFifths 
@@ -108,7 +115,6 @@ export default function App(props) {
           </tbody>
         </table>
       </Router>
-        
       </main>
     </div>
   );

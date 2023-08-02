@@ -1,0 +1,15 @@
+.partitions table {
+    width: 100%;
+    border-spacing: 10px;
+}
+
+.partitions .chord {
+    width: 25%;
+    height: 180px;
+    vertical-align: middle;
+    border: 1px solid black;
+    line-height: 25%;
+    text-align: center;
+    border-radius: 22px;
+    box-shadow: 0px 0px 1px;
+}
