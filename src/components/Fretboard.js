@@ -77,8 +77,13 @@ const Fretboard = withRouter((props) => {
             }
         }
         
+        console.log("fretboard :", fretboard);
+        console.log("newFretboard :", newFretboard);
         if(JSON.stringify(newFretboard) !== JSON.stringify(fretboard)){
             setFretboard(newFretboard);
+            console.log("test")
+        } else {
+            console.log("te")
         }
     }, [fretboard, setFretboard])
 
@@ -101,6 +106,7 @@ const Fretboard = withRouter((props) => {
     }
 
     function onCleanFretboard(){
+        props.history.push('');
         cleanFretboard();
     }
 
