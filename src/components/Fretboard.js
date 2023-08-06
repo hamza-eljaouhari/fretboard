@@ -618,7 +618,8 @@ const Fretboard = withRouter((props) => {
             chord,
             shape,
             fret: parseInt(fret),
-            highlighted: false
+            highlighted: false,
+            id: chordProgression.length + 1 
         };
 
         const newChordProgression = [...chordProgression, chordObject];
@@ -655,7 +656,6 @@ const Fretboard = withRouter((props) => {
 
         if(search.length){
             fillStoreFromURL();
-            console.log("fills from URL")
         }
         getFretboardTemplate();
 
