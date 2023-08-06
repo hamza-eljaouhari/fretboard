@@ -7,6 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { withRouter } from 'react-router-dom';
 import { 
     setChordProgression,
@@ -61,7 +63,8 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
         setAnchorEls(Array(chordProgression.length).fill(null));
     };
 
-    const displayChord = (chordObject) => {
+    const displayChord = (e, chordObject) => {
+        e.stopPropagation()
         const chordObjectKeys = Object.keys(chordObject);
 
         const searchObject = {};
@@ -97,6 +100,16 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
         handleClose();
     }
 
+    const moveBy = (chordObject, step) => {
+        var newChordProgression = [...chordProgression];
+
+        const chordIndex = newChordProgression.indexOf(chordObject);
+        const temp = newChordProgression[chordIndex];
+        newChordProgression[chordIndex] = newChordProgression[chordIndex + step];
+        newChordProgression[chordIndex + step] = temp;
+
+        setChordProgression(newChordProgression);
+    }
 
     // Divide into sets of 4's
     let setsOfFours = [];
@@ -133,11 +146,12 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
                                     {
                                         set.oneSetOfFour.map((chordObject, chordIndex) => {
                                             const current = 4 * (set.id - 1) + chordIndex;
-
+                                            const firstChord = current === 0;
+                                            const lastChord = current === chordProgression.length - 1; 
                                             return (
                                                 <td 
                                                 key={'chord-area-' + chordIndex} 
-                                                onClick={() => displayChord(chordObject)} 
+                                                onClick={(e) => displayChord(e, chordObject)} 
                                                 className={current === chordOrder ? "chord highlighted-chord" : "chord"}>
                                                     <div className="context-menu">
                                                         <IconButton
@@ -171,15 +185,39 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
                                                             }
                                                         </Menu>
                                                     </div>
-                                                    <div className="chord-name">
+                                                    <div className="chord-container">
+                                                        {
+                                                            !firstChord && <IconButton
+                                                                className="chord-element prev-chord"
+                                                                aria-label="prev-chord"
+                                                                aria-controls="prev-chord"
+                                                                aria-haspopup="true"
+                                                                size="small"
+                                                                onClick={() => moveBy(chordObject, -1)}
+                                                            >
+                                                                <ChevronLeftIcon />
+                                                            </IconButton>
+                                                        }
                                                         <Typography 
+                                                            className={firstChord ? "current-chord first-chord" : (lastChord ? "current-chord last-chord" : "current-chord")   }
                                                             style={{
-                                                                fontSize: '48px'
-                                                            }}
-                                                            variant="h6">
+                                                                fontSize: '32px'
+                                                            }}>
                                                             
                                                                 { guitar.notes.sharps[chordObject.key] + chordObject.chord}
                                                         </Typography>
+                                                        { 
+                                                            !lastChord && <IconButton
+                                                                className="chord-element next-chord"
+                                                                aria-label="next-chord"
+                                                                aria-controls="next-chord"
+                                                                aria-haspopup="true"
+                                                                size="small"
+                                                                onClick={() => moveBy(chordObject, +1)}
+                                                            >
+                                                                <ChevronRightIcon />
+                                                            </IconButton>
+                                                        }
                                                     </div>
                                                 </td>
                                             );

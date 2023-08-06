@@ -86,10 +86,6 @@ export default function App(props) {
               </td>
             </tr>
             <tr>
-              <th>Chord progression :</th>
-              
-            </tr>
-            <tr>
               <th>Circle of fifths / Chord progressions</th>
               <td>
                 <CircleOfFifths 

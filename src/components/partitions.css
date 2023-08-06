@@ -33,3 +33,20 @@
     height: 48px;
     margin-left: auto;
 }
+
+                                                        
+.partitions .chord-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.partitions .first-chord {
+    margin-left: 25px;
+}
+
+
+.partitions .last-chord {
+    margin-right: 25px;
+}
