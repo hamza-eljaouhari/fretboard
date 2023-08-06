@@ -9,7 +9,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { withRouter } from 'react-router-dom';
 import { 
-    setChordProgression
+    setChordProgression,
+    setKey,
+    setChord,
+    setFret,
+    setShape
 } from "../redux/actions";
 
 
@@ -38,9 +42,9 @@ const options = [
 
 const queryString = require('query-string');
 
-const Partitions = withRouter(({chordProgression, setChordProgression, history}) => {
+const Partitions = withRouter(({chordProgression, setChordProgression, history, setKey, setChord, setFret, setShape}) => {
     var search = queryString.parse(history.location.search);
-    const chordOrder = parseInt(search['chordOrder'])|| -1;
+    const chordOrder = parseInt(search['chordOrder']);
     const [anchorEls, setAnchorEls] = useState([]);
 
     const handleClick = (event, chordIndex) => {
@@ -56,6 +60,20 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
     const handleClose = () => {
         setAnchorEls(Array(chordProgression.length).fill(null));
     };
+
+    const displayChord = (chordObject) => {
+        const chordObjectKeys = Object.keys(chordObject);
+
+        const searchObject = {};
+
+        chordObjectKeys.forEach((key) => {
+            searchObject[key] = chordObject[key];
+        });
+
+        const newLocation = queryString.stringify(searchObject);
+
+        history.push('/?' + newLocation);
+    }
 
     const handleMenuOption = (optionId, chordObject) => {
 
@@ -114,10 +132,13 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
                                 <tr key={'set-area-' + set.id}>
                                     {
                                         set.oneSetOfFour.map((chordObject, chordIndex) => {
-                                            let current = 4 * (set.id - 1) + chordIndex;
-                                            
+                                            const current = 4 * (set.id - 1) + chordIndex;
+
                                             return (
-                                                <td key={'chord-area-' + chordIndex} className={current === chordOrder ? "chord highlighted-chord" : "chord"}>
+                                                <td 
+                                                key={'chord-area-' + chordIndex} 
+                                                onClick={() => displayChord(chordObject)} 
+                                                className={current === chordOrder ? "chord highlighted-chord" : "chord"}>
                                                     <div className="context-menu">
                                                         <IconButton
                                                             aria-label="more"
@@ -152,11 +173,11 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
                                                     </div>
                                                     <div className="chord-name">
                                                         <Typography 
-                                                                style={{
-                                                                    fontSize: '48px',
-                                                                    color: 'rgba(0, 0, 0, 0.8)',
-                                                                }}
-                                                                variant="h6">
+                                                            style={{
+                                                                fontSize: '48px'
+                                                            }}
+                                                            variant="h6">
+                                                            
                                                                 { guitar.notes.sharps[chordObject.key] + chordObject.chord}
                                                         </Typography>
                                                     </div>
@@ -183,6 +204,10 @@ const mapStateToProps = state => {
 export default connect(
     mapStateToProps,
     {
-        setChordProgression
+        setChordProgression,
+        setKey,
+        setChord,
+        setFret,
+        setShape
     }
 )(Partitions);

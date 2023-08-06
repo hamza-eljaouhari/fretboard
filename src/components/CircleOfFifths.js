@@ -76,7 +76,7 @@ function CircleOfFifths(props){
     })
 
     return(
-            <div id="circleOfFifths" style={{height: dimensions.height, minWidth: dimensions.width}} >
+            <section id="circleOfFifths" style={{height: dimensions.height, minWidth: dimensions.width}} >
                 <svg height="100%" width="100%">
                     <circle 
                         r={dimensions.outterOutlinedCircleRadius} 
@@ -127,7 +127,7 @@ function CircleOfFifths(props){
                     {relatives}
                     {keys}
                 </svg>
-            </div>
+            </section>
     );
 }
 

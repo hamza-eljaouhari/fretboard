@@ -1,32 +1,35 @@
+.partitions {
+    display: inline-block;
+    width: 50%;
+}
+
 .partitions table {
-    width: 100%;
+    width: 100%;    
     border-spacing: 10px;
 }
 
 .partitions .chord {
     width: 25%;
-    height: 200px;
+    height: 120px;
     border: 1px solid black;
     text-align: center;
     border-radius: 22px;
     box-shadow: 0px 0px 1px;
     padding: 0px;
+    -webkit-transition: background-color ease-in-out 1s;
+    -moz-transition: background-color ease-in-out 1s;
+    -o-transition: background-color ease-in-out 1s;
+    transition: background-color ease-in-out 1s;
+    cursor: pointer;
 }
 
-.partitions .highlighted-chord {
-    transition: font-size 0.5s ease;
-    font-size: 64px;
+
+.partitions .highlighted-chord {  
+    background-color: rgba(63, 165, 209, 0.3);    
 }
 
 .partitions .context-menu {
-    background-color: #cd5c5c;
     width: 48px;
     height: 48px;
-    text-align: center;
-    line-height:40px;
-    border-radius:  0 21px 0 0;
-    border: 1px solid black;
-    border-right: none;
-    border-top: none;
     margin-left: auto;
 }

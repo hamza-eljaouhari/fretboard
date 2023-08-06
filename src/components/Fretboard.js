@@ -91,8 +91,6 @@ const Fretboard = withRouter((props) => {
             newElement = e.target.value;
         }
 
-        // props['set' + elementsName[0].toUpperCase() + elementsName.substring(1)](newElement);
-
         var search = queryString.parse(props.history.location.search);
         
         search[elementsName] = newElement;
