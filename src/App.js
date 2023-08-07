@@ -5,7 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-
+import TabReader from './components/TabReader';
 import Fretboard from './components/Fretboard';
 import Partitions from './components/Partitions';
 import CircleOfFifths from './components/CircleOfFifths';
@@ -92,6 +92,12 @@ export default function App(props) {
                   className={classes.circleOfFifths} 
                   ></CircleOfFifths>
                 <Partitions></Partitions>
+              </td>
+            </tr>
+            <tr>
+              <th>Circle of fifths / Chord progressions</th>
+              <td>
+                <TabReader></TabReader>
               </td>
             </tr>
             <tr>

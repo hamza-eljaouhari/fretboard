@@ -41,7 +41,6 @@ import './guitar-neck.css';
 import { Typography } from '@material-ui/core';
 const queryString = require('query-string');
 
-
 const useStyles = makeStyles((theme) => ({
     form: {
         display: 'flex',
@@ -77,13 +76,8 @@ const Fretboard = withRouter((props) => {
             }
         }
         
-        console.log("fretboard :", fretboard);
-        console.log("newFretboard :", newFretboard);
         if(JSON.stringify(newFretboard) !== JSON.stringify(fretboard)){
             setFretboard(newFretboard);
-            console.log("test")
-        } else {
-            console.log("te")
         }
     }, [fretboard, setFretboard])
 
@@ -746,6 +740,7 @@ const Fretboard = withRouter((props) => {
                         { keys }
                         </Select>
                     </FormControl>
+                    
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
@@ -760,6 +755,7 @@ const Fretboard = withRouter((props) => {
                         { scales }
                         </Select>
                     </FormControl>
+
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal"  >
@@ -774,6 +770,7 @@ const Fretboard = withRouter((props) => {
                         { modes }
                         </Select>
                     </FormControl>
+
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
@@ -792,6 +789,7 @@ const Fretboard = withRouter((props) => {
                         { arppegios }
                         </Select>
                     </FormControl>
+                    
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
@@ -810,6 +808,7 @@ const Fretboard = withRouter((props) => {
                         { chords }
                         </Select>
                     </FormControl>
+
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
@@ -830,6 +829,7 @@ const Fretboard = withRouter((props) => {
                         }) }
                         </Select>
                     </FormControl>
+
                     <FormControl 
                         className={classes.formElement}
                         variant="outlined" margin="normal" >
@@ -870,6 +870,7 @@ const Fretboard = withRouter((props) => {
                     >
                         Clean
                     </Button>
+
                     <Button
                         className={classes.formElement}
                         variant="contained"
@@ -879,7 +880,6 @@ const Fretboard = withRouter((props) => {
                     >
                          Copy link
                     </Button>
-                    
 
                     <Button
                         className={classes.formElement}
@@ -917,6 +917,7 @@ const Fretboard = withRouter((props) => {
                         variant="h6">
                         Coming soon :
                     </Typography>
+
                     <Button
                         className={classes.formElement}
                         variant="contained"
@@ -934,9 +935,6 @@ const Fretboard = withRouter((props) => {
                     >
                          Print
                     </Button>
-
-                 
-
                 </form>
             </section>
         </div>
@@ -944,30 +942,32 @@ const Fretboard = withRouter((props) => {
 })
 
 const mapStateToProps = state => {
-    return { 
-        chordProgression: state.partitions.chordProgression,
-        fretboard: state.fretboard.fretboard,
-        keySignature: state.fretboard.keySignature,
-        
-        scale : state.fretboard.scale,
-        scaleNotes: state.fretboard.scaleNotes,
-        scaleIntervals: state.fretboard.scaleIntervals,
-        
-        mode: state.fretboard.mode,
-        modeNotes: state.fretboard.modeNotes,
-        modeIntervals: state.fretboard.modeIntervals,
-        
-        arppegio: state.fretboard.arppegio,
-        arppegioNotes: state.fretboard.arppegioNotes,
-        arppegioIntervals: state.fretboard.arppegioIntervals,
+    // Destructure props to avoid repetitive use of props.
+  const {
+    chordProgression,
+    fretboard,
+    keySignature,
+    scale,
+    mode,
+    arppegio,
+    chord,
+    shape,
+    fret,
+    notesDisplay,
+  } = state.fretboard;
 
-        chord: state.fretboard.chord,
-        
-        shape: state.fretboard.shape,
-        fret: state.fretboard.fret,
-        
-        notesDisplay: state.fretboard.notesDisplay
-    };
+  return {
+    chordProgression,
+    fretboard,
+    keySignature,
+    scale,
+    mode,
+    arppegio,
+    chord,
+    shape,
+    fret,
+    notesDisplay,
+  };
 };
   
 export default connect(

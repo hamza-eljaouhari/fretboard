@@ -44,18 +44,15 @@ const options = [
 
 const queryString = require('query-string');
 
-const Partitions = withRouter(({chordProgression, setChordProgression, history, setKey, setChord, setFret, setShape}) => {
+const Partitions = withRouter(({chordProgression, setChordProgression, history}) => {
     var search = queryString.parse(history.location.search);
     const chordOrder = parseInt(search['chordOrder']);
     const [anchorEls, setAnchorEls] = useState([]);
 
     const handleClick = (event, chordIndex) => {
         var newAnchorEls = [...anchorEls]
-        
         newAnchorEls = Array(chordProgression.length).fill(null);
-
         newAnchorEls[chordIndex] = event.currentTarget;
-        
         setAnchorEls(newAnchorEls);
     };
     
@@ -63,8 +60,7 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
         setAnchorEls(Array(chordProgression.length).fill(null));
     };
 
-    const displayChord = (e, chordObject) => {
-        e.stopPropagation()
+    const displayChord = (chordObject) => {
         const chordObjectKeys = Object.keys(chordObject);
 
         const searchObject = {};
@@ -112,28 +108,21 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
     }
 
     // Divide into sets of 4's
-    let setsOfFours = [];
-    let oneSetOfFour = [];
-
-    for(let i = 0; i < chordProgression.length; i++){
-
-        oneSetOfFour.push(chordProgression[i]);
-
-        if((i + 1) % 4 === 0){
-            setsOfFours.push({
-                id: setsOfFours.length + 1, 
-                oneSetOfFour
-            });
-            oneSetOfFour = [];
+    const setsOfFours = (() => {
+        const sets = [];
+        let set = [];
+        for (let i = 0; i < chordProgression.length; i++) {
+          set.push(chordProgression[i]);
+          if ((i + 1) % 4 === 0) {
+            sets.push({ id: sets.length + 1, chords: set });
+            set = [];
+          }
         }
-
-        if(i === chordProgression.length - 1 && oneSetOfFour.length < 4){
-            setsOfFours.push({
-                id: setsOfFours.length + 1,
-                oneSetOfFour
-            });
+        if (set.length > 0) {
+          sets.push({ id: sets.length + 1, chords: set });
         }
-    }
+        return sets;
+    })();
 
     return (
         <section className="partitions">
@@ -141,18 +130,18 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history, 
                 <tbody>
                     {
                         setsOfFours.map((set) => {
-                                return (
+                            return (
                                 <tr key={'set-area-' + set.id}>
                                     {
-                                        set.oneSetOfFour.map((chordObject, chordIndex) => {
+                                        set.chords.map((chordObject, chordIndex) => {
                                             const current = 4 * (set.id - 1) + chordIndex;
                                             const firstChord = current === 0;
                                             const lastChord = current === chordProgression.length - 1; 
                                             return (
                                                 <td 
-                                                key={'chord-area-' + chordIndex} 
-                                                onClick={(e) => displayChord(e, chordObject)} 
-                                                className={current === chordOrder ? "chord highlighted-chord" : "chord"}>
+                                                    key={'chord-area-' + chordIndex} 
+                                                    onClick={() => displayChord(chordObject)} 
+                                                    className={current === chordOrder ? "chord highlighted-chord" : "chord"}>
                                                     <div className="context-menu">
                                                         <IconButton
                                                             aria-label="more"
