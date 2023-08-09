@@ -555,7 +555,7 @@ const Fretboard = withRouter((props) => {
             const columns = [];
     
             for(let j = 0; j < columnsCount; j++){
-    
+
                 var note = fretboard[i][j];
                 columns.push(
                     <td
@@ -577,14 +577,13 @@ const Fretboard = withRouter((props) => {
                         <hr></hr>
                     </td>
                 );
-                
             }
     
             newRows.push(
                 <tr key={i}>
                     { columns }
                 </tr>
-            )
+            );
         }
     
         var newHeads = [];
@@ -626,7 +625,9 @@ const Fretboard = withRouter((props) => {
     }
 
     const saveProgression = () => {
-        localStorage.setItem("progression", JSON.stringify(chordProgression));
+        if(chordProgression && chordProgression.length > 0){
+            localStorage.setItem("progression", JSON.stringify(chordProgression));            
+        }
     }
 
     const playChordProgression = async () => {
