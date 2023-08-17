@@ -9,7 +9,7 @@ import {
     setMode
 } from "../redux/actions";
 
-function CircleOfFifths(props){
+function CircleOfFifths({ circleOfFifthsRotation, dashedCircleRotation, setKey, setScale, setMode }){
     
     const dimensions =  {
         width: 500,
@@ -36,22 +36,22 @@ function CircleOfFifths(props){
 
     function pointToKey(index, isMajor){
         var keySignature = guitar.notes.flats.indexOf(guitar.circleOfFifths[index].key);
-        props.setKey(keySignature);
-        props.setScale("major");
-        props.setMode(isMajor === true ? 0 : 5);
-        
+        setKey(keySignature);
+        setScale("major");
+        setMode(isMajor === true ? 0 : 5);
     }
 
-    function getCircle(center, radius, steps = 12){
-        var elements = []
-        
-        for (var i = steps; i > 0; i--) {
-            elements.push({
-                top: center + radius * Math.cos(2 * Math.PI * (( i + 6) % 12) / steps),
-                left: center + radius * Math.sin(2 * Math.PI * (( i + 6) % 12) / steps)
-            })
+    function getCircle(center, radius, steps = 12) {
+        const elements = [];
+      
+        for (let i = steps; i > 0; i--) {
+          const angle = 2 * Math.PI * ((i + 6) % 12) / steps;
+          elements.push({
+            top: center + radius * Math.cos(angle),
+            left: center + radius * Math.sin(angle)
+          });
         }
-        
+      
         return elements;
     }
 
@@ -93,7 +93,7 @@ function CircleOfFifths(props){
                         stroke="#cd5c5c"
                         strokeWidth={dimensions.strokeWidth} 
                         strokeDasharray='656 1206'
-                        transform={`rotate(${props.circleOfFifthsRotation}, 250, 250)`} 
+                        transform={`rotate(${circleOfFifthsRotation}, 250, 250)`} 
                         cx={dimensions.centerY} 
                         cy={dimensions.centerY}/>
 
@@ -104,7 +104,7 @@ function CircleOfFifths(props){
                         strokeWidth={dimensions.dashedStrokeWidth} 
                         stroke="black" 
                         strokeDasharray="1 94" 
-                        transform={`rotate(${props.dashedCircleRotation}, 250, 250)`}
+                        transform={`rotate(${dashedCircleRotation}, 250, 250)`}
                         cx={dimensions.centerX} 
                         cy={dimensions.centerY}/>
 
@@ -130,8 +130,6 @@ function CircleOfFifths(props){
             </section>
     );
 }
-
-
 
 const mapStateToProps = state => {
 
