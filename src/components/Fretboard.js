@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
 import FretboardControls from './FretboardControls';
 import CircleOfFifths from './CircleOfFifths';
+import ChordProgressionDisplay from './ChordProgressionDisplay';
 
 import { 
         setFretboard,
@@ -95,7 +96,6 @@ const Fretboard = withRouter((props) => {
     const classes = useStyles();
     const [rows, setRows] = useState([]);
     const [heads, setHeads] = useState([]);
-
     const search = props.history.location.search;
 
     const {chordProgression, setChordProgression, setFretboard, onSetTitle, notesDisplay, keySignature, fret, shape, scale, mode, arppegio, chord, fretboard, setNotesDisplay, setFret, setShape, setChord, setArppegio, setMode, setScale, setKey} = props;
@@ -643,6 +643,8 @@ const Fretboard = withRouter((props) => {
             return;
         }
         
+        console.log(chordProgression);
+
         let chordObject = {
             key: keySignature,
             chord,
@@ -766,6 +768,8 @@ const Fretboard = withRouter((props) => {
                 onElementChange={onElementChange}
             />
 
+            <ChordProgressionDisplay chordProgression={chordProgression} ></ChordProgressionDisplay>
+
             <section className="controls">
                 <FretboardControls
                         classes={classes}
@@ -778,15 +782,16 @@ const Fretboard = withRouter((props) => {
                         choice={choice}
                         onCleanFretboard={onCleanFretboard}
                         onCopyLink={onCopyLink}
-                        addChordToProgression={addChordToProgression}
-                        playChordProgression={playChordProgression}
-                        saveProgression={saveProgression}
                         selectedMode={mode}
                         selectedScale={scale}
                         selectedChord={chord}
                         selectedShape={shape}
                         selectedArppegio={arppegio}
                         selectedFret={fret}
+                        addChordToProgression={addChordToProgression}
+                        saveProgression={saveProgression}
+                        playChordProgression={playChordProgression}
+                        chordProgression={chordProgression}
                 />
             </section>
         </div>
@@ -797,7 +802,6 @@ const Fretboard = withRouter((props) => {
 const mapStateToProps = state => {
     // Destructure props to avoid repetitive use of props.
   const {
-    chordProgression,
     fretboard,
     keySignature,
     scale,
@@ -808,6 +812,10 @@ const mapStateToProps = state => {
     fret,
     notesDisplay,
   } = state.fretboard;
+
+  const {
+    chordProgression
+  } = state.partitions;
 
   return {
     chordProgression,

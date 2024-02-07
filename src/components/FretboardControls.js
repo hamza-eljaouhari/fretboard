@@ -13,15 +13,16 @@ const FretboardControls = ({
     arppegiosNames,
     onCleanFretboard,
     onCopyLink,
-    addChordToProgression,
-    playChordProgression,
-    saveProgression,
     selectedMode,
     selectedScale,
     selectedChord,
     selectedArppegio,
     selectedFret,
-    selectedShape
+    selectedShape,
+    addChordToProgression,
+    saveProgression,
+    playChordProgression,
+    chordProgression
 }) => {
     // Helper function to capitalize the first letter of each choice
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -200,7 +201,34 @@ const FretboardControls = ({
                 Clean
             </Button>
 
-            {/* Additional buttons as needed */}
+                    
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={addChordToProgression}
+                disabled={!selectedChord || (!selectedShape && !selectedFret)} // Disable button based on certain conditions
+            >
+                Add Chord
+            </Button>
+
+            <Button
+                variant="contained"
+                color="secondary"
+                onClick={saveProgression}
+                disabled={chordProgression && chordProgression.length === 0} // Disable button if there's no progression
+            >
+                Save
+            </Button>
+
+            <Button
+                variant="contained"
+                color="default"
+                onClick={playChordProgression}
+                disabled={!chordProgression || chordProgression.length === 0} // Disable button if there's no progression
+            >
+                Play
+            </Button>
+
         </footer>
     );
 };
