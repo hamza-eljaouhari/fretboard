@@ -2,6 +2,9 @@ import guitar from '../config/guitar';
 import React, { useEffect, useCallback, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from "react-redux";
+import FretboardControls from './FretboardControls';
+import CircleOfFifths from './CircleOfFifths';
+
 import { 
         setFretboard,
         toggleNote, 
@@ -40,21 +43,51 @@ import classNames from "classnames";
 import './guitar-neck.css';
 import { Typography } from '@material-ui/core';
 const queryString = require('query-string');
-
 const useStyles = makeStyles((theme) => ({
-    form: {
+    root: {
         display: 'flex',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
+        height: 'calc(100vh - 64px)', // Adjust for AppBar height if necessary
+        position: 'relative', // Needed for footer positioning
     },
-    formElement: {
-        flex: '1 0 21%',
-        margin: '10px'
+    fretboardArea: {
+        flex: 1,
+        overflowY: 'auto', // Allow scrolling within the fretboard area if necessary
     },
-    seperator: {
+    footer: {
+        position: 'fixed',
+        left: 0,
+        bottom: 0,
         width: '100%',
-        fontSize: '14px',
-        margin: '10px',
-    }
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: '0 -2px 10px rgba(0,0,0,0.2)',
+        padding: theme.spacing(2),
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        zIndex: 1000, // Ensure footer is above other content
+    },
+    selectControl: {
+        minWidth: 120,
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+        width: '100%', // Adjust based on layout requirements
+    },
+    fixedWidth: {
+        width: '200px', // Fixed width for all child elements
+    },
+    // You can still keep the formControl class for additional styling specific to select menus
+    formControl: {
+        margin: theme.spacing(1),
+        // No need to set width here if fixedWidth class is used for width
+    },
+    buttonGroup: {
+        display: 'flex', // This enables flexbox
+        justifyContent: 'center', // This centers the buttons horizontally in the container
+        gap: theme.spacing(1), // Optional: adds space between buttons
+    },
 }));
   
 const Fretboard = withRouter((props) => {
@@ -81,13 +114,13 @@ const Fretboard = withRouter((props) => {
         }
     }, [fretboard, setFretboard])
 
-    const onElementChange = (e, elementsName) => {
+    const onElementChange = (targetValue, elementsName) => {
         var newElement = null;
 
         if(elementsName === 'notesDisplay'){
             newElement = !props[elementsName];
         } else {
-            newElement = e.target.value;
+            newElement = targetValue;
         }
 
         var search = queryString.parse(props.history.location.search);
@@ -142,7 +175,7 @@ const Fretboard = withRouter((props) => {
 
     const getScaleNotes = useCallback(() => {
 
-        if(scale === "unset"){
+        if(scale === ''){
             return [];
         }
 
@@ -162,7 +195,7 @@ const Fretboard = withRouter((props) => {
 
     const getScaleIntervals = useCallback(() =>{
 
-        if(scale === "unset"){
+        if(scale === ''){
             return;
         }
 
@@ -197,11 +230,11 @@ const Fretboard = withRouter((props) => {
 
     const getModeIntervals = useCallback(() => {
 
-        if(scale === "unset"){
+        if(scale === ''){
             return [];
         }
 
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return [];
         }
 
@@ -213,21 +246,21 @@ const Fretboard = withRouter((props) => {
     }, [scale, mode, keySignature])
 
     const getArppegioNotes = useCallback((fromArppegio) => {
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return [];
         }
         
         var arppegioFormula = [];
 
         if(fromArppegio){
-            if(arppegio === "unset"){
+            if(arppegio === ''){
                 return [];
             }
             
             arppegioFormula = guitar.arppegios[arppegio].formula;
 
         }else{
-            if(chord === "unset"){
+            if(chord === ''){
                 return [];
             }
 
@@ -249,11 +282,11 @@ const Fretboard = withRouter((props) => {
 
     const getArppegioIntervals = useCallback((isFromArppegio) => {
 
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return [];
         }
 
-        if(arppegio === "unset" &&  chord === "unset"){
+        if(arppegio === '' &&  chord === ''){
             return [];
         }
         
@@ -276,12 +309,12 @@ const Fretboard = withRouter((props) => {
         var startingIndex = 0;
         var lastIndex = null;
        
-        if(shape !== "unset"){
+        if(shape !== ''){
             startingIndex = guitar.shapes.indexes[parseInt(shape)].start;
             lastIndex = guitar.shapes.indexes[parseInt(shape)].end + 1;
         }
 
-        if(fret !== "unset"){
+        if(fret !== ''){
             startingIndex = parseInt(fret) - 1;
             lastIndex = startingIndex + 4;
         }
@@ -320,12 +353,12 @@ const Fretboard = withRouter((props) => {
         var startingIndex = 0;
         var lastIndex = guitar.numberOfFrets;
 
-        if(shape !== "unset"){
+        if(shape !== ''){
             startingIndex = guitar.shapes.indexes[parseInt(shape)].start;
             lastIndex = guitar.shapes.indexes[parseInt(shape)].end + 1;
         }
 
-        if(fret !== "unset"){
+        if(fret !== ''){
             startingIndex = parseInt(fret) - 1;
             lastIndex = startingIndex + 4;
         }
@@ -355,11 +388,11 @@ const Fretboard = withRouter((props) => {
 
         onSetTitle('Choose something to display...')
 
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return;
         }
 
-        if(scale === "unset" && arppegio === "unset" && chord === "unset"){
+        if(scale === '' && arppegio === '' && chord === ''){
             return;
         }
 
@@ -367,7 +400,7 @@ const Fretboard = withRouter((props) => {
         var intervals = null;
         var name = '';
 
-        if(scale !== "unset"){
+        if(scale !== ''){
             var isModal = guitar.scales[scale].isModal;
 
             notes = getScaleNotes();
@@ -379,7 +412,7 @@ const Fretboard = withRouter((props) => {
             name = notes[0] + ' ' + guitar.scales[scale].name + ' scale';
             
             if(isModal){
-                if(mode !== "unset"){
+                if(mode !== ''){
                     notes = getModeNotes();
                     setModeNotes(notes)
 
@@ -395,7 +428,7 @@ const Fretboard = withRouter((props) => {
             }
         }
     
-        if(arppegio !== "unset"){
+        if(arppegio !== ''){
             notes = getArppegioNotes(true);
             setArppegioNotes(notes)
 
@@ -405,13 +438,13 @@ const Fretboard = withRouter((props) => {
             name = notes[0] + ' ' + guitar.arppegios[arppegio].name + ' arppegio.';
         }
             
-        if(chord !== "unset"){
+        if(chord !== ''){
             notes = getArppegioNotes(false);
             intervals = guitar.arppegios[chord].intervals;
 
             name = notes[0] + ' ' + guitar.arppegios[chord].name + ' chord.';
 
-            if(fret !== "unset" || shape !== "unset"){
+            if(fret !== '' || shape !== ''){
                 onSetTitle(name);
                 displayChordPortion(notes, intervals);
                 return;
@@ -437,43 +470,43 @@ const Fretboard = withRouter((props) => {
         if(parseInt(key) >= 0 && parseInt(key) < 12){
             setKey(parseInt(key));
         } else {
-            setKey("unset");
+            setKey('');
         }
 
         if(Object.keys(guitar.scales).includes(scale)){
             setScale(scale)
         } else {
-            setScale("unset");
+            setScale('');
         }
 
         if(parseInt(mode) >= 0 && parseInt(mode) <= 6){
             setMode(mode);
         } else {
-            setMode("unset");
+            setMode('');
         }
 
         if(Object.keys(guitar.arppegios).includes(arppegio)){
             setArppegio(arppegio);
         } else {
-            setArppegio("unset");
+            setArppegio('');
         }
 
         if(Object.keys(guitar.arppegios).includes(chord)){
             setChord(chord)
         } else {
-            setChord("unset");
+            setChord('');
         }
 
         if(shape >= 0 && shape <= 4){
             setShape(shape);
         } else {
-            setShape("unset");
+            setShape('');
         }
 
         if(fret > 0 && fret < 22){
             setFret(fret);
         } else {
-            setFret("unset");
+            setFret('');
         }
 
         if(notesDisplay === "true" || notesDisplay === "false"){
@@ -488,22 +521,22 @@ const Fretboard = withRouter((props) => {
         
         var scaleNotes = [];
 
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return [];
         }
 
-        if(scale !== "unset"){
+        if(scale !== ''){
             scaleNotes = getScaleNotes();
-            if(guitar.scales[scale].isModal && mode !== "unset"){
+            if(guitar.scales[scale].isModal && mode !== ''){
                 scaleNotes = getModeNotes();
             }
         }
 
-        if(arppegio !== "unset"){
+        if(arppegio !== ''){
             scaleNotes = getArppegioNotes(true);
         }
         
-        if(chord !== "unset"){
+        if(chord !== ''){
             scaleNotes = getArppegioNotes(false);
         }
 
@@ -514,18 +547,18 @@ const Fretboard = withRouter((props) => {
         
         var scaleIntervals = [];
 
-        if(scale !== "unset"){
+        if(scale !== ''){
             scaleIntervals = getScaleIntervals();
-            if(guitar.scales[scale].isModal && mode !== "unset"){
+            if(guitar.scales[scale].isModal && mode !== ''){
                 scaleIntervals = getModeIntervals();
             }
         }
 
-        if(arppegio !== "unset"){
+        if(arppegio !== ''){
             scaleIntervals = getArppegioIntervals(true);
         }
 
-        if(chord !== "unset"){
+        if(chord !== ''){
             scaleIntervals = getArppegioIntervals(false);
         }
 
@@ -598,15 +631,15 @@ const Fretboard = withRouter((props) => {
     }, [setHeads, setRows, fretboard, getNoteIndex])
 
     const addChordToProgression = () => {
-        if(keySignature === "unset"){
+        if(keySignature === ''){
             return;
         }
 
-        if(chord === "unset"){
+        if(chord === ''){
             return;
         }
         
-        if(shape === "unset" && fret === "unset"){
+        if(shape === '' && fret === ''){
             return;
         }
         
@@ -672,21 +705,13 @@ const Fretboard = withRouter((props) => {
         return <option key={index} value={index}>{note}</option>
     })
 
-    if(scale !== "unset"){
+    if(scale !== ''){
 
         const currentScale = guitar.scales[scale];
 
-        var modes = null;
-        
         if(currentScale.isModal){
 
             var scaleModes = currentScale.modes;
-
-            if(scaleModes.length){
-                modes = scaleModes.map((mode, index) => {
-                    return <option key={index} value={index}>{mode.name}</option>
-                })
-            }
         }
     }
 
@@ -696,12 +721,6 @@ const Fretboard = withRouter((props) => {
         buttonText = 'Notes';
     }
 
-    var scalesNames = Object.keys(guitar.scales);
-
-    var scales = scalesNames.map((scaleName) => {
-        return <option key={scaleName} value={scaleName}>{guitar.scales[scaleName].name}</option>;
-    });
-
     var arppegiosNames = Object.keys(guitar.arppegios);
 
     var arppegios = arppegiosNames.map((arppegioName) => {
@@ -710,7 +729,19 @@ const Fretboard = withRouter((props) => {
 
     const chords = arppegios;
 
-    return(
+    const [choice, setChoice] = useState(null); // 'scale' or 'chord'
+
+    // Event Handlers
+    const handleChoiceChange = (choice) => {
+        setChoice(choice);
+        console.log(choice);
+    };
+
+    const pointCircleOfFifth = (keySignature) => {
+        return guitar.notes.flats[keySignature];
+    };
+
+     return(
         
         <div className="fretboard-container">
             <table>
@@ -725,220 +756,41 @@ const Fretboard = withRouter((props) => {
                     </tr>
                 </tfoot>
             </table>
+
+            <CircleOfFifths 
+                className={classes.circleOfFifths}  
+                setKey={setKey}
+                setScale={setScale}
+                setMode={setMode}
+                selectedTone={pointCircleOfFifth(keySignature)}
+                onElementChange={onElementChange}
+            />
+
             <section className="controls">
-                <form  className={classes.form}>
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal">
-                        <InputLabel htmlFor="keys">Keys :</InputLabel>
-                        <Select
-                        native
-                        value={props.keySignature}
-                        onChange={(e) => onElementChange(e, 'key')}
-                        label="Keys :"
-                        >
-                        <option value="unset">Select key</option>
-                        { keys }
-                        </Select>
-                    </FormControl>
-                    
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal" >
-                        <InputLabel htmlFor="scales">Scales :</InputLabel>
-                        <Select
-                        native
-                        value={props.scale}
-                        onChange={(e) => onElementChange(e, 'scale')}
-                        label="Scales :"
-                        >
-                        <option value="unset">Select scale</option>
-                        { scales }
-                        </Select>
-                    </FormControl>
-
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal"  >
-                        <InputLabel htmlFor="modes">Modes :</InputLabel>
-                        <Select
-                        native
-                        value={props.mode}
-                        onChange={(e) => onElementChange(e, 'mode')}
-                        label="Modes :"
-                        >
-                        <option value="unset">Select mode</option>
-                        { modes }
-                        </Select>
-                    </FormControl>
-
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal" >
-                        <InputLabel htmlFor="keys">Arrpegios :</InputLabel>
-                        <Select
-                        native
-                        value={props.arppegio}
-                        onChange={(e) => onElementChange(e, 'arppegio')}
-                        label="Keys :"
-                        inputProps={{
-                            name: 'arppegio',
-                            id: 'arppegios',
-                        }}
-                        >
-                        <option value="unset">Select arppegio</option>
-                        { arppegios }
-                        </Select>
-                    </FormControl>
-                    
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal" >
-                        <InputLabel htmlFor="keys">Chords :</InputLabel>
-                        <Select
-                        native
-                        value={props.chord}
-                        onChange={(e) => onElementChange(e, 'chord')}
-                        label="Chords :"
-                        inputProps={{
-                            name: 'chord',
-                            id: 'chords',
-                        }}
-                        >
-                        <option value="unset">Select chord</option>
-                        { chords }
-                        </Select>
-                    </FormControl>
-
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal" >
-                        <InputLabel htmlFor="shapes">Shapes :</InputLabel>
-                        <Select
-                        native
-                        value={props.shape}
-                        onChange={(e) => onElementChange(e, 'shape')}
-                        label="Shapes :"
-                        inputProps={{
-                            name: 'shape',
-                            id: 'shapes',
-                        }}
-                        >
-                        <option value="unset">Select all</option>
-                        { guitar.shapes.names.map((shape, index) => {
-                            return <option key={index} value={index}>{shape}</option>
-                        }) }
-                        </Select>
-                    </FormControl>
-
-                    <FormControl 
-                        className={classes.formElement}
-                        variant="outlined" margin="normal" >
-                        <InputLabel htmlFor="positions">Positions :</InputLabel>
-                        <Select
-                        native
-                        value={props.fret}
-                        onChange={(e) => onElementChange(e, 'fret')}
-                        label="Positions :"
-                        inputProps={{
-                            name: 'position',
-                            id: 'positions',
-                        }}
-                        >
-                        <option value="unset">Select all</option>
-                        { Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((fret) => {
-                            return <option key={fret}>{fret}</option>
-                        }) }
-                        </Select>
-                    </FormControl>
-                    
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={(e) => onElementChange(e, 'notesDisplay')}
-                    >
-                        { buttonText } 
-                    </Button>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={onCleanFretboard}
-                    >
-                        Clean
-                    </Button>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={onCopyLink}
-                    >
-                         Copy link
-                    </Button>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={addChordToProgression}
-                    >
-                         Add chord to progression
-                    </Button>
-                    
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={playChordProgression}
-                    >
-                         Play progession
-                    </Button>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                        onClick={saveProgression}
-                    >
-                         Save progression
-                    </Button>
-
-                    <Typography 
-                        className={classes.seperator}
-                        variant="h6">
-                        Coming soon :
-                    </Typography>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                    >
-                        Detect
-                    </Button>
-
-                    <Button
-                        className={classes.formElement}
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                    >
-                         Print
-                    </Button>
-                </form>
+                <FretboardControls
+                        classes={classes}
+                        handleChoiceChange={handleChoiceChange}
+                        keySignature={keySignature}
+                        onElementChange={onElementChange}
+                        buttonText={buttonText}
+                        scaleModes={scaleModes}
+                        arppegiosNames={arppegiosNames}
+                        choice={choice}
+                        onCleanFretboard={onCleanFretboard}
+                        onCopyLink={onCopyLink}
+                        addChordToProgression={addChordToProgression}
+                        playChordProgression={playChordProgression}
+                        saveProgression={saveProgression}
+                        selectedMode={mode}
+                        selectedScale={scale}
+                        selectedChord={chord}
+                        selectedShape={shape}
+                        selectedArppegio={arppegio}
+                        selectedFret={fret}
+                />
             </section>
         </div>
+        
     );
 })
 

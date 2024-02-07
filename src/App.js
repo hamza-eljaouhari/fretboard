@@ -13,9 +13,12 @@ import {
   BrowserRouter as Router,
 } from "react-router-dom";
 
-const useStyles = makeStyles(() => ({
+
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   appBar: {
     display: 'flex',
@@ -25,19 +28,28 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between'
   },
   content: {
-    margin: ' 100px auto'
+    display: 'flex', // Use flexbox to layout children side by side
+    justifyContent: 'space-between',
+    paddingTop: theme.spacing(12), // Adjust the padding to ensure content is visible below the AppBar
+    minHeight: '100vh', // Ensure the container takes up at least the full height of the viewport
+  },
+  controlsContainer: {
+    flex: 1, // Adjust based on your layout needs
+    overflowY: 'auto', // Make only this container scrollable
+    maxHeight: 'calc(100vh - 64px)', // Adjust the height to prevent controls from going under the AppBar. Assumes AppBar height is 64px.
+  },
+  fixedSection: {
+    display: 'flex',
+    flexDirection: 'row', // Layout the fretboard and Circle of Fifths side by side
+    justifyContent: 'flex-start',
+    alignItems: 'start',
+    flex: 3, // Adjust based on your layout needs
   },
   circleOfFifths: {
-    marginBottom: "25px"
+    // Your existing circleOfFifths styles
+    flex: 1, // Make the Circle of Fifths take up 1/4 of the fixed section
   },
-  title: {
-    fontSize: '14px'
-  },
-  seperator: {
-    width: '100%',
-    fontSize: '14px',
-    margin: '10px',
-}
+  // You might need additional styles for the fretboard section to adjust its width
 }));
 
 export default function App(props) {
@@ -50,71 +62,18 @@ export default function App(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        className={classes.appBar}
-        position="fixed"
-        >
-        <Typography variant="h6">
-          Interactive fretboard and circle of fifths
-        </Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          startIcon={<FavoriteIcon />}
-        >
-        Have fun
-      </Button>
-      </AppBar>
       <main className={classes.content}>
         <Router>
-        <table className="content-table">
-          <tbody>
-            <tr>
-              <th>Pointing to :</th>
-              <td>
-                <Typography variant="h6" >
-                  { title }
-                </Typography>
-              </td>
-            </tr>
-            <tr>
-              <th>Fretboard :</th>
-              <td>
-                <Fretboard onSetTitle={onSetTitle}></Fretboard>
-              </td>
-            </tr>
-            <tr>
-              <th>Circle of fifths / Chord progressions</th>
-              <td>
-                <CircleOfFifths 
-                  className={classes.circleOfFifths} 
-                  ></CircleOfFifths>
-                <Partitions></Partitions>
-              </td>
-            </tr>
-            <tr>
-              <th>Circle of fifths / Chord progressions</th>
-              <td>
-                <TabReader></TabReader>
-              </td>
-            </tr>
-            <tr>
-              <th>Also coming soon :</th>
-              <td>
-                <ol>
-                  <li>Showing scale degrees on the circle of fifths</li>
-                  <li>Composing chord progressions, store and share them via a simple link</li>
-                  <li>Detecting chords and scales</li>
-                  <li>A tabs reader that plays animation of the note on the fretboard ( why not? )</li>
-                  <li>Allowing to customize the guitar tuning and maybe support of more than 6 strings</li>
-                  <li>Adding sound to the fretboard</li>
-                </ol>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar className={classes.appBar} position="fixed">
+            <Typography variant="h6">Interactive fretboard and circle of fifths</Typography>
+            <Button variant="contained" color="secondary" startIcon={<FavoriteIcon />}>Have fun</Button>
+          </AppBar>
+            <div className={classes.fixedSection}>
+              <Fretboard onSetTitle={onSetTitle} />
+            </div>
+        </div>
       </Router>
       </main>
     </div>

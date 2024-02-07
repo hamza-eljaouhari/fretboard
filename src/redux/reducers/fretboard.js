@@ -47,26 +47,26 @@ function newFretboard(){
 const initialState = {
     fretboard: newFretboard(),
     
-    keySignature: 'unset',
+    keySignature: '',
     
-    scale: 'unset',
+    scale: '',
     scaleFormula: [],
     scaleNotes: [],
     scaleIntervals: [],
     
-    mode: 'unset',
+    mode: '',
     modeNotes: [],
     modeIntervals : [],
     
-    arppegio: 'unset',
+    arppegio: '',
     arppegioNotes: [],
     arppegioIntervals: [],
     
-    chord: 'unset',
+    chord: '',
     notesDisplay: true,
 
-    fret: 'unset',
-    shape: 'unset'
+    fret: '',
+    shape: ''
 };
 
 const fretboard = (state = initialState, action) => {

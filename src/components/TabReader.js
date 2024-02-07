@@ -72,7 +72,6 @@ const classes = useStyles();
   return (
     <section>
       <TextField
-        rows={12}
         multiline={true}
         id="filled-basic"
         label="Guitar Tabs"

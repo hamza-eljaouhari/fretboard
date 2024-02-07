@@ -5,6 +5,7 @@
 .table {
     border-spacing: 0;
     width: 100%;
+    position: fixed;
 }
 
 .fretboard-container table, tr {
@@ -69,4 +70,14 @@
 
 .content-table th {
     height: 25%;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff; 
+    border-top: 1px solid #e0e0e0; 
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1); 
 }
