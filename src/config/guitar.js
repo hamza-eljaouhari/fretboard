@@ -50,22 +50,22 @@ const config = {
         },
         {
             "key": "E",
-            "relative": "C#m"
+            "relative": "Dbm"
         },
         {
             "key": "B",
             "flat": "Cb",
-            "relative": "G#m",
+            "relative": "Abm",
         },
         {
             "key": "Gb",
             "sharp": "F#",
-            "relative": "F#m",
+            "relative": "Gbm",
         },
         {
             "key": "Db", 
             "sharp": "C#",
-            "relative": "A#m",
+            "relative": "Bbm",
         },
         {
             "key": "Ab", 

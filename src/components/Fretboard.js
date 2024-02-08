@@ -783,8 +783,8 @@ const Fretboard = withRouter((props) => {
         if(chord && guitar.arppegios[chord].quality === "Major"){
             return guitar.notes.flats[keySignature];
         }
-
-        return guitar.notes.sharps[keySignature] + 'm';
+        console.log(guitar.notes.flats[keySignature] + 'm')
+        return guitar.notes.flats[keySignature] + 'm';
     };
 
     return(
