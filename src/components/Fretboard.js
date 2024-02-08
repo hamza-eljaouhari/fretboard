@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import FretboardControls from './FretboardControls';
 import CircleOfFifths from './CircleOfFifths';
 import ChordProgressionDisplay from './ChordProgressionDisplay';
+import TabReader from './TabReader';
 
 import { 
         setFretboard,
@@ -667,6 +668,43 @@ const Fretboard = withRouter((props) => {
         }
     }
 
+    const parseGuitarTab = (tab) => {
+        // Split the tab by lines
+        const lines = tab.split('\n');
+        const notes = []; // Array to hold parsed notes and techniques
+    
+        // Define regex to match notes and techniques
+        const noteRegex = /(\d+)|(\d+[hpb]\d+)/g;
+    
+        lines.forEach((line, index) => {
+            let string = 6 - index; // Calculate string number based on line index
+            let match;
+    
+            while ((match = noteRegex.exec(line)) !== null) {
+                if (match[0].includes('h')) {
+                    // Handle hammer-on
+                    const [startFret, endFret] = match[0].split('h').map(Number);
+                    notes.push({ string, startFret, technique: 'hammer-on', endFret });
+                } else if (match[0].includes('p')) {
+                    // Handle pull-off
+                    const [startFret, endFret] = match[0].split('p').map(Number);
+                    notes.push({ string, startFret, technique: 'pull-off', endFret });
+                } else if (match[0].includes('b')) {
+                    // Handle bend
+                    const [startFret, endFret] = match[0].split('b').map(Number);
+                    notes.push({ string, startFret, technique: 'bend', endFret });
+                } else {
+                    // Handle regular note
+                    const fret = parseInt(match[0], 10);
+                    notes.push({ string, fret, technique: 'pluck' });
+                }
+            }
+        });
+    
+        return notes;
+    }
+    
+
     const playChordProgression = async () => {
         props.history.push('');
 
@@ -774,6 +812,8 @@ const Fretboard = withRouter((props) => {
                 keySignature={keySignature}
                 quality={chord ? guitar.arppegios[chord].quality : "Minor"}
             />
+
+            <TabReader toggleNote={toggleNote}></TabReader>
 
             <ChordProgressionDisplay 
                 className={classes.chordPressionDisplay}  
