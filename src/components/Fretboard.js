@@ -652,6 +652,7 @@ const Fretboard = withRouter((props) => {
             shape,
             fret: parseInt(fret),
             highlighted: false,
+            quality: guitar.arppegios[chord].quality,
             id: chordProgression.length + 1 
         };
 
@@ -741,6 +742,11 @@ const Fretboard = withRouter((props) => {
     };
 
     const pointCircleOfFifth = (keySignature) => {
+        if(chord && guitar.arppegios[chord].quality === "Minor"){
+            console.log("test minor")
+            return guitar.notes.sharps[keySignature] + chord;
+        }
+
         return guitar.notes.flats[keySignature];
     };
 
@@ -768,11 +774,13 @@ const Fretboard = withRouter((props) => {
                 selectedTone={pointCircleOfFifth(keySignature)}
                 onElementChange={onElementChange}
                 keySignature={keySignature}
+                quality={chord ? guitar.arppegios[chord].quality : "Major"}
             />
 
             <ChordProgressionDisplay 
                 className={classes.chordPressionDisplay}  
-                chordProgression={chordProgression} ></ChordProgressionDisplay>
+                chordProgression={chordProgression}
+                setChordProgression={setChordProgression} ></ChordProgressionDisplay>
 
             <section className="controls">
                 <FretboardControls

@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: '100px'
   },
   appBar: {
     display: 'flex',
@@ -64,7 +65,6 @@ export default function App(props) {
     <div className={classes.root}>
       <main className={classes.content}>
         <Router>
-        <div className={classes.root}>
           <CssBaseline />
           <AppBar className={classes.appBar} position="fixed">
             <Typography variant="h6">Interactive fretboard and circle of fifths</Typography>
@@ -73,7 +73,6 @@ export default function App(props) {
             <div className={classes.fixedSection}>
               <Fretboard onSetTitle={onSetTitle} />
             </div>
-        </div>
       </Router>
       </main>
     </div>

@@ -17,7 +17,8 @@ const CircleOfFifths = ({
     setScale,
     setMode,
     selectedTone,
-    onElementChange
+    onElementChange,
+    quality
 }) => {
     const majorRadius = 150; // Radius of the circle for major tones
     const minorRadius = 110; // Radius for the inner circle of minor tones
@@ -39,27 +40,29 @@ const CircleOfFifths = ({
         onElementChange(indexOfTone, 'key');
     }
 
-    // Calculate rotation based on selected tone, keeping 'C' at the top
-    const rotationAngle = -30 * majorTones.indexOf(selectedTone) + 90; // Add 90 to correct for the initial offset
+    if(quality === "Major"){
+        var rotationAngle = -30 * majorTones.indexOf(selectedTone) + 90;
+    } else {
+        var rotationAngle = -30 * minorTones.indexOf(selectedTone) + 90;
+    }
 
-    // Determine the relative minor index for the selected major tone
-    const selectedMajorIndex = majorTones.indexOf(selectedTone);
-    const selectedMinorIndex = (selectedMajorIndex !== -1) ? selectedMajorIndex : minorTones.indexOf(guitar.circleOfFifths.find(key => key.key === selectedTone)?.relative);
-
-    // Function to determine if a tone should be highlighted
     const shouldBeHighlighted = (index, isMajor) => {
-        let startIndex = isMajor ? selectedMajorIndex : selectedMinorIndex;
-        if (startIndex === -1) return false; // Selected tone not found, no highlight
+        // Determine the start index based on the selected tone and its quality (major/minor)
+        let startIndex = isMajor ? majorTones.indexOf(selectedTone) : minorTones.indexOf(guitar.circleOfFifths.find(key => key.relative === selectedTone)?.relative);
         
-        let endIndex = (startIndex + 5) % (isMajor ? majorTones.length : minorTones.length);
-        if (startIndex < endIndex) {
-            return index >= startIndex && index < endIndex;
-        } else {
-            // The range wraps around the array end
-            return index >= startIndex || index < endIndex;
+        // No highlight if selected tone is not found
+        if (startIndex === -1) return false;
+
+        // Calculate the indices of the 7 notes in the scale
+        let highlightedIndices = [];
+        for (let i = 0; i < 6; i++) {
+            highlightedIndices.push((startIndex + i) % (isMajor ? majorTones.length : minorTones.length));
         }
+
+        // Check if the current index should be highlighted
+        return highlightedIndices.includes(index);
     };
-    
+
     return (
         <div>
             <svg width="400" height="400" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -69,7 +72,7 @@ const CircleOfFifths = ({
                     {majorTones.map((tone, index) => {
                         const position = calculatePosition(index * 30, majorRadius);
                         const counterRotationAngle = -rotationAngle; // Counter rotation to keep text upright
-                        const isHighlighted = shouldBeHighlighted(index, majorTones);
+                        const isHighlighted = shouldBeHighlighted(index, true);
 
                         return (
                             <g key={tone} transform={`translate(${position.x}, ${position.y})`}>
@@ -91,7 +94,7 @@ const CircleOfFifths = ({
                     {minorTones.map((tone, index) => {
                         const position = calculatePosition(index * 30, minorRadius);
                         const counterRotationAngle = -rotationAngle; // Counter rotation to keep text upright
-                        const isHighlighted = shouldBeHighlighted(index, minorTones);
+                        const isHighlighted = shouldBeHighlighted(index, false);
 
                         return (
                             <g key={`minor-${tone}`} transform={`translate(${position.x}, ${position.y})`}>

@@ -60,12 +60,12 @@ const config = {
         {
             "key": "Gb",
             "sharp": "F#",
-            "relative": "Ebm",
+            "relative": "F#m",
         },
         {
             "key": "Db", 
             "sharp": "C#",
-            "relative": "Bbm",
+            "relative": "A#m",
         },
         {
             "key": "Ab", 
@@ -248,131 +248,100 @@ const config = {
     },
     "arppegios": {
         "M": {
-            "name": "Major",
-            "formula": [4, 3, 4],
-            "intervals": ['1', '3', '5']
+          "name": "Major",
+          "formula": [4, 3, 4],
+          "intervals": ["1", "3", "5"],
+          "quality": "Major"
         },
         "m": {
-            "name": "Minor",
-            "formula": [3, 4, 5],
-            "intervals": ['1', 'b3', '5']
+          "name": "Minor",
+          "formula": [3, 4, 5],
+          "intervals": ["1", "b3", "5"],
+          "quality": "Minor"
         },
         "aug": {
-            "name": "Augmented",
-            "intervals": ['1', '3', '#5'],
-            "formula": [4, 4, 4]
+          "name": "Augmented",
+          "intervals": ["1", "3", "#5"],
+          "formula": [4, 4, 4],
+          "quality": "Augmented"
         },
         "dim": {
-            "name": "Diminished",
-            "intervals": ['1', 'b3', 'b5'],
-            "formula": [3, 3, 3]
+          "name": "Diminished",
+          "intervals": ["1", "b3", "b5"],
+          "formula": [3, 3, 3],
+          "quality": "Diminished"
         },
         "sus2": {
-            "name": "sus2",
-            "intervals": ['1', '2', 'b5'],
-            "formula": [5, 2, 5]
+          "name": "sus2",
+          "intervals": ["1", "2", "b5"],
+          "formula": [5, 2, 5],
+          "quality": "Suspended"
         },
         "sus4": {
-            "name": "sus4",
-            "intervals": ['1', '4', '5'],
-            "formula": [2, 5, 5]
+          "name": "sus4",
+          "intervals": ["1", "4", "5"],
+          "formula": [2, 5, 5],
+          "quality": "Suspended"
         },
         "add4": {
-            "name": "add4",
-            "intervals": ['1', '3', '4', '5'],
-            "formula": [4, 1, 2, 2]
+          "name": "add4",
+          "intervals": ["1", "3", "4", "5"],
+          "formula": [4, 1, 2, 2],
+          "quality": "Added Tone"
         },
         "add2": {
-            "name": "add4",
-            "intervals": ['1', '2', '3', '5'],
-            "formula": [2, 2, 3, 3]
+          "name": "add2",
+          "intervals": ["1", "2", "3", "5"],
+          "formula": [2, 2, 3, 3],
+          "quality": "Added Tone"
         },
         "6": {
-            "name": "6th",
-            "intervals": ['1', '3', '5', '6'],
-            "formula": [4, 3, 2, 3]
+          "name": "6th",
+          "intervals": ["1", "3", "5", "6"],
+          "formula": [4, 3, 2, 3],
+          "quality": "Major"
         },
         "min6": {
-            "name": "Minor 6th",
-            "intervals": ['1', 'b3', '5', '6'],
-            "formula": [3, 4, 2, 3]
+          "name": "Minor 6th",
+          "intervals": ["1", "b3", "5", "6"],
+          "formula": [3, 4, 2, 3],
+          "quality": "Minor"
         },
         "minb6": {
-            "name": "Minor b6th",
-            "intervals": ['1', 'b3', '5', 'b6'],
-            "formula": [3, 4, 1, 4]
+          "name": "Minor b6th",
+          "intervals": ["1", "b3", "5", "b6"],
+          "formula": [3, 4, 1, 4],
+          "quality": "Minor"
         },
         "M7": {
-            "name": "Major 7th",
-            "formula": [4, 3, 4, 1],
-            "intervals": ['1', '3', '5', '7']
+          "name": "Major 7th",
+          "formula": [4, 3, 4, 1],
+          "intervals": ["1", "3", "5", "7"],
+          "quality": "Major"
         },
         "M7b5": {
-            "name": "Major 7b5",
-            "formula": [4, 2, 5, 1],
-            "intervals": ['1', '3', 'b5', '7']
+          "name": "Major 7b5",
+          "formula": [4, 2, 5, 1],
+          "intervals": ["1", "3", "b5", "7"],
+          "quality": "Other"
         },
         "m7": {
-            "name": "Minor 7th",
-            "formula": [3, 4, 3, 2],
-            "intervals": ['1', 'b3', '5', 'b7']
+          "name": "Minor 7th",
+          "formula": [3, 4, 3, 2],
+          "intervals": ["1", "b3", "5", "b7"],
+          "quality": "Minor"
         },
         "7": {
-            "name": "Dominant 7th",
-            "formula": [4, 3, 3, 2],
-            "intervals": ['1', '3', '5', 'b7']
+          "name": "Dominant 7th",
+          "formula": [4, 3, 3, 2],
+          "intervals": ["1", "3", "5", "b7"],
+          "quality": "Dominant"
         },
         "minMaj7": {
-            "name": "Minor Major 7th",
-            "intervals": ['1', 'b3', '5', '7'],
-            "formula": [3, 4, 4, 4]
-        },
-        "min7b5": {
-            "name": "Half diminished",
-            "intervals": ['1', 'b3', 'b5', 'b7'],
-            "formula": [3, 3, 4, 4]
-        },
-        "dim7": {
-            "name": "Full Diminished",
-            "intervals": ['1', 'b3', 'b5', 'bb7'],
-            "formula": [3, 3, 3, 4]
-        },
-        "D7": {
-            "name": "Dominant 7th",
-            "intervals": ['1', '3', '5', 'b7'],
-            "formula": [4, 3, 4, 2],
-        },
-
-        "7sus4": {
-            "name": "7th sus4",
-            "intervals": ['1', '4', '5', 'b7'],
-            "formula": [5, 2, 3, 2]
-        },
-        "7b5": {
-            "name": "7b5",
-            "intervals": ['1', '3', '5', 'b7'],
-            "formula": [4, 2, 4, 1],
-        },
-        "D13th": {
-            "name" : "Domiannt 13th",
-            "intervals": ['1', '3', '6', 'b7'],
-            "formula": [2, 2, 5, 1, 2]
-        },
-        
-        "M9th": {
-            "name": "Major 9th",
-            "formula": [2, 2, 3, 4, 1],
-            "intervals": ['1', '9', '3', '5', '7']
-        },
-        "D7b5": {
-            "name": "Dominant 7 b5",
-            "formula": [4, 2, 4, 2],
-            "intervals": ['1', '3', 'b5', 'b7']
-        },
-        "m9th": {
-            "name": "minor 9th",
-            "formula": [2, 1, 4, 3],
-            "intervals": ['1', '9', 'b3', 'b7']
+          "name": "Minor Major 7th",
+          "intervals": ["1", "b3", "5", "7"],
+          "formula": [3, 4, 4, 4],
+          "quality": "Minor"
         },
     }
 }
