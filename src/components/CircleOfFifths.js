@@ -42,6 +42,24 @@ const CircleOfFifths = ({
     // Calculate rotation based on selected tone, keeping 'C' at the top
     const rotationAngle = -30 * majorTones.indexOf(selectedTone) + 90; // Add 90 to correct for the initial offset
 
+    // Determine the relative minor index for the selected major tone
+    const selectedMajorIndex = majorTones.indexOf(selectedTone);
+    const selectedMinorIndex = (selectedMajorIndex !== -1) ? selectedMajorIndex : minorTones.indexOf(guitar.circleOfFifths.find(key => key.key === selectedTone)?.relative);
+
+    // Function to determine if a tone should be highlighted
+    const shouldBeHighlighted = (index, isMajor) => {
+        let startIndex = isMajor ? selectedMajorIndex : selectedMinorIndex;
+        if (startIndex === -1) return false; // Selected tone not found, no highlight
+        
+        let endIndex = (startIndex + 5) % (isMajor ? majorTones.length : minorTones.length);
+        if (startIndex < endIndex) {
+            return index >= startIndex && index < endIndex;
+        } else {
+            // The range wraps around the array end
+            return index >= startIndex || index < endIndex;
+        }
+    };
+    
     return (
         <div>
             <svg width="400" height="400" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -51,9 +69,11 @@ const CircleOfFifths = ({
                     {majorTones.map((tone, index) => {
                         const position = calculatePosition(index * 30, majorRadius);
                         const counterRotationAngle = -rotationAngle; // Counter rotation to keep text upright
+                        const isHighlighted = shouldBeHighlighted(index, majorTones);
+
                         return (
                             <g key={tone} transform={`translate(${position.x}, ${position.y})`}>
-                                <circle cx="0" cy="0" r="20" fill="white" stroke="black" />
+                                <circle cx="0" cy="0" r="20" fill={isHighlighted ? "#D04848" : "white"}  stroke="black" />
                                 <text
                                     x="0"
                                     y="0"
@@ -71,9 +91,11 @@ const CircleOfFifths = ({
                     {minorTones.map((tone, index) => {
                         const position = calculatePosition(index * 30, minorRadius);
                         const counterRotationAngle = -rotationAngle; // Counter rotation to keep text upright
+                        const isHighlighted = shouldBeHighlighted(index, minorTones);
+
                         return (
                             <g key={`minor-${tone}`} transform={`translate(${position.x}, ${position.y})`}>
-                                <circle cx="0" cy="0" r="15" fill="white" stroke="black" /> {/* Smaller circle for minors */}
+                                <circle cx="0" cy="0" r="15" fill={isHighlighted ? "#D04848" : "white"}  stroke="black" /> {/* Smaller circle for minors */}
                                 <text
                                     x="0"
                                     y="0"

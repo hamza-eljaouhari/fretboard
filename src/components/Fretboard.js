@@ -89,6 +89,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center', // This centers the buttons horizontally in the container
         gap: theme.spacing(1), // Optional: adds space between buttons
     },
+    chordPressionDisplay: {
+        
+    }
 }));
   
 const Fretboard = withRouter((props) => {
@@ -643,8 +646,6 @@ const Fretboard = withRouter((props) => {
             return;
         }
         
-        console.log(chordProgression);
-
         let chordObject = {
             key: keySignature,
             chord,
@@ -766,9 +767,12 @@ const Fretboard = withRouter((props) => {
                 setMode={setMode}
                 selectedTone={pointCircleOfFifth(keySignature)}
                 onElementChange={onElementChange}
+                keySignature={keySignature}
             />
 
-            <ChordProgressionDisplay chordProgression={chordProgression} ></ChordProgressionDisplay>
+            <ChordProgressionDisplay 
+                className={classes.chordPressionDisplay}  
+                chordProgression={chordProgression} ></ChordProgressionDisplay>
 
             <section className="controls">
                 <FretboardControls
