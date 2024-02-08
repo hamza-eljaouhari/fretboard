@@ -26,17 +26,17 @@ import {
 
 import guitar from '../../config/guitar'
 
-function newFretboard(){
-    var newFretboard = Array.from({length: guitar.numberOfStrings}, e => Array(guitar.numberOfFrets).fill({
+export function newFretboard(numberOfStrings, numberOfFrets, tuning){
+    var newFretboard = Array.from({length: numberOfStrings}, e => Array(numberOfFrets).fill({
         show: false,
         current: ''
     }));
 
-    for(let i = 0; i < guitar.numberOfStrings; i++){
-        for(let j = 0; j < guitar.numberOfFrets; j++){
+    for(let i = 0; i < numberOfStrings; i++){
+        for(let j = 0; j < numberOfFrets; j++){
             newFretboard[i][j] = {
                 show: false,
-                current: guitar.notes.sharps[(guitar.tuning[i] + j) % 12]
+                current: guitar.notes.sharps[(tuning[i] + j) % 12]
             };
         }
     }
@@ -45,7 +45,7 @@ function newFretboard(){
 }
 
 const initialState = {
-    fretboard: newFretboard(),
+    fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
     
     keySignature: '',
     

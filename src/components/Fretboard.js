@@ -6,7 +6,7 @@ import FretboardControls from './FretboardControls';
 import CircleOfFifths from './CircleOfFifths';
 import ChordProgressionDisplay from './ChordProgressionDisplay';
 import TabReader from './TabReader';
-
+import { newFretboard } from '../redux/reducers/fretboard';
 import { 
         setFretboard,
         toggleNote, 
@@ -102,21 +102,51 @@ const Fretboard = withRouter((props) => {
     const [heads, setHeads] = useState([]);
     const search = props.history.location.search;
 
+    const [numberOfStrings, setNumberOfStrings] = useState(5); // Default to 6 strings
+    const [numberOfFrets, setNumberOfFrets] = useState(10); // Default to 22 frets
+    const [tuning, setTuning] = useState([ 4, 11, 7, 2, 9, 4 ]); // Default to 22 frets
+    // Initialize or update the fretboard based on the number of strings and frets
+    useEffect(() => {
+        setFretboard(newFretboard(numberOfStrings, numberOfFrets, tuning));
+    }, [numberOfStrings, numberOfFrets, tuning]);
+
+    // Function to handle the number of strings/frets change
+    const handleStringsChange = (e) => {
+        const newNumberOfStrings = parseInt(e.target.value, 10);
+        setNumberOfStrings(newNumberOfStrings);
+    };
+
+    const handleFretsChange = (e) => {
+        const newNumberOfFrets = parseInt(e.target.value, 10);
+        setNumberOfFrets(newNumberOfFrets);
+    };
+
+    const handleTuneChange = (e, i) => {
+        const tune = e.target.value
+        let newTuning = [...tuning]
+        const indexOfTune = guitar.notes.flats.indexOf(tune);
+        newTuning[i] = indexOfTune >= 0 ? indexOfTune : undefined;
+        setTuning([...newTuning]);
+        console.log("changed tuning")
+    };
+
     const {chordProgression, setChordProgression, setFretboard, onSetTitle, notesDisplay, keySignature, fret, shape, scale, mode, arppegio, chord, fretboard, setNotesDisplay, setFret, setShape, setChord, setArppegio, setMode, setScale, setKey} = props;
 
     const cleanFretboard = useCallback(() => {
-        var newFretboard = [...fretboard];
+
+        var newBoard = newFretboard(numberOfStrings, numberOfFrets, tuning);
         
-        for(let i = 0; i < guitar.numberOfStrings; i++){
-            for(let j = 0; j < guitar.numberOfFrets; j++){
-                newFretboard[i][j].show = false;
+        for(let i = 0; i < numberOfStrings; i++){
+            for(let j = 0; j < numberOfFrets; j++){
+                newBoard[i][j].show = false;
             }
         }
         
-        if(JSON.stringify(newFretboard) !== JSON.stringify(fretboard)){
-            setFretboard(newFretboard);
+        if(JSON.stringify(newBoard) !== JSON.stringify(fretboard)){
+            console.log("set new board ", newBoard)
+            setFretboard(newBoard);
         }
-    }, [fretboard, setFretboard])
+    }, [fretboard, setFretboard, numberOfStrings, numberOfFrets])
 
     const onElementChange = (targetValue, elementsName) => {
         var newElement = null;
@@ -326,9 +356,9 @@ const Fretboard = withRouter((props) => {
         var visitedStrings = [];
 
         notes.forEach((note) => {
-            for(var m = 0; m < guitar.numberOfStrings; m++){
+            for(var m = 0; m < numberOfStrings; m++){
                 for(var n = startingIndex; n < lastIndex; n++){
-                    var currentNote = getNoteFromFretboard(m, n);
+                    var currentNote = getNoteFromFretboard(m, n, tuning);
                     if(!visitedStrings[m]){
                         if(note === currentNote){
                             visitedStrings[m] = true;
@@ -348,14 +378,18 @@ const Fretboard = withRouter((props) => {
         if(JSON.stringify(nf) !== JSON.stringify(fretboard)){
             setFretboard(nf);
         }
-    }, [shape, fret, notesDisplay, fretboard, setFretboard])
+    }, [shape, fret, notesDisplay, fretboard, setFretboard, numberOfStrings, tuning])
 
     
     const spread = useCallback((notes, intervals) =>{
+        if(!fretboard){
+            return;
+        }
+        console.log("fretboard ", fretboard)
         var nf = [...fretboard]
             
         var startingIndex = 0;
-        var lastIndex = guitar.numberOfFrets;
+        var lastIndex = numberOfFrets;
 
         if(shape !== ''){
             startingIndex = guitar.shapes.indexes[parseInt(shape)].start;
@@ -367,9 +401,10 @@ const Fretboard = withRouter((props) => {
             lastIndex = startingIndex + 4;
         }
 
-        for(var m = 0; m < guitar.numberOfStrings; m++){
+        for(var m = 0; m < numberOfStrings; m++){
             for(var n = startingIndex; n < lastIndex; n++){
-                var currentNote = getNoteFromFretboard(m, n);
+                console.log(tuning)
+                var currentNote = getNoteFromFretboard(m, n, tuning);
 
                 if(notes.includes(currentNote)){
                     nf[m][n].show = true;
@@ -386,7 +421,7 @@ const Fretboard = withRouter((props) => {
         if(JSON.stringify(nf) !== JSON.stringify(fretboard)){
             setFretboard(nf);
         }
-    }, [setFretboard, shape, fret, fretboard, notesDisplay])
+    }, [setFretboard, shape, fret, fretboard, notesDisplay, tuning])
 
     const update = useCallback(() => {
 
@@ -583,17 +618,25 @@ const Fretboard = withRouter((props) => {
     }, [getCurrentDisplayableScaleIntervals, getCurrentDisplayableScaleNotes, notesDisplay])
 
     const getFretboardTemplate = useCallback(() => {
+
+        if(!fretboard){
+            return;
+
+        }
         const newRows = [];
 
-        var rowsCount = guitar.numberOfStrings;
-        var columnsCount = guitar.numberOfFrets;
+        console.log("FRET FRET", fretboard )
+        var rowsCount = numberOfStrings;
+        var columnsCount = numberOfFrets;
         
         for(let i = 0; i < rowsCount; i++){
             const columns = [];
     
             for(let j = 0; j < columnsCount; j++){
 
+
                 var note = fretboard[i][j];
+                console.log(note)
                 columns.push(
                     <td
                         key={i + '-' + j} id={i + '-' + j}
@@ -616,23 +659,32 @@ const Fretboard = withRouter((props) => {
                 );
             }
     
+            console.log(tuning[i])
             newRows.push(
-                <tr key={i}>
-                    { columns }
-                </tr>
+                <>
+                    
+                    <tr key={i}>
+                    <label>
+                        Tuning
+                        <input value={guitar.notes.flats[tuning[i]]} onChange={(e) => handleTuneChange(e, i)} style={{width: '50px'}}/>
+                    </label>
+                        { columns }
+                    </tr>
+                </>
+
             );
         }
     
         var newHeads = [];
     
-        for(let i = 0; i < guitar.numberOfFrets; i++){
-            var width = guitar.numberOfFrets - i;
+        for(let i = 0; i < numberOfFrets; i++){
+            var width = numberOfFrets - i;
             newHeads.push(<th key={i} width={width + 30}><span className="fretNumber">{i}</span></th>)
         }
 
         setRows(newRows);
         setHeads(newHeads);
-    }, [setHeads, setRows, fretboard, getNoteIndex])
+    }, [setHeads, setRows, fretboard, getNoteIndex, tuning])
 
     const addChordToProgression = () => {
         if(keySignature === ''){
@@ -789,6 +841,14 @@ const Fretboard = withRouter((props) => {
 
     return(
         <div className="fretboard-container">
+             <label>
+                Number of Strings:
+                <input type="number" value={numberOfStrings} onChange={handleStringsChange} min="4" max="12" />
+            </label>
+            <label>
+                Number of Frets:
+                <input type="number" value={numberOfFrets} onChange={handleFretsChange} min="12" max="24" />
+            </label>
             <table>
                 <tbody>
                     {
