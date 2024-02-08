@@ -742,16 +742,14 @@ const Fretboard = withRouter((props) => {
     };
 
     const pointCircleOfFifth = (keySignature) => {
-        if(chord && guitar.arppegios[chord].quality === "Minor"){
-            console.log("test minor")
-            return guitar.notes.sharps[keySignature] + chord;
+        if(chord && guitar.arppegios[chord].quality === "Major"){
+            return guitar.notes.flats[keySignature];
         }
 
-        return guitar.notes.flats[keySignature];
+        return guitar.notes.sharps[keySignature] + 'm';
     };
 
-     return(
-        
+    return(
         <div className="fretboard-container">
             <table>
                 <tbody>
@@ -774,7 +772,7 @@ const Fretboard = withRouter((props) => {
                 selectedTone={pointCircleOfFifth(keySignature)}
                 onElementChange={onElementChange}
                 keySignature={keySignature}
-                quality={chord ? guitar.arppegios[chord].quality : "Major"}
+                quality={chord ? guitar.arppegios[chord].quality : "Minor"}
             />
 
             <ChordProgressionDisplay 

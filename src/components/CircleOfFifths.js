@@ -97,7 +97,7 @@ const CircleOfFifths = ({
                         const isHighlighted = shouldBeHighlighted(index, false);
 
                         return (
-                            <g key={`minor-${tone}`} transform={`translate(${position.x}, ${position.y})`}>
+                            <g key={`minor-${tone}-${tone}-${index}`} transform={`translate(${position.x}, ${position.y})`}>
                                 <circle cx="0" cy="0" r="15" fill={isHighlighted ? "#D04848" : "white"}  stroke="black" /> {/* Smaller circle for minors */}
                                 <text
                                     x="0"
