@@ -607,8 +607,6 @@ const Fretboard = withRouter((props) => {
     }
     const playChordProgression = async () => {
         // Parsing the JSON string to an array of objects
-        const chordProgression = JSON.parse('[{"key":8,"chord":"m7","shape":"4","fret":null,"highlighted":false,"quality":"Minor","id":1},{"key":11,"chord":"m7","shape":"1","fret":null,"highlighted":false,"quality":"Minor","id":2},{"key":0,"chord":"M7b5","shape":"2","fret":null,"highlighted":false,"quality":"Other","id":3},{"key":7,"chord":"M7b5","shape":"4","fret":null,"highlighted":false,"quality":"Other","id":4}]');
-    
         for (let i = 0; i < chordProgression.length; i++) {
             // Initialize the search object from current URL search params
             let search = queryString.parse(props.history.location.search);
@@ -775,7 +773,10 @@ const Fretboard = withRouter((props) => {
     };
 
     const pointCircleOfFifth = (keySignature) => {
-        if(chord && guitar.arppegios[chord].quality === "Major"){
+        console.log(chord)
+        const chords = chord && guitar.arppegios[chord] || guitar.arppegios['M'];
+
+        if(chords.quality.includes("Major") || chords.name.includes("Major")){
             return guitar.notes.flats[keySignature];
         }
         return guitar.notes.flats[keySignature] + 'm';
