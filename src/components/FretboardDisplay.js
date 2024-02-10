@@ -4,10 +4,8 @@ import guitar from '../config/guitar';
 
 // Assuming guitar, toggleNote, getNoteIndex, handleTuneChange are imported or defined elsewhere
 
-const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfFrets, toggleNote, handleFretboardSelect}) => {
-  // Your existing useState and useEffect hooks
+const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfFrets, toggleNote, handleFretboardSelect, chordProgression, selectedFretboardIndex}) => {
 
-  console.log("FRETBOARD CONSOLE ", fretboards)
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
 

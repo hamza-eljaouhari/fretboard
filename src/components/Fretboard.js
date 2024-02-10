@@ -291,26 +291,26 @@ const Fretboard = withRouter((props) => {
         return intervals;
     }, [scale, mode, keySignature])
 
-    const getArppegioNotes = useCallback((fromArppegio) => {
-        if(keySignature === ''){
+    const getArppegioNotes = useCallback((fromArppegio, fretboard) => {
+        if(fretboard.keySignature === ''){
             return [];
         }
         
         var arppegioFormula = [];
 
         if(fromArppegio){
-            if(arppegio === ''){
+            if(fretboard.arppegio === ''){
                 return [];
             }
             
-            arppegioFormula = guitar.arppegios[arppegio].formula;
+            arppegioFormula = guitar.arppegios[fretboard.arppegio].formula;
 
         }else{
-            if(chord === ''){
+            if(fretboard.chord === ''){
                 return [];
             }
 
-            arppegioFormula = guitar.arppegios[chord].formula
+            arppegioFormula = guitar.arppegios[fretboard.chord].formula
         }
 
         var arppegioNotes = [];
@@ -318,7 +318,7 @@ const Fretboard = withRouter((props) => {
         var steps = 0;
 
         arppegioFormula.forEach((step) => {
-            arppegioNotes.push(guitar.notes.sharps[(parseInt(keySignature) + steps) % 12]);
+            arppegioNotes.push(guitar.notes.sharps[(parseInt(fretboard.keySignature) + steps) % 12]);
             steps += step;
         })
 
@@ -349,37 +349,37 @@ const Fretboard = withRouter((props) => {
         return intervals;
     }, [keySignature, arppegio, chord])
 
-    const displayChordPortion = useCallback((notes, intervals) => {
-        var nf = [...fretboard];
+    const displayChordPortion = useCallback((fretboardIndex, notes, intervals) => {
+        var nf = JSON.parse(JSON.stringify(fretboards[fretboardIndex]))
 
         var startingIndex = 0;
         var lastIndex = null;
        
-        if(shape !== ''){
-            startingIndex = guitar.shapes.indexes[parseInt(shape)].start;
-            lastIndex = guitar.shapes.indexes[parseInt(shape)].end + 1;
+        if(fretboards[fretboardIndex].shape !== ''){
+            startingIndex = guitar.shapes.indexes[parseInt(fretboards[fretboardIndex].shape)].start;
+            lastIndex = guitar.shapes.indexes[parseInt(fretboards[fretboardIndex].shape)].end + 1;
         }
 
-        if(fret !== ''){
-            startingIndex = parseInt(fret) - 1;
+        if(fretboards[fretboardIndex].fret !== ''){
+            startingIndex = parseInt(fretboards[fretboardIndex].fret) - 1;
             lastIndex = startingIndex + 4;
         }
 
         var visitedStrings = [];
 
         notes.forEach((note) => {
-            for(var m = 0; m < numberOfStrings; m++){
+            for(var m = 0; m < fretboards[fretboardIndex].nostr; m++){
                 for(var n = startingIndex; n < lastIndex; n++){
-                    var currentNote = getNoteFromFretboard(m, n, [4, 11, 7, 2, 9, 4]);
+                    var currentNote = getNoteFromFretboard(m, n, nf.tuning);
                     if(!visitedStrings[m]){
                         if(note === currentNote){
                             visitedStrings[m] = true;
 
-                            nf[m][n].show = true;
+                            nf.fretboard[m][n].show = true;
                             if(notesDisplay){
-                                nf[m][n].current = currentNote;
+                                nf.fretboard[m][n].current = currentNote;
                             }else{
-                                nf[m][n].current = intervals[notes.indexOf(currentNote)];
+                                nf.fretboard[m][n].current = intervals[notes.indexOf(currentNote)];
                             }
                         }
                     }
@@ -387,8 +387,11 @@ const Fretboard = withRouter((props) => {
             }
         });
         
-        if(JSON.stringify(nf) !== JSON.stringify(fretboard)){
-            setFretboard(nf);
+        const updatedFretboards = [...fretboards];
+        updatedFretboards[fretboardIndex] = nf;
+
+        if(JSON.stringify(updatedFretboards) !== JSON.stringify(fretboards)){
+            setFretboards(updatedFretboards)
         }
     }, [shape, fret, notesDisplay, fretboard, setFretboard, numberOfStrings])
 
@@ -454,20 +457,21 @@ const Fretboard = withRouter((props) => {
             var isModal = guitar.scales[fretboards[selectedFretboardIndex].scale].isModal;
 
             notes = getScaleNotes(fretboards[selectedFretboardIndex]);
-            setScaleNotes(notes);
+            // updateFretboardProperty(selectedFretboardIndex, 'scaleNotes', notes);
             
             intervals = getScaleIntervals();
-            setScaleIntervals(intervals);
+            // updateFretboardProperty(selectedFretboardIndex, 'scaleIntervals', intervals);
+
 
             name = notes[0] + ' ' + guitar.scales[fretboards[selectedFretboardIndex].scale].name + ' scale';
             
             if(isModal){
                 if(fretboards[selectedFretboardIndex].mode !== ''){
                     notes = getModeNotes();
-                    setModeNotes(notes)
+                    // updateFretboardProperty(selectedFretboardIndex, 'modeNotes', notes);
 
                     intervals = getModeIntervals();
-                    setModeIntervals(intervals);
+                    // updateFretboardProperty(selectedFretboardIndex, 'modeIntervals', intervals);
 
                     let modeRootName = notes[0];
 
@@ -479,24 +483,26 @@ const Fretboard = withRouter((props) => {
         }
     
         if(fretboards[selectedFretboardIndex].arppegio !== ''){
-            notes = getArppegioNotes(true);
+            notes = getArppegioNotes(true, fretboards[selectedFretboardIndex]);
             setArppegioNotes(notes)
+            // updateFretboardProperty(selectedFretboardIndex, 'arppegioNotes', notes);
+
 
             intervals = guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].intervals;
-            setArppegioIntervals(intervals);
+            // updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals', intervals);
 
             name = notes[0] + ' ' + guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].name + ' arppegio.';
         }
             
         if(fretboards[selectedFretboardIndex].chord !== ''){
-            notes = getArppegioNotes(false);
+            notes = getArppegioNotes(false, fretboards[selectedFretboardIndex]);
             intervals = guitar.arppegios[fretboards[selectedFretboardIndex].chord].intervals;
 
             name = notes[0] + ' ' + guitar.arppegios[fretboards[selectedFretboardIndex].chord].name + ' chord.';
 
-            if(fret !== '' || shape !== ''){
+            if(fretboards[selectedFretboardIndex].fret !== '' || fretboards[selectedFretboardIndex].shape !== ''){
                 onSetTitle(name);
-                displayChordPortion(notes, intervals);
+                displayChordPortion(selectedFretboardIndex, notes, intervals);
                 return;
             }
         } else {
@@ -522,11 +528,11 @@ const Fretboard = withRouter((props) => {
         }
 
         if(fretboard.arppegio !== ''){
-            scaleNotes = getArppegioNotes(true);
+            scaleNotes = getArppegioNotes(true, fretboard);
         }
         
         if(fretboard.chord !== ''){
-            scaleNotes = getArppegioNotes(false);
+            scaleNotes = getArppegioNotes(false, fretboard);
         }
 
         return scaleNotes;
@@ -567,25 +573,25 @@ const Fretboard = withRouter((props) => {
     }, [getCurrentDisplayableScaleIntervals, getCurrentDisplayableScaleNotes, notesDisplay])
 
     const addChordToProgression = () => {
-        if(keySignature === ''){
+        if(fretboards[selectedFretboardIndex].keySignature === ''){
             return;
         }
 
-        if(chord === ''){
+        if(fretboards[selectedFretboardIndex].chord === ''){
             return;
         }
         
-        if(shape === '' && fret === ''){
+        if(fretboards[selectedFretboardIndex].shape === '' && fretboards[selectedFretboardIndex].fret === ''){
             return;
         }
         
         let chordObject = {
-            key: keySignature,
+            key: fretboards[selectedFretboardIndex].keySignature,
             chord,
             shape,
-            fret: parseInt(fret),
+            fret: parseInt(fretboards[selectedFretboardIndex].fret),
             highlighted: false,
-            quality: guitar.arppegios[chord].quality,
+            quality: guitar.arppegios[fretboards[selectedFretboardIndex].chord].quality,
             id: chordProgression.length + 1 
         };
 
@@ -599,64 +605,31 @@ const Fretboard = withRouter((props) => {
             localStorage.setItem("progression", JSON.stringify(chordProgression));            
         }
     }
-
-    const parseGuitarTab = (tab) => {
-        // Split the tab by lines
-        const lines = tab.split('\n');
-        const notes = []; // Array to hold parsed notes and techniques
-    
-        // Define regex to match notes and techniques
-        const noteRegex = /(\d+)|(\d+[hpb]\d+)/g;
-    
-        lines.forEach((line, index) => {
-            let string = 6 - index; // Calculate string number based on line index
-            let match;
-    
-            while ((match = noteRegex.exec(line)) !== null) {
-                if (match[0].includes('h')) {
-                    // Handle hammer-on
-                    const [startFret, endFret] = match[0].split('h').map(Number);
-                    notes.push({ string, startFret, technique: 'hammer-on', endFret });
-                } else if (match[0].includes('p')) {
-                    // Handle pull-off
-                    const [startFret, endFret] = match[0].split('p').map(Number);
-                    notes.push({ string, startFret, technique: 'pull-off', endFret });
-                } else if (match[0].includes('b')) {
-                    // Handle bend
-                    const [startFret, endFret] = match[0].split('b').map(Number);
-                    notes.push({ string, startFret, technique: 'bend', endFret });
-                } else {
-                    // Handle regular note
-                    const fret = parseInt(match[0], 10);
-                    notes.push({ string, fret, technique: 'pluck' });
-                }
-            }
-        });
-    
-        return notes;
-    }
-    
-
     const playChordProgression = async () => {
-        props.history.push('');
-
-        for(let i = 0; i < chordProgression.length; i++){
-            const chordProgressionParams = Object.keys(chordProgression[i]);
-
-            chordProgressionParams.forEach((key) => {
-                var search = queryString.parse(props.history.location.search);
+        // Parsing the JSON string to an array of objects
+        const chordProgression = JSON.parse('[{"key":8,"chord":"m7","shape":"4","fret":null,"highlighted":false,"quality":"Minor","id":1},{"key":11,"chord":"m7","shape":"1","fret":null,"highlighted":false,"quality":"Minor","id":2},{"key":0,"chord":"M7b5","shape":"2","fret":null,"highlighted":false,"quality":"Other","id":3},{"key":7,"chord":"M7b5","shape":"4","fret":null,"highlighted":false,"quality":"Other","id":4}]');
+    
+        for (let i = 0; i < chordProgression.length; i++) {
+            // Initialize the search object from current URL search params
+            let search = queryString.parse(props.history.location.search);
             
+            // Append or update search parameters based on current chord object
+            Object.keys(chordProgression[i]).forEach((key) => {
+                // Assigning each property from the chord object to the search params
                 search[key] = chordProgression[i][key];
-                search['chordOrder'] = i;
-        
-                const newLocation = queryString.stringify(search);
-        
-                props.history.push('/?' + newLocation);
             });
+    
+            // Stringify the updated search parameters
+            const newLocation = queryString.stringify(search);
             
-            await new Promise(r => setTimeout(r, 4000));
+            // Push the new URL with updated search parameters
+            props.history.push('/?' + newLocation);
+    
+            // Await for a predetermined delay if necessary between pushes (optional)
+            await new Promise(r => setTimeout(r, 4000)); // Adjust the timeout as per requirement
         }
-    }
+    };
+    
     
     const updateStatesFromURL = () => {
         const queryParams = queryString.parse(location.search);
@@ -817,6 +790,8 @@ const Fretboard = withRouter((props) => {
             </IconButton>
 
             <FretboardDisplay 
+                chordProgression={chordProgression}
+                selectedFretboardIndex={selectedFretboardIndex}
                 fretboards={fretboards} 
                 getNoteIndex={getNoteIndex} 
                 numberOfStrings={numberOfStrings} 
