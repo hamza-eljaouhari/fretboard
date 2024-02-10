@@ -1,5 +1,6 @@
 import { 
     SET_FRETBOARD,
+    SET_FRETBOARDS,
     
     DISPLAY_NOTE,
     TOGGLE_NOTE, 
@@ -46,9 +47,10 @@ export function newFretboard(numberOfStrings, numberOfFrets, tuning){
 
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
-    
+
+    fretboards: [],
+
     keySignature: '',
-    
     scale: '',
     scaleFormula: [],
     scaleNotes: [],
@@ -77,10 +79,14 @@ const fretboard = (state = initialState, action) => {
             fretboard: action.payload.fretboard
         };
     }
+    case SET_FRETBOARDS: {
+        return {
+            ...state,
+            fretboards: action.payload.fretboards
+        };
+    }
     case TOGGLE_NOTE: {
-        console.log("toggle note");
         let nf = [...state.fretboard];
-        console.log(action.payload)
         nf[action.payload.i][action.payload.j].show = !nf[action.payload.i][action.payload.j].show;
 
         return {

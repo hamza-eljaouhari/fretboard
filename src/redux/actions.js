@@ -1,5 +1,6 @@
 import { 
   SET_FRETBOARD,
+  SET_FRETBOARDS,
   
   DISPLAY_NOTE,
   TOGGLE_NOTE, 
@@ -33,6 +34,11 @@ import {
 export const setFretboard = (fretboard) => ({
   type: SET_FRETBOARD,
   payload: { fretboard }
+});   
+
+export const setFretboards = (fretboards) => ({
+  type: SET_FRETBOARDS,
+  payload: { fretboards }
 });   
 
 export const toggleNote = (i, j) => ({
