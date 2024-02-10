@@ -158,14 +158,13 @@ const Fretboard = withRouter((props) => {
         const newFretboardConfig = {
             id: fretboards.length + 1,
             fretboard: newFretboard(6, 22, [4, 11, 7, 2, 9, 4]),
-            rows: [],
-            heads: [],
             nofrets: 22,
             nostr: 6,
             tuning: [4, 11, 7, 2, 9, 4]
         };
         const newFretboards = [...fretboards, newFretboardConfig];
         setFretboards(newFretboards);
+        console.log(newFretboards)
     };
     
     const cleanFretboard = useCallback(() => {
@@ -694,12 +693,19 @@ const Fretboard = withRouter((props) => {
         setFret(fret > 0 && fret < 22 ? fret : '');
         setNotesDisplay(notesDisplay === "true" || notesDisplay === "false" ? notesDisplay === "true" : true);
 
-        if(tunes || nostr || nofrets){
+        if(nofb || tunes || nostr || nofrets){
 
             const tuning = tunes && tunes.length > 0 ? tunes.split("-").map(Number) : [4, 11, 7, 2, 9, 4];
     
-            console.log("updated")
-            setFretboards([{ fretboard: newFretboard(parseInt(nostr) || 6, parseInt(nofrets) || 22, tuning), tuning: tuning, nostr: parseInt(nostr) || 6, nofrets: parseInt(nofrets) || 22}])
+            if(fretboards.length === 0){
+                setFretboards([{ id: 1, fretboard: newFretboard(parseInt(nostr) || 6, parseInt(nofrets) || 22, tuning), tuning: tuning, nostr: parseInt(nostr) || 6, nofrets: parseInt(nofrets) || 22} ]);
+            } else {
+                const toUpdateFretboard = [...fretboards];
+                toUpdateFretboard[parseInt(nofb)].fretboard = newFretboard(parseInt(nostr) || 6, parseInt(nofrets) || 22, tuning);
+                toUpdateFretboard[parseInt(nofb)].nofrets = parseInt(nofrets) || 22;
+                toUpdateFretboard[parseInt(nofb)].nostr = parseInt(nostr) || 6;
+                setFretboards(toUpdateFretboard);
+            }
         }
     };
     
@@ -765,6 +771,7 @@ const Fretboard = withRouter((props) => {
         return guitar.notes.flats[keySignature] + 'm';
     };
 
+    console.log(fretboards)
     return(
         <div className="fretboard-container">
 
