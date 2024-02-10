@@ -7,6 +7,7 @@ import guitar from '../config/guitar';
 const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfFrets, toggleNote, handleFretboardSelect}) => {
   // Your existing useState and useEffect hooks
 
+  console.log("FRETBOARD CONSOLE ", fretboards)
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
 
@@ -32,10 +33,10 @@ const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfF
             <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
               <span className={classNames({
                 'note': note.show === true,
-                'root': getNoteIndex(note.current) === 0,
-                "third": getNoteIndex(note.current) === 2,
-                'fifth': getNoteIndex(note.current) === 4,
-                'seventh': getNoteIndex(note.current) === 6
+                'root': getNoteIndex(note.current, fretboard) === 0,
+                "third": getNoteIndex(note.current, fretboard) === 2,
+                'fifth': getNoteIndex(note.current, fretboard) === 4,
+                'seventh': getNoteIndex(note.current, fretboard) === 6
               })}>
                 {note.show && note.current}
               </span>

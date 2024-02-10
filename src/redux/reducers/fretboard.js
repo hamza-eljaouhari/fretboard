@@ -22,33 +22,58 @@ import {
     SET_SHAPE,
     SET_FRET,
 
-    SET_NOTES_DISPLAY
+    SET_NOTES_DISPLAY,
+
+    SET_ARPPEGIO_NOTES,
+    SET_ARPPEGIO_INTERVALS,
+    UPDATE_FRETBOARD_PROPERTY
   } from "../actionTypes";
 
 import guitar from '../../config/guitar'
 
-export function newFretboard(numberOfStrings, numberOfFrets, tuning){
-    var newFretboard = Array.from({length: numberOfStrings}, e => Array(numberOfFrets).fill({
+export function newLayout(numberOfStrings, numberOfFrets, tuning){
+    return Array.from({length: numberOfStrings}, () => Array(numberOfFrets).fill({
         show: false,
         current: ''
-    }));
+    })).map((string, i) => string.map((fret, j) => ({
+        show: false,
+        current: guitar.notes.sharps[(tuning[i] + j) % 12]
+    })))
+};
 
-    for(let i = 0; i < numberOfStrings; i++){
-        for(let j = 0; j < numberOfFrets; j++){
-            newFretboard[i][j] = {
-                show: false,
-                current: guitar.notes.sharps[(tuning[i] + j) % 12]
-            };
-        }
-    }
+export function newFretboard(numberOfStrings, numberOfFrets, tuning){
 
-    return newFretboard;
+    const defaultTuning = [4, 7, 2, 9, 11, 4];
+    
+    return {
+        fretboard: newLayout(numberOfStrings, numberOfFrets, tuning || defaultTuning),
+        tuning: tuning || defaultTuning,
+        keySignature: '',
+        scale: '',
+        mode: '',
+        arppegio: '',
+        chord: '',
+        notesDisplay: true,
+        scaleNotes: [],
+        scaleIntervals: [],
+        modeNotes: [],
+        modeIntervals: [],
+        arppegioNotes: [],
+        arppegioIntervals: [],
+        shape: '',
+        fret: '',
+        nofrets: 22,
+        nostr: 6,
+        url: ''
+    };
 }
+
 
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
 
     fretboards: [],
+
 
     keySignature: '',
     scale: '',
@@ -73,12 +98,64 @@ const initialState = {
 
 const fretboard = (state = initialState, action) => {
   switch (action.type) {
-    case SET_FRETBOARD: {
-        return {
-            ...state,
-            fretboard: action.payload.fretboard
-        };
+    case SET_KEY: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, keySignature: action.payload.keySignature };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
     }
+    case SET_ARPPEGIO: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, arppegio: action.payload.arppegio };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+    case SET_CHORD: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, chord: action.payload.chord };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
+    case SET_SHAPE: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, shape: action.payload.shape };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
+    case SET_FRET: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, fret: action.payload.fret };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
+    case SET_NOTES_DISPLAY: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, notesDisplay: action.payload.notesDisplay };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+    
     case SET_FRETBOARDS: {
         return {
             ...state,
@@ -104,77 +181,85 @@ const fretboard = (state = initialState, action) => {
         };
     }
     case SET_SCALE: {
-        return {
-            ...state,
-            scale: action.payload.scale
-        };
-    }
-    case SET_MODE: {
-        return {
-            ...state,
-            mode: action.payload.mode
-        };
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, scale: action.payload.scale };
+            }
+            return fb;
+        });
+    
+        return { ...state, fretboards: updatedFretboards };
     }
     case SET_SCALE_NOTES: {
-        return {
-            ...state,
-            scaleNotes: action.payload.scaleNotes
-        };
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, scaleNotes: action.payload.scaleNotes };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
     }
-    case SET_MODE_NOTES: {
-        return {
-            ...state,
-            modeNotes: action.payload.modeNotes
-        };
-    }
+
     case SET_SCALE_INTERVALS: {
-        return {
-            ...state,
-            scaleIntervals: action.payload.scaleIntervals
-        };
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, scaleIntervals: action.payload.scaleIntervals };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
     }
+
+    case SET_MODE_NOTES: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, modeNotes: action.payload.modeNotes };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
     case SET_MODE_INTERVALS: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, modeIntervals: action.payload.modeIntervals };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
+    case SET_ARPPEGIO_NOTES: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, arppegioNotes: action.payload.arppegioNotes };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+
+    case SET_ARPPEGIO_INTERVALS: {
+        const updatedFretboards = state.fretboards.map((fb, index) => {
+            if (index === action.payload.fretboardIndex) {
+                return { ...fb, arppegioIntervals: action.payload.arppegioIntervals };
+            }
+            return fb;
+        });
+        return { ...state, fretboards: updatedFretboards };
+    }
+    case UPDATE_FRETBOARD_PROPERTY:
+        const { fretboardIndex, propertyName, value } = action.payload;
         return {
             ...state,
-            modeIntervals: action.payload.modeIntervals
+            fretboards: state.fretboards.map((fretboard, index) => {
+                if (index === fretboardIndex) {
+                    return { ...fretboard, [propertyName]: value };
+                }
+                return fretboard;
+            })
         };
-    }
-    case SET_KEY: {
-        return {
-            ...state,
-            keySignature: action.payload.keySignature
-        };
-    }
-    case SET_ARPPEGIO: {
-        return {
-            ...state,
-            arppegio: action.payload.arppegio
-        };
-    }
-    case SET_CHORD: {
-        return {
-            ...state,
-            chord: action.payload.chord
-        };
-    }
-    case SET_SHAPE: {
-        return {
-            ...state,
-            shape: action.payload.shape
-        };
-    }
-    case SET_FRET: {
-        return {
-            ...state,
-            fret: action.payload.fret
-        };
-    }
-    case SET_NOTES_DISPLAY: {
-        return {
-            ...state,
-            notesDisplay: action.payload.notesDisplay
-        };
-    }
     default: {
       return state;
     }

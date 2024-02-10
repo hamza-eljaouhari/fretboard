@@ -28,8 +28,16 @@ import {
   SET_CIRCLE_OF_FIFTHS_ROTATION,
   SET_DASHED_CIRCLE_ROTATION,
 
-  SET_CHORD_PROGRESSION
+  SET_CHORD_PROGRESSION,
+
+  UPDATE_FRETBOARD_PROPERTY
+  
 } from "./actionTypes";
+
+export const updateFretboardProperty = (fretboardIndex, propertyName, value) => ({
+  type: UPDATE_FRETBOARD_PROPERTY,
+  payload: { fretboardIndex, propertyName, value }
+});
 
 export const setFretboard = (fretboard) => ({
   type: SET_FRETBOARD,
