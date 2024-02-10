@@ -53,7 +53,7 @@ const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfF
 
     // Construct the full fretboard element
     return (
-      <div key={`fretboard-${fretboardIndex}`} onClick={() => {handleFretboardSelect(fretboardIndex)}}>
+      <div key={`fretboard-${fretboardIndex}`}  onFocus={() => {handleFretboardSelect(fretboardIndex)}}  onClick={() => {handleFretboardSelect(fretboardIndex)}}>
         <label>
             Number of Strings:
             <input type="number" key="strings-changer" value={fretboard.nostr} onChange={(e) => onElementChange(e.target.value, 'nostr')} min="4" max="12" />
