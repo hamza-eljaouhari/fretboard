@@ -144,11 +144,11 @@ const FretboardControls = ({
                             labelId="arpeggio-name-label"
                             id="arpeggio-name-select"
                             value={selectedArppegio} // Adjust based on your state management for arpeggios
-                            onChange={(e) => onElementChange(e.target.value, 'arpeggio')}
+                            onChange={(e) => onElementChange(e.target.value, 'arppegio')}
                             displayEmpty
                         >
-                            {arppegiosNames.map((arpeggioName, index) => (
-                                <MenuItem key={index} value={arpeggioName}>{arpeggioName}</MenuItem>
+                            {arppegiosNames.map((arppegioName, index) => (
+                                <MenuItem key={index} value={arppegioName}>{arppegioName}</MenuItem>
                             ))}
                         </Select>
                     </FormControl>

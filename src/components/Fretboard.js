@@ -706,9 +706,6 @@ const Fretboard = withRouter((props) => {
         updateFretboardProperty(fretboardIndex, 'scale', Object.keys(guitar.scales).includes(scale) ? scale : '');
         updateFretboardProperty(fretboardIndex, 'mode', parseInt(mode, 10) >= 0 && parseInt(mode, 10) <= 6 ? mode : '');
         updateFretboardProperty(fretboardIndex, 'arppegio', Object.keys(guitar.arppegios).includes(arppegio) ? arppegio : '');
-        updateFretboardProperty(fretboardIndex, 'arppegio', Object.keys(guitar.arppegios).includes(arppegio) ? arppegio : '');
-        updateFretboardProperty(fretboardIndex, 'arppegio', Object.keys(guitar.arppegios).includes(arppegio) ? arppegio : '');
-        updateFretboardProperty(fretboardIndex, 'arppegio', Object.keys(guitar.arppegios).includes(arppegio) ? arppegio : '');
         updateFretboardProperty(fretboardIndex, 'chord', Object.keys(guitar.arppegios).includes(chord) ? chord : '');
         updateFretboardProperty(fretboardIndex, 'shape', shape >= 0 && shape <= 4 ? shape : '');
         updateFretboardProperty(fretboardIndex, 'fret', fret > 0 && fret < 22 ? fret : '');
@@ -775,6 +772,8 @@ const Fretboard = withRouter((props) => {
 
     // Event Handlers
     const handleChoiceChange = (choice) => {
+        props.history.push('/');
+        onElementChange(selectedFretboardIndex, 'nofb');
         onElementChange(choice, 'display');
     };
 
