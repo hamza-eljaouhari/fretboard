@@ -221,6 +221,7 @@ const Fretboard = withRouter((props) => {
 
     const getScaleNotes = useCallback((fretboard) => {
 
+        console.log(fretboard.scale)
         if(fretboard.scale === ''){
             return [];
         }
@@ -467,7 +468,7 @@ const Fretboard = withRouter((props) => {
             
             if(isModal){
                 if(fretboards[selectedFretboardIndex].mode !== ''){
-                    notes = getModeNotes();
+                    notes = getModeNotes(fretboards[selectedFretboardIndex]);
                     // updateFretboardProperty(selectedFretboardIndex, 'modeNotes', notes);
 
                     intervals = getModeIntervals();
@@ -644,6 +645,7 @@ const Fretboard = withRouter((props) => {
         const shape = queryParams.shape;
         const fret = queryParams.fret;
         const notesDisplay = queryParams.notesDisplay === "true";
+        const choice = queryParams.display;
 
         // Extract tuning, number of strings, and number of frets if provided
         const tuning = queryParams.tunes ? queryParams.tunes.split("-").map(Number) : undefined;
@@ -666,7 +668,8 @@ const Fretboard = withRouter((props) => {
                 notesDisplay,
                 tuning,
                 numberOfStrings,
-                numberOfFrets
+                numberOfFrets,
+                choice
             });
         }
     };
@@ -683,7 +686,8 @@ const Fretboard = withRouter((props) => {
         notesDisplay,
         tuning,
         numberOfStrings,
-        numberOfFrets
+        numberOfFrets,
+        choice
     }) => {
 
         if (isNaN(fretboardIndex) && fretboardIndex === -1) {
@@ -693,6 +697,8 @@ const Fretboard = withRouter((props) => {
         if(fretboards.length === 0 || search === fretboards[fretboardIndex].url){
             return;
         }
+
+        setChoice(choice);
 
         updateFretboardProperty(fretboardIndex, 'url', search);
 
@@ -769,11 +775,10 @@ const Fretboard = withRouter((props) => {
 
     // Event Handlers
     const handleChoiceChange = (choice) => {
-        setChoice(choice);
+        onElementChange(choice, 'display');
     };
 
     const pointCircleOfFifth = (keySignature) => {
-        console.log(chord)
         const chords = chord && guitar.arppegios[chord] || guitar.arppegios['M'];
 
         if(chords.quality.includes("Major") || chords.name.includes("Major")){
