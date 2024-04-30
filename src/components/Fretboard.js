@@ -526,13 +526,9 @@ const Fretboard = withRouter((props) => {
             if(guitar.scales[fretboard.scale].isModal && fretboard.mode !== ''){
                 scaleNotes = getModeNotes(fretboard);
             }
-        }
-
-        if(fretboard.arppegio !== ''){
+        } else if(fretboard.arppegio !== ''){
             scaleNotes = getArppegioNotes(true, fretboard);
-        }
-        
-        if(fretboard.chord !== ''){
+        } else if(fretboard.chord !== ''){
             scaleNotes = getArppegioNotes(false, fretboard);
         }
 
@@ -772,7 +768,8 @@ const Fretboard = withRouter((props) => {
 
     // Event Handlers
     const handleChoiceChange = (choice) => {
-        props.history.push('/');
+        var search = queryString.parse(props.history.location.search);
+        props.history.push('/?key=' + search.key);
         onElementChange(selectedFretboardIndex, 'nofb');
         onElementChange(choice, 'display');
     };
