@@ -518,6 +518,7 @@ const Fretboard = withRouter((props) => {
                 className={classes.chordPressionDisplay}
                 chordProgression={chordProgression}
                 setChordProgression={setChordProgression}
+                playChordProgression={playChordProgression}
             />
 
             {selectedFretboardIndex >= 0 && (

@@ -1,9 +1,28 @@
 import React, { useState } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, Button } from '@material-ui/core';
+import { FormControl, InputLabel, Select, MenuItem, Button, makeStyles } from '@material-ui/core';
 import { commonChordProgressions, keys } from '../config/commonChordProgressions';
 import guitar from '../config/guitar';
+import queryString from 'query-string';
+import { useHistory } from 'react-router-dom';
 
-const ChordProgressionSelector = ({ setChordProgression }) => {
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+        minWidth: 200,
+        margin: theme.spacing(2),
+    },
+    buttonGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: theme.spacing(2),
+    },
+    button: {
+        marginTop: theme.spacing(2),
+    },
+}));
+
+const ChordProgressionSelector = ({ chordProgression, setChordProgression, playChordProgression}) => {
+    const classes = useStyles();
+    const history = useHistory();
     const [selectedProgression, setSelectedProgression] = useState(commonChordProgressions[0].name);
     const [selectedKey, setSelectedKey] = useState(keys[0]);
 
@@ -50,7 +69,7 @@ const ChordProgressionSelector = ({ setChordProgression }) => {
 
     return (
         <div>
-            <FormControl>
+            <FormControl className={classes.formControl}>
                 <InputLabel id="progression-label">Chord Progression</InputLabel>
                 <Select
                     labelId="progression-label"
@@ -63,7 +82,7 @@ const ChordProgressionSelector = ({ setChordProgression }) => {
                 </Select>
             </FormControl>
 
-            <FormControl>
+            <FormControl className={classes.formControl}>
                 <InputLabel id="key-label">Key</InputLabel>
                 <Select
                     labelId="key-label"
@@ -76,9 +95,14 @@ const ChordProgressionSelector = ({ setChordProgression }) => {
                 </Select>
             </FormControl>
 
-            <Button onClick={generateChordProgression} variant="contained" color="primary">
-                Generate Chord Progression
-            </Button>
+            <div className={classes.buttonGroup}>
+                <Button onClick={generateChordProgression} variant="contained" color="primary" className={classes.button}>
+                    Generate Chord Progression
+                </Button>
+                <Button onClick={playChordProgression} variant="contained" color="secondary" className={classes.button}>
+                    Play Chord Progression
+                </Button>
+            </div>
         </div>
     );
 };
