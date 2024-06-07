@@ -4,7 +4,7 @@ import { withRouter, useLocation } from 'react-router-dom';
 import { connect } from "react-redux";
 import FretboardControls from './FretboardControls';
 import CircleOfFifths from './CircleOfFifths';
-import ChordProgressionDisplay from './ChordProgressionDisplay';
+import Progressor from './Progressor';
 import TabReader from './TabReader';
 import { newFretboard, newLayout } from '../redux/reducers/fretboard';
 import { IconButton, Button, InputLabel, FormControl, Select, Typography, makeStyles } from '@material-ui/core';
@@ -346,19 +346,21 @@ const Fretboard = withRouter((props) => {
         if (fretboards[selectedFretboardIndex].keySignature === '') return;
         if (fretboards[selectedFretboardIndex].chord === '') return;
         if (fretboards[selectedFretboardIndex].shape === '' && fretboards[selectedFretboardIndex].fret === '') return;
-
+    
         const chordObject = {
             key: fretboards[selectedFretboardIndex].keySignature,
-            chord,
-            shape,
-            fret: parseInt(fretboards[selectedFretboardIndex].fret),
+            chord: fretboards[selectedFretboardIndex].chord,
+            shape: fretboards[selectedFretboardIndex].shape,
+            fret: parseInt(fretboards[selectedFretboardIndex].fret, 10),
             highlighted: false,
             quality: guitar.arppegios[fretboards[selectedFretboardIndex].chord].quality,
             id: chordProgression.length + 1
         };
         const newChordProgression = [...chordProgression, chordObject];
         setChordProgression(newChordProgression);
+        localStorage.setItem('progression', JSON.stringify(newChordProgression));
     };
+    
 
     const saveProgression = () => {
         if (chordProgression && chordProgression.length > 0) {
@@ -373,7 +375,7 @@ const Fretboard = withRouter((props) => {
                 search[key] = chordProgression[i][key];
             });
             const newLocation = queryString.stringify(search);
-            props.history.push('/?' + newLocation);
+            props.history.push('/fretboard?' + newLocation);
             await new Promise(r => setTimeout(r, 4000));
         }
     };
@@ -512,7 +514,7 @@ const Fretboard = withRouter((props) => {
 
             <TabReader toggleNote={toggleNote} />
 
-            <ChordProgressionDisplay
+            <Progressor
                 className={classes.chordPressionDisplay}
                 chordProgression={chordProgression}
                 setChordProgression={setChordProgression}
