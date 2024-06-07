@@ -5,7 +5,6 @@ import guitar from '../config/guitar';
 // Assuming guitar, toggleNote, getNoteIndex, handleTuneChange are imported or defined elsewhere
 
 const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfFrets, toggleNote, handleFretboardSelect, chordProgression, selectedFretboardIndex}) => {
-  console.log("fretboards", fretboards);
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
