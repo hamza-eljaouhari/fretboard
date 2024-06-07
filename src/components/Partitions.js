@@ -71,7 +71,7 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
 
         const newLocation = queryString.stringify(searchObject);
 
-        history.push('/?' + newLocation);
+        history.push('/fretboard?' + newLocation);
     }
 
     const handleMenuOption = (optionId, chordObject) => {

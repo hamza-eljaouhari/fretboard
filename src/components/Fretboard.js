@@ -136,7 +136,7 @@ const Fretboard = withRouter((props) => {
 
         setFretboards(newFretboards);
 
-        props.history.push('/')
+        props.history.push('/fretboard')
         setSelectedFretboardIndex(newFretboards.length - 1);
         onElementChange(newFretboards.length - 1, 'nofb')
 
@@ -175,7 +175,7 @@ const Fretboard = withRouter((props) => {
 
         const newLocation = queryString.stringify(search);
 
-        props.history.push('/?' + newLocation);
+        props.history.push('/fretboard?' + newLocation);
     }
 
     function onCleanFretboard(){
@@ -350,53 +350,58 @@ const Fretboard = withRouter((props) => {
     }, [keySignature, arppegio, chord])
 
     const displayChordPortion = useCallback((fretboardIndex, notes, intervals) => {
-        var nf = JSON.parse(JSON.stringify(fretboards[fretboardIndex]))
-
-        var startingIndex = 0;
-        var lastIndex = null;
-       
-        if(fretboards[fretboardIndex].shape !== ''){
-            startingIndex = guitar.shapes.indexes[parseInt(fretboards[fretboardIndex].shape)].start;
-            lastIndex = guitar.shapes.indexes[parseInt(fretboards[fretboardIndex].shape)].end + 1;
-        }
-
-        if(fretboards[fretboardIndex].fret !== ''){
-            startingIndex = parseInt(fretboards[fretboardIndex].fret) - 1;
-            lastIndex = startingIndex + 4;
-        }
-
-        var visitedStrings = [];
-
-        notes.forEach((note) => {
-            for(var m = 0; m < fretboards[fretboardIndex].nostr; m++){
-                for(var n = startingIndex; n < lastIndex; n++){
-                    var currentNote = getNoteFromFretboard(m, n, nf.tuning);
-                    if(!visitedStrings[m]){
-                        if(note === currentNote){
-                            visitedStrings[m] = true;
-
-                            nf.fretboard[m][n].show = true;
-                            if(notesDisplay){
-                                nf.fretboard[m][n].current = currentNote;
-                            }else{
-                                nf.fretboard[m][n].current = intervals[notes.indexOf(currentNote)];
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        if (fretboardIndex < 0 || fretboardIndex >= fretboards.length) return;
         
+        const nf = JSON.parse(JSON.stringify(fretboards[fretboardIndex]));
+      
+        let startingIndex = 0;
+        let lastIndex = nf.nofrets; // default to the last fret
+      
+        if (nf.shape !== '') {
+          startingIndex = guitar.shapes.indexes[parseInt(nf.shape)].start;
+          lastIndex = guitar.shapes.indexes[parseInt(nf.shape)].end + 1;
+        }
+      
+        if (nf.fret !== '') {
+          startingIndex = parseInt(nf.fret) - 1;
+          lastIndex = startingIndex + 4;
+        }
+      
+        // Ensure the indices are within bounds
+        startingIndex = Math.max(0, startingIndex);
+        lastIndex = Math.min(nf.nofrets, lastIndex);
+      
+        const visitedStrings = [];
+      
+        notes.forEach((note) => {
+          for (let m = 0; m < nf.nostr; m++) {
+            for (let n = startingIndex; n < lastIndex; n++) {
+              const currentNote = getNoteFromFretboard(m, n, nf.tuning);
+              if (!visitedStrings[m]) {
+                if (note === currentNote) {
+                  visitedStrings[m] = true;
+      
+                  nf.fretboard[m][n].show = true;
+                  if (notesDisplay) {
+                    nf.fretboard[m][n].current = currentNote;
+                  } else {
+                    nf.fretboard[m][n].current = intervals[notes.indexOf(currentNote)];
+                  }
+                }
+              }
+            }
+          }
+        });
+      
         const updatedFretboards = [...fretboards];
         updatedFretboards[fretboardIndex] = nf;
-
-        if(JSON.stringify(updatedFretboards) !== JSON.stringify(fretboards)){
-            setFretboards(updatedFretboards)
+      
+        if (JSON.stringify(updatedFretboards) !== JSON.stringify(fretboards)) {
+          setFretboards(updatedFretboards);
         }
-    }, [shape, fret, notesDisplay, fretboard, setFretboard, numberOfStrings])
-
+      }, [shape, fret, notesDisplay, fretboards, setFretboards]);
     
-    const spread = useCallback((fretboardIndex, notes, intervals) => {
+    const spread = useCallback((fretboards, fretboardIndex, notes, intervals, displayType) => {
         // Validate the fretboardIndex and existence of fretboards
         if (fretboardIndex === -1) {
           console.warn("Invalid fretboardIndex or fretboards not defined.");
@@ -429,15 +434,32 @@ const Fretboard = withRouter((props) => {
         // Perform state update to trigger re-render
         
         if (JSON.stringify(updatedFretboards) !== JSON.stringify(fretboards)) {
+            if(displayType === 'scale'){
+                updateFretboardProperty(fretboardIndex, 'scaleNotes', notes);
+                updateFretboardProperty(fretboardIndex, 'scaleIntervals', intervals);
+            }
+
+            if(displayType === 'mode'){
+                updateFretboardProperty(fretboardIndex, 'modeNotes', notes);
+                updateFretboardProperty(fretboardIndex, 'modeIntervals', intervals);
+            }
+
+            if(displayType === 'arppegio'){
+                updateFretboardProperty(fretboardIndex, 'arppegioNode', notes);
+                updateFretboardProperty(fretboardIndex, 'arppegioIntervals', intervals);
+            }
+            
             setFretboards(updatedFretboards); // Assuming setFretboards updates the state that holds all fretboards
         }
 
-      }, [fretboards, shape, fret, notesDisplay, guitar.shapes.indexes, setFretboards]);
+      }, [shape, fret, notesDisplay, guitar.shapes.indexes, setFretboards]);
       
     const update = useCallback(() => {
         if(selectedFretboardIndex === -1){
             return;
         }
+
+        let displayType = 'scale';
 
         onSetTitle('Choose something to display...')
 
@@ -458,26 +480,23 @@ const Fretboard = withRouter((props) => {
 
             notes = getScaleNotes(fretboards[selectedFretboardIndex]);
 
-            updateFretboardProperty(selectedFretboardIndex, 'scaleNotes', notes);
-            
             intervals = getScaleIntervals();
-            updateFretboardProperty(selectedFretboardIndex, 'scaleIntervals', intervals);
 
             name = notes[0] + ' ' + guitar.scales[fretboards[selectedFretboardIndex].scale].name + ' scale';
             
             if(isModal){
                 if(fretboards[selectedFretboardIndex].mode !== ''){
                     notes = getModeNotes(fretboards[selectedFretboardIndex]);
-                    updateFretboardProperty(selectedFretboardIndex, 'modeNotes', notes);
 
                     intervals = getModeIntervals();
-                    updateFretboardProperty(selectedFretboardIndex, 'modeIntervals', intervals);
 
                     let modeRootName = notes[0];
-
+                    
                     let modeNumber = parseInt(fretboards[selectedFretboardIndex].mode) + 1;
 
                     name = modeRootName + ' ' + guitar.scales[scale].modes[fretboards[selectedFretboardIndex].mode].name + ' from the ' + name + ' (Mode #' + modeNumber     + ')';
+
+                    displayType = 'mode';
                 }
             }
         }
@@ -485,13 +504,12 @@ const Fretboard = withRouter((props) => {
         if(fretboards[selectedFretboardIndex].arppegio !== ''){
             notes = getArppegioNotes(true, fretboards[selectedFretboardIndex]);
             setArppegioNotes(notes)
-            updateFretboardProperty(selectedFretboardIndex, 'arppegioNotes', notes);
-
 
             intervals = guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].intervals;
-            updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals', intervals);
 
             name = notes[0] + ' ' + guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].name + ' arppegio.';
+
+            displayType = 'arppegio';
         }
             
         if(fretboards[selectedFretboardIndex].chord !== ''){
@@ -506,7 +524,7 @@ const Fretboard = withRouter((props) => {
                 return;
             }
         } else {
-            spread(selectedFretboardIndex, notes, intervals);
+            spread(fretboards, selectedFretboardIndex, notes, intervals, displayType);
             
             onSetTitle(name);
         }
@@ -768,7 +786,7 @@ const Fretboard = withRouter((props) => {
     // Event Handlers
     const handleChoiceChange = (choice) => {
         var search = queryString.parse(props.history.location.search);
-        props.history.push('/?key=' + search.key);
+        props.history.push('/fretboard?key=' + search.key);
         onElementChange(selectedFretboardIndex, 'nofb');
         onElementChange(choice, 'display');
     };
