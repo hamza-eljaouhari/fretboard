@@ -221,7 +221,6 @@ const Fretboard = withRouter((props) => {
 
     const getScaleNotes = useCallback((fretboard) => {
 
-        console.log(fretboard.scale)
         if(fretboard.scale === ''){
             return [];
         }
@@ -458,21 +457,21 @@ const Fretboard = withRouter((props) => {
             var isModal = guitar.scales[fretboards[selectedFretboardIndex].scale].isModal;
 
             notes = getScaleNotes(fretboards[selectedFretboardIndex]);
-            // updateFretboardProperty(selectedFretboardIndex, 'scaleNotes', notes);
+
+            updateFretboardProperty(selectedFretboardIndex, 'scaleNotes', notes);
             
             intervals = getScaleIntervals();
-            // updateFretboardProperty(selectedFretboardIndex, 'scaleIntervals', intervals);
-
+            updateFretboardProperty(selectedFretboardIndex, 'scaleIntervals', intervals);
 
             name = notes[0] + ' ' + guitar.scales[fretboards[selectedFretboardIndex].scale].name + ' scale';
             
             if(isModal){
                 if(fretboards[selectedFretboardIndex].mode !== ''){
                     notes = getModeNotes(fretboards[selectedFretboardIndex]);
-                    // updateFretboardProperty(selectedFretboardIndex, 'modeNotes', notes);
+                    updateFretboardProperty(selectedFretboardIndex, 'modeNotes', notes);
 
                     intervals = getModeIntervals();
-                    // updateFretboardProperty(selectedFretboardIndex, 'modeIntervals', intervals);
+                    updateFretboardProperty(selectedFretboardIndex, 'modeIntervals', intervals);
 
                     let modeRootName = notes[0];
 
@@ -486,11 +485,11 @@ const Fretboard = withRouter((props) => {
         if(fretboards[selectedFretboardIndex].arppegio !== ''){
             notes = getArppegioNotes(true, fretboards[selectedFretboardIndex]);
             setArppegioNotes(notes)
-            // updateFretboardProperty(selectedFretboardIndex, 'arppegioNotes', notes);
+            updateFretboardProperty(selectedFretboardIndex, 'arppegioNotes', notes);
 
 
             intervals = guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].intervals;
-            // updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals', intervals);
+            updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals', intervals);
 
             name = notes[0] + ' ' + guitar.arppegios[fretboards[selectedFretboardIndex].arppegio].name + ' arppegio.';
         }
