@@ -167,7 +167,7 @@ const FretboardControls = ({
                         displayEmpty
                     >
                         {guitar.shapes.names.map((shapeName, index) => (
-                            <MenuItem key={index} value={index}>{shapeName}</MenuItem>
+                            <MenuItem key={index} value={shapeName}>{shapeName}</MenuItem>
                         ))}
                     </Select>
                 </FormControl>

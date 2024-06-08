@@ -1,5 +1,4 @@
 import { 
-    SET_FRETBOARD,
     SET_FRETBOARDS,
     
     DISPLAY_NOTE,
@@ -11,7 +10,6 @@ import {
     SET_SCALE_NOTES,
     SET_SCALE_INTERVALS,
     
-    SET_MODE, 
     SET_MODE_NOTES, 
     SET_MODE_INTERVALS,
     

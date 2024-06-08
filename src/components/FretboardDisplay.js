@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import classNames from 'classnames'; // Ensure you've installed and imported classNames
 import guitar from '../config/guitar';
 
-// Assuming guitar, toggleNote, getNoteIndex, handleTuneChange are imported or defined elsewhere
-
-const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfFrets, toggleNote, handleFretboardSelect, chordProgression, selectedFretboardIndex}) => {
+const FretboardDisplay = ({
+  fretboards,
+  onElementChange,
+  getNoteIndex,
+  numberOfFrets,
+  toggleNote,
+  handleFretboardSelect,
+  chordProgression,
+  selectedFretboardIndex
+}) => {
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
@@ -15,26 +23,30 @@ const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfF
           <input
             value={fretboard.tuning.length > i ? guitar.notes.flats[fretboard.tuning[i]] : ''}
             onChange={(e) => {
-                    const newTuning = [...fretboard.tuning];
-
-                    newTuning[i] = guitar.notes.flats.indexOf(e.target.value);
-                    onElementChange(newTuning.join('-'), 'tunes')
+              const newTuning = [...fretboard.tuning];
+              newTuning[i] = guitar.notes.flats.indexOf(e.target.value);
+              onElementChange(newTuning.join('-'), 'tunes');
             }}
             style={{ width: '50px' }}
           />
         </td>
         {[...Array(fretboard.nofrets)].map((_, j) => {
           const note = fretboard.fretboard[i][j];
+          const displayedNoteIndex = (fretboard.tuning[i] + j) % 12;
+          const displayedNote = guitar.notes.sharps[displayedNoteIndex];
+
           return (
             <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
-              <span className={classNames({
-                'note': note.show === true,
-                'root': getNoteIndex(note.current, fretboard) === 0,
-                "third": getNoteIndex(note.current, fretboard) === 2,
-                'fifth': getNoteIndex(note.current, fretboard) === 4,
-                'seventh': getNoteIndex(note.current, fretboard) === 6
-              })}>
-                {note.show && note.current}
+              <span
+                className={classNames({
+                  'note': note.show === true,
+                  'root': getNoteIndex(note.current, fretboard) === 0,
+                  'third': getNoteIndex(note.current, fretboard) === 2,
+                  'fifth': getNoteIndex(note.current, fretboard) === 4,
+                  'seventh': getNoteIndex(note.current, fretboard) === 6
+                })}
+              >
+                {note.show && displayedNote}
               </span>
               <hr />
             </td>
@@ -51,14 +63,14 @@ const FretboardDisplay = ({ fretboards, onElementChange, getNoteIndex, numberOfF
 
     // Construct the full fretboard element
     return (
-      <div key={`fretboard-${fretboardIndex}`}  onFocus={() => {handleFretboardSelect(fretboardIndex)}}  onClick={() => {handleFretboardSelect(fretboardIndex)}}>
+      <div key={`fretboard-${fretboardIndex}`} onFocus={() => handleFretboardSelect(fretboardIndex)} onClick={() => handleFretboardSelect(fretboardIndex)}>
         <label>
-            Number of Strings:
-            <input type="number" key="strings-changer" value={fretboard.nostr} onChange={(e) => onElementChange(e.target.value, 'nostr')} min="4" max="12" />
+          Number of Strings:
+          <input type="number" key="strings-changer" value={fretboard.nostr} onChange={(e) => onElementChange(e.target.value, 'nostr')} min="4" max="12" />
         </label>
         <label>
-            Number of Frets:
-            <input type="number" key="frets-changer" value={fretboard.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
+          Number of Frets:
+          <input type="number" key="frets-changer" value={fretboard.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
         </label>
         <table>
           <tbody>{newRows}</tbody>
