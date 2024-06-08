@@ -15,8 +15,8 @@ const CircleOfFifths = ({
     const majorTones = guitar.circleOfFifths.map((key) => key.key);
     const minorTones = guitar.circleOfFifths.map((key) => key.relative);
 
-    console.log("tone ", selectedTone);
-    console.log("quality ", quality);
+    console.log("MMajor tones", majorTones);
+    console.log("minorTones", minorTones);
     
     const calculatePosition = (angleDegrees, radius) => {
         const radians = ((angleDegrees - 90) * Math.PI) / 180; // Adjusting the starting angle by -90 degrees to move 'C' to the top
@@ -51,18 +51,39 @@ const CircleOfFifths = ({
     }
 
     const shouldBeHighlighted = (index, isMajor) => {
-        const tones = isMajor ? majorTones : minorTones;
-        const selectedIndex = tones.indexOf(isMajor ? selectedMajorTone : selectedMinorTone);
+        const majorIndex = majorTones.indexOf(selectedMajorTone);
+        const minorIndex = minorTones.indexOf(selectedMinorTone + 'm');
+    
+        const selectedIndex = isMajor ? majorIndex : minorIndex;
+    
         if (selectedIndex === -1) return false;
-
+    
         const highlightedIndices = [];
         for (let i = -1; i <= 5; i++) {
-            highlightedIndices.push((selectedIndex + i + tones.length) % tones.length);
+            highlightedIndices.push((selectedIndex + i + majorTones.length) % majorTones.length);
+            highlightedIndices.push((selectedIndex + i + minorTones.length) % minorTones.length);
         }
-
+    
+        // Highlight the relative tones
+        if (quality === "Major") {
+            const relativeMinorIndex = minorTones.indexOf(selectedMinorTone + 'm');
+            if (relativeMinorIndex !== -1) {
+                for (let i = -1; i <= 5; i++) {
+                    highlightedIndices.push((relativeMinorIndex + i + minorTones.length) % minorTones.length);
+                }
+            }
+        } else {
+            const relativeMajorIndex = majorTones.indexOf(selectedMajorTone);
+            if (relativeMajorIndex !== -1) {
+                for (let i = -1; i <= 5; i++) {
+                    highlightedIndices.push((relativeMajorIndex + i + majorTones.length) % majorTones.length);
+                }
+            }
+        }
+    
         return highlightedIndices.includes(index);
     };
-
+    
     return (
         <div>
             <svg width="400" height="400" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
