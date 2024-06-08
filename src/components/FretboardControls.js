@@ -33,20 +33,6 @@ const FretboardControls = ({
 
     return (
         <footer className={classes.footer}>
-            <FormControl  className={`${classes.formControl} ${classes.fixedWidth}`}>
-                <InputLabel id="key-signature-label">Choose Key</InputLabel>
-                <Select
-                    labelId="key-signature-label"
-                    id="key-signature-select"
-                    value={keySignature}
-                    onChange={(e) => onElementChange(e.target.value, 'key')}
-                    displayEmpty
-                >
-                    {guitar.notes.sharps.map((key, index) => (
-                        <MenuItem key={index} value={index}>{key}</MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
 
             {/* Buttons for choosing between scales, chords, and arpeggios */}
             <div className={classes.buttonGroup}>
@@ -81,6 +67,7 @@ const FretboardControls = ({
 
             {choice === 'scales' && (
                 <>
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}></KeySelector>
                     <FormControl  className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="scale-name-label">Choose Scale</InputLabel>
                         <Select
@@ -118,6 +105,7 @@ const FretboardControls = ({
             {/* Chord Selection, shown if 'chords' is the current choice */}
             {choice === 'chords' && (
                 <>
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}></KeySelector>
                     <FormControl  className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="chord-name-label">Choose Chord</InputLabel>
                         <Select
@@ -138,6 +126,7 @@ const FretboardControls = ({
             {/* Arpeggio Selection, shown if 'arpeggios' is the current choice */}
             {choice === 'arpeggios' && (
                 <>
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}></KeySelector>
                     <FormControl  className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="arpeggio-name-label">Choose Arpeggio</InputLabel>
                         <Select
@@ -233,289 +222,26 @@ const FretboardControls = ({
     );
 };
 
+const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
+    return (
+        choice && (
+            <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
+                <InputLabel id="key-signature-label">Choose Key</InputLabel>
+                <Select
+                    labelId="key-signature-label"
+                    id="key-signature-select"
+                    value={keySignature}
+                    onChange={(e) => onElementChange(e.target.value, 'key')}
+                    displayEmpty
+                >
+                    {guitar.notes.sharps.map((key, index) => (
+                        <MenuItem key={index} value={index}>{key}</MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+        )
+    );
+};
+
+
 export default FretboardControls;
-
-// import React from 'react';
-// import { Card, CardContent, Typography, Button } from '@material-ui/core';
-
-// const FretboardControls = ({
-//     classes,
-//     choice,
-//     handleChoiceChange,
-//     keySignature,
-//     guitar,
-//     onElementChange,
-//     buttonText,
-//     scaleModes,
-//     arppegiosNames,
-//     onCleanFretboard,
-//     onCopyLink,
-//     addChordToProgression,
-//     playChordProgression,
-//     saveProgression
-// }) => {
-//     // Helper function to capitalize the first letter of each choice
-//     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-    
-//     return (
-//         <section className="controls">
-//             <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                 Choose Key :
-//             </Typography>
-//             <form  className={classes.form}>
-//             {
-//                 guitar.notes.sharps.map((key, index) => {
-//                     return (
-//                         <Card className={classes.card} key={index}>
-//                             <CardContent>
-//                                 <Typography onClick={() => onElementChange(index, 'key')} className={classes.title} color="textSecondary">
-//                                     {key}
-//                                 </Typography>
-//                             </CardContent>
-//                         </Card>
-//                     )    
-//                 })
-//             }
-//             </form>
-//         {
-//             keySignature !== "unset" && (
-//                 <>
-//                 <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                     Choose Display Element:
-//                 </Typography>
-//                 <form className={classes.form}>
-//                     {
-//                         ['scales', 'chords', 'arpeggios'].map(choice => (
-//                             <Card key={choice} className={classes.card}>
-//                                 <CardContent>
-//                                     <Typography onClick={() => handleChoiceChange(choice)} className={classes.title} color="textSecondary">
-//                                     {capitalize(choice)}
-//                                     </Typography>
-//                                 </CardContent>
-//                             </Card>
-//                         ))
-//                     }
-//                 </form>
-//                 </>
-
-//             )
-//         }
-//         {
-//             choice === 'scales' &&
-//             (
-//             <div>
-//                 <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                     Choose Scale :
-//                 </Typography>
-//                 {
-//                     Object.keys(guitar.scales).map((scaleName, index) => {
-//                         return (
-//                             <Card className={classes.card} key={index}>
-//                                 <CardContent>
-//                                     <Typography onClick={(e) => onElementChange(scaleName, 'scale')} className={classes.title} color="textSecondary">
-//                                         {scaleName}
-//                                     </Typography>
-//                                 </CardContent>
-//                             </Card>
-//                         )    
-//                     })
-//                 }
-//                 <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                     Choose Mode :
-//                 </Typography>
-//                 {
-//                 scaleModes && scaleModes.map((mode, index) => {
-//                         return (
-//                             <Card className={classes.card} key={index}>
-//                             <CardContent>
-//                                 <Typography onClick={(e) => onElementChange(index, 'mode')} className={classes.title} color="textSecondary">
-//                                     {mode.name}
-//                                 </Typography>
-//                             </CardContent>
-//                         </Card>
-//                         )    
-//                     })
-//                 }
-//             </div> 
-//             )
-//         }
-//         {
-//             choice === 'chords' &&
-//             ( 
-//                 <div>
-//                     <div>
-//                         <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                             Choose Mode :
-//                         </Typography>
-//                         {
-//                             arppegiosNames.map((chord, index) => {
-//                                 return (
-//                                     <Card className={classes.card} key={index}>
-//                                     <CardContent>
-//                                         <Typography onClick={(e) => onElementChange(chord, 'chord')} className={classes.title} color="textSecondary">
-//                                             {chord}
-//                                         </Typography>
-//                                     </CardContent>
-//                                 </Card>
-//                                 )    
-//                             })
-//                         }
-//                     </div>
-                    
-//                     <div>
-//                         <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                             Choose Shape :
-//                         </Typography>
-//                         {
-//                             guitar.shapes.names.map((shape, index) => {
-//                                 return (
-//                                     <Card className={classes.card} key={index}>
-//                                     <CardContent>
-//                                         <Typography onClick={(e) => onElementChange(index, 'shape')} className={classes.title} color="textSecondary">
-//                                             {shape}
-//                                         </Typography>
-//                                     </CardContent>
-//                                 </Card>
-//                                 )    
-//                             })
-//                         }
-                        
-//                     </div>
-                                        
-//                     <div>
-//                         <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                             Choose Fret :
-//                         </Typography>
-//                         {
-//                             Array.from(Array(guitar.numberOfFrets - 3).keys(), (_, i) => i + 1).map((fret, index) => {
-//                                 return (
-//                                     <Card className={classes.card} key={index}>
-//                                     <CardContent>
-//                                         <Typography onClick={(e) => onElementChange(fret, 'fret')} className={classes.title} color="textSecondary">
-//                                             {fret}
-//                                         </Typography>
-//                                     </CardContent>
-//                                 </Card>
-//                                 )    
-//                             })
-//                         }
-
-//                     </div>
-                    
-//                 </div>
-//             )
-//         }
-//         {
-//             choice === 'arpeggios' && 
-//             (
-//                 <>
-//                 <Typography color="textPrimary" style={{ marginBottom: '8px' }}>
-//                     Choose Mode :
-//                 </Typography>
-//                 {
-//                     arppegiosNames.map((arppegio, index) => {
-//                         return (
-//                             <Card className={classes.card} key={index}>
-//                             <CardContent>
-//                                 <Typography onClick={(e) => onElementChange(index, 'arppegio')} className={classes.title} color="textSecondary">
-//                                     {arppegio}
-//                                 </Typography>
-//                             </CardContent>
-//                         </Card>
-//                         )    
-//                     })
-//                 }
-
-//                 </>
-
-//             )
-//         }
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={(e) => onElementChange(e, 'notesDisplay')}
-//             >
-//                 { buttonText } 
-//             </Button>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={onCleanFretboard}
-//             >
-//                 Clean
-//             </Button>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={onCopyLink}
-//             >
-//                 Copy link
-//             </Button>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={addChordToProgression}
-//             >
-//                 Add chord to progression
-//             </Button>
-            
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={playChordProgression}
-//             >
-//                 Play progession
-//             </Button>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//                 onClick={saveProgression}
-//             >
-//                 Save progression
-//             </Button>
-
-//             <Typography 
-//                 className={classes.seperator}
-//                 variant="h6">
-//                 Coming soon :
-//             </Typography>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//             >
-//                 Detect
-//             </Button>
-
-//             <Button
-//                 className={classes.formElement}
-//                 variant="contained"
-//                 color="primary"
-//                 size="medium"
-//             >
-//                 Print
-//             </Button>
-//         </section>
-//     )
-// };
-
-// export default FretboardControls;

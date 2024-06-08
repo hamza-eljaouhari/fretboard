@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import React, { useState } from 'react';
 
 import { 
-    setKey,
+    setKeyForChoice,
     setScale,
     setMode
 } from "../redux/actions";
@@ -13,7 +13,7 @@ const outterCirlce = guitar.circleOfFifths.map((key) => {return key.key });
 const innerCircle = guitar.circleOfFifths.map((key) => { return key.relative });
 
 const CircleOfFifths = ({
-    setKey,
+    setKeyForChoice,
     setScale,
     setMode,
     selectedTone,

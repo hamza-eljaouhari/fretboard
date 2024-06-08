@@ -1,6 +1,6 @@
 import { 
     SET_FRETBOARDS,
-    
+    SET_KEY_FOR_CHOICE,
     DISPLAY_NOTE,
     TOGGLE_NOTE, 
     
@@ -46,7 +46,12 @@ export function newFretboard(numberOfStrings, numberOfFrets, tuning){
     return {
         fretboard: newLayout(numberOfStrings, numberOfFrets, tuning || defaultTuning),
         tuning: tuning || defaultTuning,
-        keySignature: '',
+        keySettings: {
+            scales: '',
+            modes: '',
+            arpeggios: '',
+            chords: ''
+        },
         scale: '',
         mode: '',
         arppegio: '',
@@ -66,14 +71,15 @@ export function newFretboard(numberOfStrings, numberOfFrets, tuning){
     };
 }
 
-
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
-
     fretboards: [],
-
-
-    keySignature: '',
+    keySettings: {
+        scales: '',
+        modes: '',
+        arpeggios: '',
+        chords: ''
+    },
     scale: '',
     scaleFormula: [],
     scaleNotes: [],
@@ -81,7 +87,7 @@ const initialState = {
     
     mode: '',
     modeNotes: [],
-    modeIntervals : [],
+    modeIntervals: [],
     
     arppegio: '',
     arppegioNotes: [],
@@ -94,8 +100,26 @@ const initialState = {
     shape: ''
 };
 
+
 const fretboard = (state = initialState, action) => {
   switch (action.type) {
+    case SET_KEY_FOR_CHOICE : {
+        return {
+            ...state,
+            fretboards: state.fretboards.map((fretboard, index) => {
+                if (index === action.payload.fretboardIndex) {
+                    return {
+                        ...fretboard,
+                        keySettings: {
+                            ...fretboard.keySettings,
+                            [action.payload.choice]: action.payload.key
+                        }
+                    };
+                }
+                return fretboard;
+            })
+        };
+    }
     case SET_KEY: {
         const updatedFretboards = state.fretboards.map((fb, index) => {
             if (index === action.payload.fretboardIndex) {

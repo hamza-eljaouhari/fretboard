@@ -39,6 +39,11 @@ export const updateFretboardProperty = (fretboardIndex, propertyName, value) => 
   payload: { fretboardIndex, propertyName, value }
 });
 
+export const setKeyForChoice = (fretboardIndex, choice, key) => ({
+  type: 'SET_KEY_FOR_CHOICE',
+  payload: { fretboardIndex, choice, key }
+});
+
 export const setFretboard = (fretboard) => ({
   type: SET_FRETBOARD,
   payload: { fretboard }
