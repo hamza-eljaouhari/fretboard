@@ -574,7 +574,7 @@
         
             setChoice(choice);
             updateFretboardProperty(fretboardIndex, 'url', search);
-            if (key !== undefined) setKeyForChoice(fretboardIndex, choice, key);;
+            if (key !== undefined) setKeyForChoice(fretboardIndex, choice, key);
             if (scale !== undefined) updateFretboardProperty(fretboardIndex, 'scale', Object.keys(guitar.scales).includes(scale) ? scale : '');
             if (mode !== undefined) updateFretboardProperty(fretboardIndex, 'mode', mode >= 0 && mode <= 6 ? mode : '');
             if (arppegio !== undefined) updateFretboardProperty(fretboardIndex, 'arppegio', Object.keys(guitar.arppegios).includes(arppegio) ? arppegio : '');
@@ -647,30 +647,66 @@
         const handleChoiceChange = (choice) => {
             const search = queryString.parse(props.history.location.search);
             props.history.push('/fretboard');
+            console.log("changed choice", choice)
+            setChoice(choice);
             onElementChange(selectedFretboardIndex, 'nofb');
             onElementChange(choice, 'display');
         };
 
-        // const handleChoiceChange = (newChoice) => {
-        //     const search = queryString.parse(props.history.location.search);
-        //     search.display = newChoice;
-        //     const newLocation = queryString.stringify(search);
-        //     props.history.push('/fretboard?' + newLocation);
-        //     setChoice(newChoice);
-        //     update();
-        // };
+        const getDegree = (fretboards, selectedFretboardIndex, choice) => {
+            const defaultDegree = 'Major';
         
-
-        const pointCircleOfFifth = (keySignature) => {
-            const currentChord = guitar.arppegios[chord] || guitar.arppegios['M'];
-            return currentChord.quality.includes("Major") || currentChord.name.includes("Major")
-                ? guitar.notes.flats[keySignature]
-                : guitar.notes.flats[keySignature] + 'm';
+            if (!choice || selectedFretboardIndex === -1 || fretboards.length === 0) return defaultDegree;
+        
+            const selectedKey = fretboards[selectedFretboardIndex]?.keySettings?.[choice];
+            if (selectedKey === undefined) return defaultDegree;
+        
+            if (choice === 'scales') {
+                const scaleName = fretboards[selectedFretboardIndex]?.scale;
+                if (!scaleName) return defaultDegree;
+        
+                const scale = Object.keys(guitar.scales).map((k) => {
+                    return {
+                        name: k,
+                        degree: guitar.scales[k].degree
+                    }
+                }).find((s) => {
+                    return s.name.toLowerCase() === scaleName.toLowerCase()
+                });
+                
+                return scale ? scale.degree : defaultDegree;
+            } else if (choice === 'chords' || choice === 'arpeggios') {
+                const chordName = fretboards[selectedFretboardIndex]?.chord;
+                if (!chordName) return defaultDegree;
+        
+                const chord = guitar.arppegios[chordName];
+                return chord ? chord.quality : defaultDegree;
+            }
+        
+            return defaultDegree;
         };
-
-        console.log(fretboards)
-        console.log(selectedFretboardIndex)
-
+        
+        const getCircleData = () => {
+            const defaultPoint = {
+                tone: 'C',
+                degree: 'Major'
+            };
+    
+            if (!choice || selectedFretboardIndex === -1 || fretboards.length === 0) return defaultPoint;
+    
+            const selectedKey = fretboards[selectedFretboardIndex]?.keySettings?.[choice];
+            if (selectedKey === undefined) return defaultPoint;
+    
+            const selectedTone = guitar.notes.flats[selectedKey];
+    
+            return {
+                tone: selectedTone,
+                degree: getDegree(fretboards, selectedFretboardIndex, choice)
+            };
+        };
+    
+        const circleData = getCircleData();
+        
         return (
             <div className="fretboard-container">
                 <IconButton onClick={addFretboard}>
@@ -694,10 +730,10 @@
                     setKeyForChoice={setKeyForChoice}
                     setScale={setScale}
                     setMode={setMode}
-                    selectedTone={pointCircleOfFifth(fretboards[selectedFretboardIndex].keySettings[choice])}
+                    selectedTone={circleData.tone}
                     onElementChange={onElementChange}
-                    keySignature={keySignature}
-                    quality={chord ? guitar.arppegios[chord].quality : "Minor"}
+                    selectedFretboardIndex={selectedFretboardIndex}
+                    quality={circleData.degree}
                 />
 
                 <TabReader toggleNote={toggleNote} />

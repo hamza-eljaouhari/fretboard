@@ -60,6 +60,7 @@ export default {
     "scales": {
         "major": {
             "name": "Major",
+            "degree": "Major",
             "formula": [2, 2, 1, 2, 2, 2, 1],
             "intervals": ["1", "2", "3", "4", "5", "6", "7"],
             "isModal": true,
@@ -75,6 +76,7 @@ export default {
         },
         "harmonic": {
             "name": "Harmonic",
+            "degree": "Minor",            
             "formula": [2, 1, 2, 2, 1, 3, 1],
             "intervals": ["1", "2", "b3", "4", "5", "b6", "7"],
             "isModal": true,
@@ -90,6 +92,7 @@ export default {
         },
         "melodic": {
             "name": "Melodic",
+            "degree": "Minor",
             "formula": [2, 1, 2, 2, 2, 2, 1],
             "intervals": ["1", "2", "b3", "4", "5", "6", "7"],
             "isModal": true,
@@ -105,12 +108,14 @@ export default {
         },
         "blues-minor": {
             "name": "Blues minor",
+            "degree": "Minor",
             "isModal": false,
             "intervals": ["1", "b3", "4", "b5", "5", "b7"],
             "formula": [3, 2, 2, 3, 2]
         },
         "blues-major": {
             "name": "Blues major",
+            "degree": "Major",
             "formula": [2, 2, 3, 2, 3],
             "isModal": false,
             "intervals": ["1", "2", "b3", "3", "5", "6"]
@@ -119,212 +124,228 @@ export default {
     "cagedIntervals": [0, 3, 5], 
     "arppegios": {
         "M": {
-            "name": "Major",
-            "formula": [4, 3, 4],
-            "intervals": ["1", "3", "5"],
-            "quality": "Major",
-            "cagedShapes": {
-                "C": [null, 3, 2, 0, 1, 0], // C Major chord in open position
-                "A": [null, 0, 2, 2, 2, 0], // A Major chord in open position
-                "G": [3, 2, 0, 0, 3, 3],    // G Major chord in open position
-                "E": [0, 2, 2, 1, 0, 0],    // E Major chord in open position
-                "D": [null, null, 0, 2, 3, 2] // D Major chord in open position
-            }
+          "name": "Major",
+          "formula": [4, 3, 4],
+          "intervals": ["1", "3", "5"],
+          "quality": "Major",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 0, 1, 0],
+            "A": [null, 0, 2, 2, 2, 0],
+            "G": [3, 2, 0, 0, 3, 3],
+            "E": [0, 2, 2, 1, 0, 0],
+            "D": [null, null, 0, 2, 3, 2]
+          }
         },
         "m": {
-            "name": "Minor",
-            "formula": [3, 4, 5],
-            "intervals": ["1", "b3", "5"],
-            "quality": "Minor",
-            "cagedShapes": {
-                "C": [null, 3, 1, 0, 1, 0], // C Minor chord in open position
-                "A": [null, 0, 2, 2, 1, 0], // A Minor chord in open position
-                "G": [3, 1, 0, 0, 0, 3],    // G Minor chord in open position
-                "E": [0, 2, 2, 0, 0, 0],    // E Minor chord in open position
-                "D": [null, null, 0, 2, 3, 1] // D Minor chord in open position
-            }
+          "name": "Minor",
+          "formula": [3, 4, 5],
+          "intervals": ["1", "b3", "5"],
+          "quality": "Minor",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 0, 1, 0],
+            "A": [null, 0, 2, 2, 1, 0],
+            "G": [3, 1, 0, 0, 0, 3],
+            "E": [0, 2, 2, 0, 0, 0],
+            "D": [null, null, 0, 2, 3, 1]
+          }
         },
         "aug": {
-            "name": "Augmented",
-            "intervals": ["1", "3", "#5"],
-            "formula": [4, 4, 4],
-            "quality": "Augmented",
-            "cagedShapes": {
-                "C": [null, 3, 2, 1, 1, 0], // C Augmented chord in open position
-                "A": [null, 0, 3, 2, 2, 1], // A Augmented chord in open position
-                "G": [3, 2, 1, 0, 0, 3],    // G Augmented chord in open position
-                "E": [0, 3, 2, 1, 1, 0],    // E Augmented chord in open position
-                "D": [null, null, 0, 3, 2, 1] // D Augmented chord in open position
-            }
+          "name": "Augmented",
+          "intervals": ["1", "3", "#5"],
+          "formula": [4, 4, 4],
+          "quality": "Augmented",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 1, 1, 0],
+            "A": [null, 0, 3, 2, 2, 1],
+            "G": [3, 2, 1, 0, 0, 3],
+            "E": [0, 3, 2, 1, 1, 0],
+            "D": [null, null, 0, 3, 2, 1]
+          }
         },
         "dim": {
-            "name": "Diminished",
-            "intervals": ["1", "b3", "b5"],
-            "formula": [3, 3, 3],
-            "quality": "Diminished",
-            "cagedShapes": {
-                "C": [null, 3, 1, 2, 1, 0], // C Diminished chord in open position
-                "A": [null, 0, 1, 2, 1, 0], // A Diminished chord in open position
-                "G": [3, 1, 0, 3, 0, 1],    // G Diminished chord in open position
-                "E": [0, 1, 2, 0, 1, 0],    // E Diminished chord in open position
-                "D": [null, null, 0, 1, 3, 1] // D Diminished chord in open position
-            }
+          "name": "Diminished",
+          "intervals": ["1", "b3", "b5"],
+          "formula": [3, 3, 3],
+          "quality": "Diminished",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 2, 1, 0],
+            "A": [null, 0, 1, 2, 1, 0],
+            "G": [3, 1, 0, 3, 0, 1],
+            "E": [0, 1, 2, 0, 1, 0],
+            "D": [null, null, 0, 1, 3, 1]
+          }
         },
         "sus2": {
-            "name": "sus2",
-            "intervals": ["1", "2", "5"],
-            "formula": [5, 2, 5],
-            "quality": "Suspended",
-            "cagedShapes": {
-                "C": [null, 3, 0, 0, 3, 3], // C sus2 chord in open position
-                "A": [null, 0, 2, 2, 0, 0], // A sus2 chord in open position
-                "G": [3, 0, 0, 0, 3, 3],    // G sus2 chord in open position
-                "E": [0, 2, 4, 4, 0, 0],    // E sus2 chord in open position
-                "D": [null, null, 0, 2, 3, 0] // D sus2 chord in open position
-            }
+          "name": "sus2",
+          "intervals": ["1", "2", "5"],
+          "formula": [5, 2, 5],
+          "quality": "Suspended",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 0, 0, 3, 3],
+            "A": [null, 0, 2, 2, 0, 0],
+            "G": [3, 0, 0, 0, 3, 3],
+            "E": [0, 2, 4, 4, 0, 0],
+            "D": [null, null, 0, 2, 3, 0]
+          }
         },
         "sus4": {
-            "name": "sus4",
-            "intervals": ["1", "4", "5"],
-            "formula": [2, 5, 5],
-            "quality": "Suspended",
-            "cagedShapes": {
-                "C": [null, 3, 3, 0, 1, 1], // C sus4 chord in open position
-                "A": [null, 0, 2, 2, 3, 0], // A sus4 chord in open position
-                "G": [3, 0, 0, 0, 1, 3],    // G sus4 chord in open position
-                "E": [0, 2, 2, 2, 0, 0],    // E sus4 chord in open position
-                "D": [null, null, 0, 2, 3, 3] // D sus4 chord in open position
-            }
+          "name": "sus4",
+          "intervals": ["1", "4", "5"],
+          "formula": [2, 5, 5],
+          "quality": "Suspended",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 3, 0, 1, 1],
+            "A": [null, 0, 2, 2, 3, 0],
+            "G": [3, 0, 0, 0, 1, 3],
+            "E": [0, 2, 2, 2, 0, 0],
+            "D": [null, null, 0, 2, 3, 3]
+          }
         },
         "add4": {
-            "name": "add4",
-            "intervals": ["1", "3", "4", "5"],
-            "formula": [4, 1, 2, 2],
-            "quality": "Added Tone",
-            "cagedShapes": {
-                "C": [null, 3, 2, 0, 1, 3], // C add4 chord in open position
-                "A": [null, 0, 2, 2, 2, 3], // A add4 chord in open position
-                "G": [3, 2, 0, 0, 3, 3],    // G add4 chord in open position
-                "E": [0, 2, 1, 2, 0, 0],    // E add4 chord in open position
-                "D": [null, null, 0, 2, 3, 3] // D add4 chord in open position
-            }
+          "name": "add4",
+          "intervals": ["1", "3", "4", "5"],
+          "formula": [4, 1, 2, 2],
+          "quality": "Added Tone",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 0, 1, 3],
+            "A": [null, 0, 2, 2, 2, 3],
+            "G": [3, 2, 0, 0, 3, 3],
+            "E": [0, 2, 1, 2, 0, 0],
+            "D": [null, null, 0, 2, 3, 3]
+          }
         },
         "add2": {
-            "name": "add2",
-            "intervals": ["1", "2", "3", "5"],
-            "formula": [2, 2, 3, 3],
-            "quality": "Added Tone",
-            "cagedShapes": {
-                "C": [null, 3, 2, 0, 3, 0], // C add2 chord in open position
-                "A": [null, 0, 2, 2, 2, 0], // A add2 chord in open position
-                "G": [3, 0, 0, 0, 0, 3],    // G add2 chord in open position
-                "E": [0, 2, 2, 1, 2, 0],    // E add2 chord in open position
-                "D": [null, null, 0, 2, 3, 2] // D add2 chord in open position
-            }
+          "name": "add2",
+          "intervals": ["1", "2", "3", "5"],
+          "formula": [2, 2, 3, 3],
+          "quality": "Added Tone",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 0, 3, 0],
+            "A": [null, 0, 2, 2, 2, 0],
+            "G": [3, 0, 0, 0, 0, 3],
+            "E": [0, 2, 2, 1, 2, 0],
+            "D": [null, null, 0, 2, 3, 2]
+          }
         },
         "6": {
-            "name": "6th",
-            "intervals": ["1", "3", "5", "6"],
-            "formula": [4, 3, 2, 3],
-            "quality": "Major",
-            "cagedShapes": {
-                "C": [null, 3, 2, 2, 3, 0], // C 6th chord in open position
-                "A": [null, 0, 2, 2, 2, 2], // A 6th chord in open position
-                "G": [3, 2, 0, 0, 0, 0],    // G 6th chord in open position
-                "E": [0, 2, 2, 1, 2, 0],    // E 6th chord in open position
-                "D": [null, null, 0, 2, 3, 0] // D 6th chord in open position
-            }
+          "name": "6th",
+          "intervals": ["1", "3", "5", "6"],
+          "formula": [4, 3, 2, 3],
+          "quality": "Major",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 2, 3, 0],
+            "A": [null, 0, 2, 2, 2, 2],
+            "G": [3, 2, 0, 0, 0, 0],
+            "E": [0, 2, 2, 1, 2, 0],
+            "D": [null, null, 0, 2, 3, 0]
+          }
         },
         "min6": {
-            "name": "Minor 6th",
-            "intervals": ["1", "b3", "5", "6"],
-            "formula": [3, 4, 2, 3],
-            "quality": "Minor",
-            "cagedShapes": {
-                "C": [null, 3, 1, 2, 3, 0], // C Minor 6th chord in open position
-                "A": [null, 0, 2, 2, 1, 2], // A Minor 6th chord in open position
-                "G": [3, 1, 0, 0, 0, 0],    // G Minor 6th chord in open position
-                "E": [0, 2, 2, 0, 2, 0],    // E Minor 6th chord in open position
-                "D": [null, null, 0, 2, 0, 1] // D Minor 6th chord in open position
-            }
+          "name": "Minor 6th",
+          "intervals": ["1", "b3", "5", "6"],
+          "formula": [3, 4, 2, 3],
+          "quality": "Minor",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 2, 3, 0],
+            "A": [null, 0, 2, 2, 1, 2],
+            "G": [3, 1, 0, 0, 0, 0],
+            "E": [0, 2, 2, 0, 2, 0],
+            "D": [null, null, 0, 2, 0, 1]
+          }
         },
         "minb6": {
-            "name": "Minor b6th",
-            "intervals": ["1", "b3", "5", "b6"],
-            "formula": [3, 4, 1, 4],
-            "quality": "Minor",
-            "cagedShapes": {
-                "C": [null, 3, 1, 1, 3, 0], // C Minor b6th chord in open position
-                "A": [null, 0, 2, 1, 1, 2], // A Minor b6th chord in open position
-                "G": [3, 1, 0, 0, 0, 1],    // G Minor b6th chord in open position
-                "E": [0, 2, 1, 0, 2, 0],    // E Minor b6th chord in open position
-                "D": [null, null, 0, 2, 0, 2] // D Minor b6th chord in open position
-            }
+          "name": "Minor b6th",
+          "intervals": ["1", "b3", "5", "b6"],
+          "formula": [3, 4, 1, 4],
+          "quality": "Minor",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 1, 3, 0],
+            "A": [null, 0, 2, 1, 1, 2],
+            "G": [3, 1, 0, 0, 0, 1],
+            "E": [0, 2, 1, 0, 2, 0],
+            "D": [null, null, 0, 2, 0, 2]
+          }
         },
         "M7": {
-            "name": "Major 7th",
-            "formula": [4, 3, 4, 1],
-            "intervals": ["1", "3", "5", "7"],
-            "quality": "Major",
-            "cagedShapes": {
-                "C": [null, 3, 2, 0, 0, 0], // C Major 7th chord in open position
-                "A": [null, 0, 2, 1, 2, 0], // A Major 7th chord in open position
-                "G": [3, 2, 0, 0, 0, 2],    // G Major 7th chord in open position
-                "E": [0, 2, 1, 1, 0, 0],    // E Major 7th chord in open position
-                "D": [null, null, 0, 2, 2, 2] // D Major 7th chord in open position
-            }
+          "name": "Major 7th",
+          "formula": [4, 3, 4, 1],
+          "intervals": ["1", "3", "5", "7"],
+          "quality": "Major",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 0, 0, 0],
+            "A": [null, 0, 2, 1, 2, 0],
+            "G": [3, 2, 0, 0, 0, 2],
+            "E": [0, 2, 1, 1, 0, 0],
+            "D": [null, null, 0, 2, 2, 2]
+          }
         },
         "M7b5": {
-            "name": "Major 7b5",
-            "formula": [4, 2, 5, 1],
-            "intervals": ["1", "3", "b5", "7"],
-            "quality": "Other",
-            "cagedShapes": {
-                "C": [null, 3, 2, 0, 1, 0], // C Major 7b5 chord in open position
-                "A": [null, 0, 1, 1, 2, 0], // A Major 7b5 chord in open position
-                "G": [3, 2, 0, 0, 0, 1],    // G Major 7b5 chord in open position
-                "E": [0, 1, 1, 1, 0, 0],    // E Major 7b5 chord in open position
-                "D": [null, null, 0, 1, 2, 1] // D Major 7b5 chord in open position
-            }
+          "name": "Major 7b5",
+          "formula": [4, 2, 5, 1],
+          "intervals": ["1", "3", "b5", "7"],
+          "quality": "Other",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 0, 1, 0],
+            "A": [null, 0, 1, 1, 2, 0],
+            "G": [3, 2, 0, 0, 0, 1],
+            "E": [0, 1, 1, 1, 0, 0],
+            "D": [null, null, 0, 1, 2, 1]
+          }
         },
         "m7": {
-            "name": "Minor 7th",
-            "formula": [3, 4, 3, 2],
-            "intervals": ["1", "b3", "5", "b7"],
-            "quality": "Minor",
-            "cagedShapes": {
-                "C": [null, 3, 1, 3, 1, 0], // C Minor 7th chord in open position
-                "A": [null, 0, 2, 0, 1, 0], // A Minor 7th chord in open position
-                "G": [3, 1, 0, 0, 0, 1],    // G Minor 7th chord in open position
-                "E": [0, 2, 0, 0, 0, 0],    // E Minor 7th chord in open position
-                "D": [null, null, 0, 2, 1, 1] // D Minor 7th chord in open position
-            }
+          "name": "Minor 7th",
+          "formula": [3, 4, 3, 2],
+          "intervals": ["1", "b3", "5", "b7"],
+          "quality": "Minor",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 3, 1, 0],
+            "A": [null, 0, 2, 0, 1, 0],
+            "G": [3, 1, 0, 0, 0, 1],
+            "E": [0, 2, 0, 0, 0, 0],
+            "D": [null, null, 0, 2, 1, 1]
+          }
         },
         "7": {
-            "name": "Dominant 7th",
-            "formula": [4, 3, 3, 2],
-            "intervals": ["1", "3", "5", "b7"],
-            "quality": "Dominant",
-            "cagedShapes": {
-                "C": [null, 3, 2, 3, 1, 0], // C Dominant 7th chord in open position
-                "A": [null, 0, 2, 0, 2, 0], // A Dominant 7th chord in open position
-                "G": [3, 2, 0, 0, 0, 1],    // G Dominant 7th chord in open position
-                "E": [0, 2, 0, 1, 0, 0],    // E Dominant 7th chord in open position
-                "D": [null, null, 0, 2, 1, 2] // D Dominant 7th chord in open position
-            }
+          "name": "Dominant 7th",
+          "formula": [4, 3, 3, 2],
+          "intervals": ["1", "3", "5", "b7"],
+          "quality": "Dominant",
+          "degree": "Major",
+          "cagedShapes": {
+            "C": [null, 3, 2, 3, 1, 0],
+            "A": [null, 0, 2, 0, 2, 0],
+            "G": [3, 2, 0, 0, 0, 1],
+            "E": [0, 2, 0, 1, 0, 0],
+            "D": [null, null, 0, 2, 1, 2]
+          }
         },
         "minMaj7": {
-            "name": "Minor Major 7th",
-            "intervals": ["1", "b3", "5", "7"],
-            "formula": [3, 4, 4, 4],
-            "quality": "Minor",
-            "cagedShapes": {
-                "C": [null, 3, 1, 3, 2, 0], // C Minor Major 7th chord in open position
-                "A": [null, 0, 2, 1, 1, 0], // A Minor Major 7th chord in open position
-                "G": [3, 1, 0, 0, 0, 2],    // G Minor Major 7th chord in open position
-                "E": [0, 2, 1, 1, 0, 0],    // E Minor Major 7th chord in open position
-                "D": [null, null, 0, 2, 2, 1] // D Minor Major 7th chord in open position
-            }
+          "name": "Minor Major 7th",
+          "intervals": ["1", "b3", "5", "7"],
+          "formula": [3, 4, 4, 4],
+          "quality": "Minor",
+          "degree": "Minor",
+          "cagedShapes": {
+            "C": [null, 3, 1, 3, 2, 0],
+            "A": [null, 0, 2, 1, 1, 0],
+            "G": [3, 1, 0, 0, 0, 2],
+            "E": [0, 2, 1, 1, 0, 0],
+            "D": [null, null, 0, 2, 2, 1]
+          }
         }
-    }
+      }
 }
