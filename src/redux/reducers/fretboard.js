@@ -49,7 +49,7 @@ const updateNestedObject = (object, path, value) => {
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
     fretboards: [],
-    
+ 
     keySettings: {
         scales: '',
         modes: '',

@@ -47,9 +47,10 @@ export function newLayout(numberOfStrings, numberOfFrets, tuning){
 };
 
 
-export function newFretboard(numberOfStrings, numberOfFrets, tuning = [4, 7, 2, 9, 11, 4]){
+export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [4, 7, 2, 9, 11, 4]){
   return {
     fretboard: newLayout(numberOfStrings, numberOfFrets, tuning),
+    
     keySettings: {
       scales: '',
       modes: '',

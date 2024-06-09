@@ -64,7 +64,7 @@ const FretboardControls = ({
 
             {choice === 'scales' && (
                 <>
-                    <KeySelector choice={choice} keySignature={keySignature['scales']} onElementChange={onElementChange} classes={classes} />
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}  />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="scale-name-label">Choose Scale</InputLabel>
                         <Select
@@ -101,7 +101,7 @@ const FretboardControls = ({
 
             {choice === 'chords' && (
                 <>
-                    <KeySelector choice={choice} keySignature={keySignature['chords']} onElementChange={onElementChange} classes={classes} />
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="chord-name-label">Choose Chord</InputLabel>
                         <Select
@@ -121,7 +121,7 @@ const FretboardControls = ({
 
             {choice === 'arpeggios' && (
                 <>
-                    <KeySelector choice={choice} keySignature={keySignature['arpeggios']} onElementChange={onElementChange} classes={classes} />
+                    <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                         <InputLabel id="arpeggio-name-label">Choose Arpeggio</InputLabel>
                         <Select
@@ -215,7 +215,9 @@ const FretboardControls = ({
 };
 
 const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
-    console.log("keySignature", keySignature)
+
+    console.log("CHOICE KEY SIGNATURE", choice)
+    console.log("CHOICE KEY SIGNATURE", keySignature)
     return (
         choice && (
             <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
@@ -223,7 +225,7 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
                 <Select
                     labelId="key-signature-label"
                     id="key-signature-select"
-                    value={keySignature}
+                    value={keySignature[choice]}
                     onChange={(e) => onElementChange(e.target.value, 'key')}
                     displayEmpty
                 >
