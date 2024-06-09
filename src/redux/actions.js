@@ -97,7 +97,8 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
       notesDisplay: true,
       nofrets: numberOfFrets,
       nostrs: numberOfStrings,
-      tuning: tuning
+      tuning: tuning,
+      display: 'scale'
     }
   };
 }

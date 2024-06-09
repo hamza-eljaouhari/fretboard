@@ -96,7 +96,8 @@ const initialState = {
         notesDisplay: true,
         nofrets: '',
         nostrs: '',
-        tuning: guitar.tuning
+        tuning: guitar.tuning,
+        display: 'scale'
     }
 };
 

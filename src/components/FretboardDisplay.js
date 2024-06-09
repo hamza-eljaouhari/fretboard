@@ -9,7 +9,6 @@ const FretboardDisplay = ({
   getNoteIndex,
   toggleNote,
   handleFretboardSelect,
-  choice
 }) => {
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
@@ -36,10 +35,10 @@ const FretboardDisplay = ({
           const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
           
-          let newChoice = choice;
+          let newChoice = fretboard.generalSettings.choice;
           let noteIndex = '';
 
-          if(choice === 'scale' && fretboard.scaleSettings.scale) {
+          if(fretboard.generalSettings.choice === 'scale' && fretboard.scaleSettings.scale) {
             const isModalRequest = guitar.scales[fretboard.scaleSettings.scale].isModal;
             newChoice = isModalRequest ? 'mode' : 'scale';
             noteIndex = fretboard[newChoice + 'Settings'].notes.indexOf(note.current);
@@ -66,11 +65,18 @@ const FretboardDisplay = ({
       </tr>
     ));
 
-    const newHeads = [...Array(fretboard.generalSettings.nofrets)].map((_, i) => (
-      <th key={`head-${fretboardIndex}-${i}`} width={fretboard.generalSettings.nofrets - i + 30}>
-        <span className="fretNumber">{i}</span>
+    const newHeads = [
+      (
+      <th key="tuner" width={fretboard.generalSettings.nofrets - 0 + 30}>
+        <span className="fretNumber">tuner</span>
       </th>
-    ));
+      ),
+      [...Array(fretboard.generalSettings.nofrets)].map((_, i) => (
+        <th key={`head-${fretboardIndex}-${i}`} width={fretboard.generalSettings.nofrets - i + 30}>
+          <span className="fretNumber">{i}</span>
+        </th>
+      ))
+    ];
 
     // Construct the full fretboard element
     return (
