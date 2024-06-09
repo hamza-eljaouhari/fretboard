@@ -20,7 +20,6 @@ const FretboardDisplay = ({
           <input
             value={guitar.notes.flats[fretboard.generalSettings.tuning[i]] || ''}
             onChange={(e) => {
-              console.log(`for string ${i + 1}`, guitar.notes.flats[fretboard.generalSettings.tuning[i]])
               const newTuning = JSON.parse(JSON.stringify(fretboard.generalSettings.tuning));
               if(e.target.value !== ''){
                 newTuning[i] = parseInt(guitar.notes.flats.indexOf(e.target.value));

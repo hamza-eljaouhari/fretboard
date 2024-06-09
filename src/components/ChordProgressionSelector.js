@@ -35,7 +35,6 @@ const ProgressionSelector = ({ setChordProgression, playChordProgression }) => {
   const handleApplyProgression = () => {
     if (selectedProgression && selectedKey) {
       const progression = commonChordProgressions.find(prog => prog.name === selectedProgression);
-      console.log("progression selected", progression)
 
       if (progression) {
         const transposedChords = progression.chords.map((chord, index) => {
@@ -52,7 +51,6 @@ const ProgressionSelector = ({ setChordProgression, playChordProgression }) => {
           };
         });
 
-        console.log("transposed", transposedChords);
         setChordProgression(transposedChords);
       }
     }
