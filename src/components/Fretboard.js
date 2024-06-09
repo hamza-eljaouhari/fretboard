@@ -224,7 +224,7 @@ const Fretboard = withRouter((props) => {
 
     // Get Arppegio Notes
     useEffect(() => {
-        if (choice !== 'arppegio' || selectedFretboard.scaleSettings.arppegio === '' || selectedFretboardIndex === -1) return;
+        if (choice !== 'arppegio' || selectedFretboard.arppegioSettings.arppegio === '' || selectedFretboardIndex === -1) return;
 
         const formula = guitar.arppegios[selectedFretboard.arppegioSettings.arppegio]?.formula;
         const arppegioNotes = formula 
@@ -232,15 +232,15 @@ const Fretboard = withRouter((props) => {
             : [];
         
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'arppegioSettings.notes', arppegioNotes));
-    }, [selectedFretboard.scaleSettings.arppegio, choice]);
+    }, [selectedFretboard.arppegioSettings.arppegio, choice]);
 
     // Get Arppegio Intervals
     useEffect(() => {
-        if (choice !== 'arppegio' || selectedFretboard.scaleSettings.arppegio === '' || selectedFretboardIndex === -1) return;
+        if (choice !== 'arppegio' || selectedFretboard.arppegioSettings.arppegio === '' || selectedFretboardIndex === -1) return;
 
         const arppegioIntervals = guitar.arppegios[selectedFretboard.arppegioSettings.arppegio || selectedFretboard.chord]?.intervals || [];
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals.intervals', arppegioIntervals));
-    }, [selectedFretboard.scaleSettings.arppegio]);
+    }, [selectedFretboard.arppegioSettings.arppegio]);
 
     const displayChordPortion = useCallback((chordObject) => {
         const { key, chord, shape } = chordObject;
@@ -310,10 +310,12 @@ const Fretboard = withRouter((props) => {
         
         if (choice === 'chord' && chord && shape) {
             displayChordPortion({ key: keySettings[choice], chord, shape: shape });
+        } else if (choice === 'arppegio') {
+            spread(selectedFretboard[choice + 'Settings'].notes, selectedFretboard[choice + 'Settings'].intervals, choice);
         } else {
             const isModalRequest = selectedFretboard.modeSettings.mode >= 0;
             const newChoice = isModalRequest ? 'mode' : 'scale';
-            spread(selectedFretboard[newChoice + 'Settings'].notes, selectedFretboard[choice + 'Settings'].intervals, choice);
+            spread(selectedFretboard[newChoice + 'Settings'].notes, selectedFretboard[newChoice + 'Settings'].intervals, choice);
         }
 
     }, [choice, selectedFretboard, selectedFretboardIndex, spread]);
