@@ -16,23 +16,23 @@ const FretboardDisplay = ({
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
-    const newRows = [...Array(fretboard.nostr)].map((_, i) => (
+    const newRows = [...Array(fretboard.generalSettings.nostrs)].map((_, i) => (
       <tr key={`row-${fretboardIndex}-${i}`}>
         <td>
           Tuning
           <input
-            value={fretboard.tuning.length > i ? guitar.notes.flats[fretboard.tuning[i]] : ''}
+            value={fretboard.generalSettings.tuning.length > i ? guitar.notes.flats[fretboard.generalSettings.tuning[i]] : ''}
             onChange={(e) => {
-              const newTuning = [...fretboard.tuning];
+              const newTuning = [...fretboard.generalSettings.tuning];
               newTuning[i] = guitar.notes.flats.indexOf(e.target.value);
               onElementChange(newTuning.join('-'), 'tunes');
             }}
             style={{ width: '50px' }}
           />
         </td>
-        {[...Array(fretboard.nofrets)].map((_, j) => {
+        {[...Array(fretboard.generalSettings.nofrets)].map((_, j) => {
           const note = fretboard.fretboard[i][j];
-          const displayedNoteIndex = (fretboard.tuning[i] + j) % 12;
+          const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
 
           return (
@@ -55,8 +55,8 @@ const FretboardDisplay = ({
       </tr>
     ));
 
-    const newHeads = [...Array(fretboard.nofrets)].map((_, i) => (
-      <th key={`head-${fretboardIndex}-${i}`} width={fretboard.nofrets - i + 30}>
+    const newHeads = [...Array(fretboard.generalSettings.nofrets)].map((_, i) => (
+      <th key={`head-${fretboardIndex}-${i}`} width={fretboard.generalSettings.nofrets - i + 30}>
         <span className="fretNumber">{i}</span>
       </th>
     ));
@@ -66,11 +66,11 @@ const FretboardDisplay = ({
       <div key={`fretboard-${fretboardIndex}`} onFocus={() => handleFretboardSelect(fretboardIndex)} onClick={() => handleFretboardSelect(fretboardIndex)}>
         <label>
           Number of Strings:
-          <input type="number" key="strings-changer" value={fretboard.nostr} onChange={(e) => onElementChange(e.target.value, 'nostr')} min="4" max="12" />
+          <input type="number" key="strings-changer" value={fretboard.generalSettings.nostrs} onChange={(e) => onElementChange(e.target.value, 'nostrs')} min="4" max="12" />
         </label>
         <label>
           Number of Frets:
-          <input type="number" key="frets-changer" value={fretboard.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
+          <input type="number" key="frets-changer" value={fretboard.generalSettings.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
         </label>
         <table>
           <tbody>{newRows}</tbody>

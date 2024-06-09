@@ -49,36 +49,53 @@ const updateNestedObject = (object, path, value) => {
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
     fretboards: [],
+    
     keySettings: {
         scales: '',
         modes: '',
         arpeggios: '',
         chords: ''
     },
+    
     urlSettings: {
         scales: '',
         modes: '',
         arpeggios: '',
         chords: ''
     },
-    scale: '',
-    scaleFormula: [],
-    scaleNotes: [],
-    scaleIntervals: [],
-    
-    mode: '',
-    modeNotes: [],
-    modeIntervals: [],
-    
-    arppegio: '',
-    arppegioNotes: [],
-    arppegioIntervals: [],
-    
-    chord: '',
-    notesDisplay: true,
 
-    fret: '',
-    shape: ''
+    scaleSettings : {
+        scale: '',
+        formula: [],
+        notes: [],
+        intervals: [],
+    },
+    
+    modeSettings : { 
+        mode: '',
+        notes: [],
+        intervals: [],
+        formula: []
+    },
+
+    arppegioSettings : { 
+        mode: '',
+        notes: [],
+        intervals: [],
+        formula: []
+    },
+
+    chordSettings: {
+        chord: '',
+        shape: ''
+    },
+
+    generalSettings: {
+        notesDisplay: true,
+        nofrets: '',
+        nostrs: '',
+        tuning: guitar.tuning
+    }
 };
 
 

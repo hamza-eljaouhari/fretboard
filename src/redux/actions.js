@@ -49,36 +49,54 @@ export function newLayout(numberOfStrings, numberOfFrets, tuning){
 
 export function newFretboard(numberOfStrings, numberOfFrets, tuning = [4, 7, 2, 9, 11, 4]){
   return {
-      fretboard: newLayout(numberOfStrings, numberOfFrets, tuning),
-      tuning: tuning,
-      keySettings: {
-          scales: '',
-          modes: '',
-          arpeggios: '',
-          chords: ''
-      },
-      urlSettings: {
-          scales: '',
-          modes: '',
-          arpeggios: '',
-          chords: ''
-      },
+    fretboard: newLayout(numberOfStrings, numberOfFrets, tuning),
+    keySettings: {
+      scales: '',
+      modes: '',
+      arpeggios: '',
+      chords: ''
+    },
+    
+    urlSettings: {
+      scales: '',
+      modes: '',
+      arpeggios: '',
+      chords: ''
+    },
+
+    scaleSettings : {
       scale: '',
+      formula: [],
+      notes: [],
+      intervals: []
+    },
+    
+    modeSettings : { 
       mode: '',
-      arppegio: '',
+      notes: [],
+      intervals: [],
+      formula: []
+    },
+
+    arppegioSettings : { 
+      mode: '',
+      notes: [],
+      intervals: [],
+      formula: []
+    },
+
+    chordSettings: {
       chord: '',
-      notesDisplay: true,
-      scaleNotes: [],
-      scaleIntervals: [],
-      modeNotes: [],
-      modeIntervals: [],
-      arppegioNotes: [],
-      arppegioIntervals: [],
       shape: '',
-      fret: '',
-      nofrets: 22,
-      nostr: 6,
-      url: ''
+      fret: ''
+    },
+    
+    generalSettings: {
+      notesDisplay: true,
+      nofrets: numberOfFrets,
+      nostrs: numberOfStrings,
+      tuning: tuning
+    }
   };
 }
 

@@ -22,7 +22,7 @@ const FretboardControls = ({
     addChordToProgression,
     saveProgression,
     playChordProgression,
-    chordProgression
+    chordProgression,
 }) => {
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -215,6 +215,7 @@ const FretboardControls = ({
 };
 
 const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
+    console.log("keySignature", keySignature)
     return (
         choice && (
             <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
@@ -222,7 +223,7 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
                 <Select
                     labelId="key-signature-label"
                     id="key-signature-select"
-                    value={keySignature !== undefined ? keySignature : ''}
+                    value={keySignature}
                     onChange={(e) => onElementChange(e.target.value, 'key')}
                     displayEmpty
                 >
