@@ -89,7 +89,8 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
     chordSettings: {
       chord: '',
       shape: '',
-      fret: ''
+      fret: '',
+      intervals: []
     },
     
     generalSettings: {

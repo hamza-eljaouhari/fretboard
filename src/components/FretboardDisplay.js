@@ -35,21 +35,26 @@ const FretboardDisplay = ({
           const note = fretboard.fretboard[i][j];
           const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
-          const isModalRequest = fretboard.modeSettings.mode >= 0;
-          const newChoice = isModalRequest ? 'mode' : 'scale';
-          const noteIndex = fretboard[newChoice + 'Settings'].notes.indexOf(note.current);
-         
-          console.log(fretboard)
+          
+          let newChoice = choice;
+          let noteIndex = '';
 
+          if(choice === 'scale' && fretboard.scaleSettings.scale) {
+            const isModalRequest = guitar.scales[fretboard.scaleSettings.scale].isModal;
+            newChoice = isModalRequest ? 'mode' : 'scale';
+            noteIndex = fretboard[newChoice + 'Settings'].notes.indexOf(note.current);
+          } 
+
+         
           return (
             <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
               <span
                 className={classNames({
                   'note': note.show === true,
-                  'root': noteIndex === 0,
-                  'third': noteIndex === 2,
-                  'fifth': noteIndex === 4,
-                  'seventh': noteIndex === 6
+                  'root': noteIndex === 0 || note.interval === '1',
+                  'third': noteIndex === 2 || ["3", "b3"].includes(note.interval) === true,
+                  'fifth': noteIndex === 4 || note.interval === '5',
+                  'seventh': noteIndex === 6 || ["7", "b7"].includes(note.interval) === true
                 })}
               >
                 {note.show && displayedNote}

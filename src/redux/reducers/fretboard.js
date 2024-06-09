@@ -87,7 +87,9 @@ const initialState = {
 
     chordSettings: {
         chord: '',
-        shape: ''
+        shape: '',
+        fret: '',
+        intervals: []
     },
 
     generalSettings: {

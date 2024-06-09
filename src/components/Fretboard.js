@@ -13,10 +13,10 @@ import {
     newFretboard, newLayout,
     setFretboards, toggleNote, updateFretboardProperty, setChordProgression
 } from '../redux/actions';
-import { getNoteFromFretboard } from '../redux/helpers';
+import { getNoteFromFretboard, getChordIntervals } from '../redux/helpers';
 import './guitar-neck.css';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { $CombinedState } from 'redux';
 const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
@@ -177,19 +177,9 @@ const Fretboard = withRouter((props) => {
 
     // Get Scale Notes
     useEffect(() => {
-        if (choice !== 'scale' || selectedFretboard.scaleSettings.scale === '' || selectedFretboardIndex === -1) return;
+        if (choice !== 'scale' || selectedFretboard.scaleSettings.scale === '' || selectedFretboard.keySettings.scale === '' || selectedFretboardIndex === -1) return;
         
-        const { formula } = guitar.scales[selectedFretboard.scaleSettings.scale];
-        const keyIndex = parseInt(selectedFretboard.keySettings[choice]);
-
-        let currentNoteIndex = keyIndex;
-        const scaleNotes = [guitar.notes.sharps[currentNoteIndex]];
-
-        formula.forEach(step => {
-            currentNoteIndex = (currentNoteIndex + step) % 12;
-            scaleNotes.push(guitar.notes.sharps[currentNoteIndex]);
-        });
-
+        const scaleNotes = getScaleNotes(selectedFretboard.scaleSettings.scale, selectedFretboard.keySettings.scale)
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'scaleSettings.notes', scaleNotes));
     }, [selectedFretboard.scaleSettings.scale, selectedFretboard.keySettings.scale, choice]);
 
@@ -201,24 +191,23 @@ const Fretboard = withRouter((props) => {
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'scaleSettings.intervals', scaleIntervals));
     }, [selectedFretboard.scaleSettings.scale]);
 
-    // Get Mode notes
     useEffect(() => {
         if (choice !== 'scale' || selectedFretboard.modeSettings.mode === '' || selectedFretboardIndex === -1) return;
 
-        const scaleNotes = selectedFretboard.scaleSettings.notes;
-        const modeNotes = scaleNotes.length 
-            ? scaleNotes.slice(parseInt(selectedFretboard.modeSettings.mode))
-                .concat(scaleNotes.slice(0, parseInt(selectedFretboard.modeSettings.mode))) 
-            : [];
+        const modeNotes = getModeNotes(selectedFretboard.scaleSettings.notes, selectedFretboard.modeSettings.mode)
         
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'modeSettings.notes', modeNotes));
     }, [selectedFretboard.modeSettings.mode]);
+
+    const getModeIntervals = (scale, mode) => {
+        return guitar.scales[scale]?.modes[parseInt(mode)]?.intervals || [];
+    };
 
     // Get Mode intervals
     useEffect(() => {
         if (choice !== 'scale' || selectedFretboard.modeSettings.mode === '' || selectedFretboardIndex === -1) return;
 
-        const modeIntervals = guitar.scales[selectedFretboard.scaleSettings.scale]?.modes[parseInt(selectedFretboard.modeSettings.mode)]?.intervals || [];
+        const modeIntervals = getModeIntervals(selectedFretboard.scaleSettings.scale, selectedFretboard.modeSettings.mode);
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'modeSettings.intervals', modeIntervals));
     }, [selectedFretboard.modeSettings.mode]);
 
@@ -238,27 +227,116 @@ const Fretboard = withRouter((props) => {
     useEffect(() => {
         if (choice !== 'arppegio' || selectedFretboard.arppegioSettings.arppegio === '' || selectedFretboardIndex === -1) return;
 
-        const arppegioIntervals = guitar.arppegios[selectedFretboard.arppegioSettings.arppegio || selectedFretboard.chord]?.intervals || [];
+        const arppegioIntervals = guitar.arppegios[selectedFretboard.arppegioSettings.arppegio || selectedFretboard.chordSettings.chord]?.intervals || [];
         dispatch(updateFretboardProperty(selectedFretboardIndex, 'arppegioIntervals.intervals', arppegioIntervals));
     }, [selectedFretboard.arppegioSettings.arppegio]);
+    
+    const getScaleNotes = (scale, key) => {
+        if (!scale || key === '') return [];
 
+        const { formula } = guitar.scales[scale];
+        const keyIndex = parseInt(key);
+
+        let currentNoteIndex = keyIndex;
+        const scaleNotes = [guitar.notes.sharps[currentNoteIndex]];
+
+        formula.forEach(step => {
+            currentNoteIndex = (currentNoteIndex + step) % 12;
+            scaleNotes.push(guitar.notes.sharps[currentNoteIndex]);
+        });
+
+        return scaleNotes;
+    };
+
+    // Get Mode notes
+    const getModeNotes = (scaleNotes, mode) => {
+        const modeNotes = scaleNotes.length ? scaleNotes.slice(parseInt(mode)).concat(scaleNotes.slice(0, parseInt(mode))) 
+            : [];
+
+        return modeNotes;
+    }
+
+    const getParentScale = (modeName) => {
+        for (const [scaleKey, scale] of Object.entries(guitar.scales)) {
+            if(scale.isModal){
+                const mode = scale.modes.find(mode => mode.name.toLowerCase() === modeName.toLowerCase());
+                if (mode) {
+                    return scaleKey;
+                }
+            }
+        }
+        return null;
+    };
+
+    const getModeIndex = (parentScale, matchingScale) => {
+        // Find the starting point of the matchingScale within the parentScale
+        return guitar.scales[parentScale].modes.findIndex(mode => mode.name.toLowerCase() === matchingScale.toLowerCase());
+    };
+    
     const displayChordPortion = useCallback((chordObject) => {
         const { key, chord, shape } = chordObject;
         const cagedShape = guitar.arppegios[chord]?.cagedShapes[shape];
+
+        console.log(key)
+        console.log(chord)
+        console.log(shape)
+        console.log(cagedShape)
         if (!cagedShape) return;
+
+        const matchingScale = guitar.arppegios[selectedFretboard.chordSettings.chord]?.matchingScale || [];
+
+
+        console.log("matchingScale", matchingScale);
+        const isScale = guitar.scales[matchingScale] !== undefined;
+
+        const parentScale = guitar.scales[matchingScale] === undefined ? getParentScale(matchingScale) : matchingScale;
+        const parentScaleNotes = getScaleNotes(parentScale, selectedFretboard.keySettings[choice]);
+        
+        let intervals = [];
+        let notes = [];
+
+        console.log("parentScale", parentScale);
+        console.log("parentScaleNotes", parentScaleNotes);
+
+        console.log("isScale", isScale);
+        
+        if(isScale){
+            const scaleIntervals = guitar.scales[parentScale].intervals;
+            intervals = scaleIntervals;
+            notes = parentScaleNotes;
+
+        } else {
+            const modeNotes = getModeNotes(parentScaleNotes, selectedFretboard.keySettings[choice]);
+            const modeIndex = getModeIndex(parentScale, matchingScale);
+            const modeIntervals = getModeIntervals(parentScale, modeIndex);
+            intervals = modeIntervals;
+            notes = modeNotes;
+
+            console.log("modeIndex", modeIndex);
+        }
+
+        console.log("chord intervals", guitar.arppegios[chord].intervals)
+
+        console.log("notes", notes);
+        console.log("intervals", intervals);
 
         const nf = JSON.parse(JSON.stringify(selectedFretboard));
 
-        nf.fretboard.forEach(string => string.forEach(note => note.show = false));
+        nf.fretboard.forEach(string => string.forEach(note => {note.show = false}));
 
         cagedShape.forEach((fret, stringIndex) => {
             if (fret !== null) {
                 const displayFret = fret + key + guitar.shapes.intervals[guitar.shapes.names.indexOf(shape)];
                 if (displayFret < nf.fretboard[guitar.numberOfStrings - 1 - stringIndex].length) {
                     nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].show = true;
+                    const noteIndex = notes.indexOf(nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].current);
+                    nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].interval = intervals[noteIndex];
+
                 }
             }
         });
+
+        console.log(nf.fretboard)
 
         const updatedFretboards = [...fretboards];
         updatedFretboards[selectedFretboardIndex] = nf;
@@ -270,7 +348,11 @@ const Fretboard = withRouter((props) => {
 
     const spread = (notes, intervals, choice) => {
         const fretboardClone = JSON.parse(JSON.stringify(selectedFretboard));
-        fretboardClone.fretboard.forEach(string => string.forEach(note => note.show = false));
+        fretboardClone.fretboard.forEach(string => string.forEach((note) => {
+            note.show = false;
+            note.interval = undefined;
+            return note;
+        }));
 
         fretboardClone.fretboard.forEach((string, stringIndex) => {
             for (let fretIndex = 0; fretIndex < fretboardClone.generalSettings.nofrets; fretIndex++) {
@@ -302,20 +384,31 @@ const Fretboard = withRouter((props) => {
 
     const update = useCallback(() => {
         if (selectedFretboardIndex === -1) return;
-        const {chordSettings, keySettings } = selectedFretboard;
+        const {chordSettings, keySettings, scaleSettings } = selectedFretboard;
         if (keySettings[choice] === "") return;
 
         const {chord} = chordSettings;
         const {shape} = chordSettings;
+        const {scale} = scaleSettings;
         
         if (choice === 'chord' && chord && shape) {
+            console.log(chord);
             displayChordPortion({ key: keySettings[choice], chord, shape: shape });
         } else if (choice === 'arppegio') {
-            spread(selectedFretboard[choice + 'Settings'].notes, selectedFretboard[choice + 'Settings'].intervals, choice);
+            const notes = selectedFretboard[choice + 'Settings'].notes;
+            const intervals = selectedFretboard[choice + 'Settings'].intervals;
+            spread(notes, intervals, choice);
         } else {
-            const isModalRequest = selectedFretboard.modeSettings.mode >= 0;
-            const newChoice = isModalRequest ? 'mode' : 'scale';
-            spread(selectedFretboard[newChoice + 'Settings'].notes, selectedFretboard[newChoice + 'Settings'].intervals, choice);
+            if(scale !== ''){
+                const isModalRequest = guitar.scales[scale].isModal;
+                const newChoice = isModalRequest ? 'mode' : 'scale';
+                const notes = selectedFretboard[newChoice + 'Settings'].notes;
+                const intervals = selectedFretboard[newChoice + 'Settings'].intervals;
+                console.log("NOTES", notes);
+                console.log("INTERVALS", intervals);
+                spread(notes, intervals, choice);
+            }
+           
         }
 
     }, [choice, selectedFretboard, selectedFretboardIndex, spread]);
@@ -379,6 +472,8 @@ const Fretboard = withRouter((props) => {
 
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
+
+    console.log(selectedFretboard);
 
     return (
         <div className="fretboard-container">
