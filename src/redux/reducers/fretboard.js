@@ -51,17 +51,17 @@ const initialState = {
     fretboards: [],
  
     keySettings: {
-        scales: '',
-        modes: '',
-        arpeggios: '',
-        chords: ''
+        scale: '',
+        mode: '',
+        arppegio: '',
+        chord: ''
     },
     
     urlSettings: {
-        scales: '',
-        modes: '',
-        arpeggios: '',
-        chords: ''
+        scale: '',
+        mode: '',
+        arppegio: '',
+        chord: ''
     },
 
     scaleSettings : {
@@ -79,7 +79,7 @@ const initialState = {
     },
 
     arppegioSettings : { 
-        mode: '',
+        arppegio: '',
         notes: [],
         intervals: [],
         formula: []

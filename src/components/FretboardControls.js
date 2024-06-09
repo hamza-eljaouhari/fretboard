@@ -35,34 +35,34 @@ const FretboardControls = ({
             <div className={classes.buttonGroup}>
                 <Button
                     size="small"
-                    variant={choice === 'scales' ? 'contained' : 'outlined'}
+                    variant={choice === 'scale' ? 'contained' : 'outlined'}
                     color="primary"
-                    onClick={() => handleButtonClick('scales')}
+                    onClick={() => handleButtonClick('scale')}
                     className={classes.choiceButton}
                 >
                     Scales
                 </Button>
                 <Button
                     size="small"
-                    variant={choice === 'chords' ? 'contained' : 'outlined'}
+                    variant={choice === 'chord' ? 'contained' : 'outlined'}
                     color="primary"
-                    onClick={() => handleButtonClick('chords')}
+                    onClick={() => handleButtonClick('chord')}
                     className={classes.choiceButton}
                 >
                     Chords
                 </Button>
                 <Button
                     size="small"
-                    variant={choice === 'arpeggios' ? 'contained' : 'outlined'}
+                    variant={choice === 'arppegio' ? 'contained' : 'outlined'}
                     color="primary"
-                    onClick={() => handleButtonClick('arpeggios')}
+                    onClick={() => handleButtonClick('arppegio')}
                     className={classes.choiceButton}
                 >
-                    Arpeggios
+                    arppegios
                 </Button>
             </div>
 
-            {choice === 'scales' && (
+            {choice === 'scale' && (
                 <>
                     <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}  />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
@@ -99,7 +99,7 @@ const FretboardControls = ({
                 </>
             )}
 
-            {choice === 'chords' && (
+            {choice === 'chord' && (
                 <>
                     <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
@@ -119,14 +119,14 @@ const FretboardControls = ({
                 </>
             )}
 
-            {choice === 'arpeggios' && (
+            {choice === 'arppegio' && (
                 <>
                     <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
                     <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
-                        <InputLabel id="arpeggio-name-label">Choose Arpeggio</InputLabel>
+                        <InputLabel id="arppegio-name-label">Choose arppegio</InputLabel>
                         <Select
-                            labelId="arpeggio-name-label"
-                            id="arpeggio-name-select"
+                            labelId="arppegio-name-label"
+                            id="arppegio-name-select"
                             value={selectedArppegio}
                             onChange={(e) => onElementChange(e.target.value, 'arppegio')}
                             displayEmpty
@@ -139,7 +139,7 @@ const FretboardControls = ({
                 </>
             )}
 
-            {choice === 'chords' && (
+            {choice === 'chord' && (
                 <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                     <InputLabel id="shape-label">Choose Shape</InputLabel>
                     <Select
@@ -156,7 +156,7 @@ const FretboardControls = ({
                 </FormControl>
             )}
 
-            {choice === 'chords' && (
+            {choice === 'chord' && (
                 <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                     <InputLabel id="fret-label">Choose Fret</InputLabel>
                     <Select
@@ -215,9 +215,8 @@ const FretboardControls = ({
 };
 
 const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
+    const effectiveKeySignature = keySignature || {};
 
-    console.log("CHOICE KEY SIGNATURE", choice)
-    console.log("CHOICE KEY SIGNATURE", keySignature)
     return (
         choice && (
             <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
@@ -225,7 +224,7 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
                 <Select
                     labelId="key-signature-label"
                     id="key-signature-select"
-                    value={keySignature[choice]}
+                    value={effectiveKeySignature[choice] !== undefined ? effectiveKeySignature[choice] : ''}
                     onChange={(e) => onElementChange(e.target.value, 'key')}
                     displayEmpty
                 >

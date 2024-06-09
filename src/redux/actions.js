@@ -52,17 +52,17 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
     fretboard: newLayout(numberOfStrings, numberOfFrets, tuning),
     
     keySettings: {
-      scales: '',
-      modes: '',
-      arpeggios: '',
-      chords: ''
+      scale: '',
+      mode: '',
+      arppegio: '',
+      chord: ''
     },
     
     urlSettings: {
-      scales: '',
-      modes: '',
-      arpeggios: '',
-      chords: ''
+      scale: '',
+      mode: '',
+      arppegio: '',
+      chord: ''
     },
 
     scaleSettings : {
@@ -80,7 +80,7 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
     },
 
     arppegioSettings : { 
-      mode: '',
+      arppegio: '',
       notes: [],
       intervals: [],
       formula: []

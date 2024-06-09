@@ -7,11 +7,9 @@ const FretboardDisplay = ({
   fretboards,
   onElementChange,
   getNoteIndex,
-  numberOfFrets,
   toggleNote,
   handleFretboardSelect,
-  chordProgression,
-  selectedFretboardIndex
+  choice
 }) => {
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
@@ -21,11 +19,14 @@ const FretboardDisplay = ({
         <td>
           Tuning
           <input
-            value={fretboard.generalSettings.tuning.length > i ? guitar.notes.flats[fretboard.generalSettings.tuning[i]] : ''}
+            value={guitar.notes.flats[fretboard.generalSettings.tuning[i]] || ''}
             onChange={(e) => {
-              const newTuning = [...fretboard.generalSettings.tuning];
-              newTuning[i] = guitar.notes.flats.indexOf(e.target.value);
-              onElementChange(newTuning.join('-'), 'tunes');
+              console.log(`for string ${i + 1}`, guitar.notes.flats[fretboard.generalSettings.tuning[i]])
+              const newTuning = JSON.parse(JSON.stringify(fretboard.generalSettings.tuning));
+              if(e.target.value !== ''){
+                newTuning[i] = parseInt(guitar.notes.flats.indexOf(e.target.value));
+                onElementChange(newTuning.join('-'), 'tuning');
+              } 
             }}
             style={{ width: '50px' }}
           />
@@ -34,16 +35,21 @@ const FretboardDisplay = ({
           const note = fretboard.fretboard[i][j];
           const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
+          const isModalRequest = fretboard.modeSettings.mode >= 0;
+          const newChoice = isModalRequest ? 'mode' : 'scale';
+          const noteIndex = fretboard[newChoice + 'Settings'].notes.indexOf(note.current);
+         
+          console.log(fretboard)
 
           return (
             <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
               <span
                 className={classNames({
                   'note': note.show === true,
-                  'root': getNoteIndex(note.current, fretboard) === 0,
-                  'third': getNoteIndex(note.current, fretboard) === 2,
-                  'fifth': getNoteIndex(note.current, fretboard) === 4,
-                  'seventh': getNoteIndex(note.current, fretboard) === 6
+                  'root': noteIndex === 0,
+                  'third': noteIndex === 2,
+                  'fifth': noteIndex === 4,
+                  'seventh': noteIndex === 6
                 })}
               >
                 {note.show && displayedNote}
