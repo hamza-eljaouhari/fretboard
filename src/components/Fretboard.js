@@ -83,8 +83,8 @@ const Fretboard = withRouter((props) => {
         console.log("MODE VAL", value)
         console.log("NEW EL", element)
         updateUrl(element, newElement);
-        const propertyUpdate = getPropertyUpdate(element, value, newElement);
-        dispatchPropertyUpdate(propertyUpdate);
+        const propertiesUpdate = getPropertiesUpdate(element, value, newElement);
+        dispatchPropertiesUpdate(propertiesUpdate);
         updateUrlSettings();
     };
     
@@ -99,38 +99,66 @@ const Fretboard = withRouter((props) => {
         props.history.push(newUrl);
     };
     
-    const getPropertyUpdate = (element, value, newElement) => {
+    const getPropertiesUpdate = (element, value, newElement) => {
         switch (element) {
             case 'key':
-                return { property: `keySettings.${choice}`, value };
+                return [
+                    { property: `keySettings.${choice}`, value }
+                ];
             case 'scale':
-                return { property: 'scaleSettings.scale', value: guitar.scales[value] ? value : '' };
+                return [
+                    { property: 'scaleSettings.scale', value: guitar.scales[value] ? value : '' }
+                ];
             case 'mode':
-                return { property: 'modeSettings.mode', value: value >= 0 && value <= 6 ? value : '' };
+                return [
+                    { property: 'modeSettings.mode', value: value >= 0 && value <= 6 ? value : '' }
+                ];
             case 'arppegio':
-                return { property: 'arppegioSettings.arppegio', value: guitar.arppegios[value] ? value : '' };
+                return [
+                    { property: 'arppegioSettings.arppegio', value: guitar.arppegios[value] ? value : '' }
+                ];
             case 'chord':
-                return { property: 'chordSettings.chord', value: guitar.arppegios[value] ? value : '' };
+                return [
+                    { property: 'chordSettings.chord', value: guitar.arppegios[value] ? value : '' }
+                ];
             case 'shape':
-                return { property: 'chordSettings.shape', value: value || '' };
+                return [
+                    { property: 'chordSettings.shape', value: value || '' }
+                ]
             case 'fret':
-                return { property: 'chordSettings.fret', value: value > 0 && value < 22 ? value : '' };
+                return [
+                    { property: 'chordSettings.fret', value: value > 0 && value < 22 ? value : '' }
+                ];
             case 'notesDisplay':
-                return { property: 'generalSettings.notesDisplay', value: newElement };
+                return [
+                    { property: 'generalSettings.notesDisplay', value: newElement }
+                ];
             case 'tuning':
-                return { property: 'generalSettings.tuning', value: value || defaultTuning };
-            case 'numberOfStrings':
-                return { property: 'generalSettings.nostrs', value: value || 6 };
-            case 'numberOfFrets':
-                return { property: 'generalSettings.nofrets', value: value || 22 };
+                return [
+                    { property: 'generalSettings.tuning', value: value || defaultTuning }
+                ];
+            case 'nostrs':
+                return [
+                    { property: 'generalSettings.nostrs', value: parseInt(value) || 6 },
+                    { property: 'fretboard', value: newLayout(parseInt(value), selectedFretboard.generalSettings.nofrets, selectedFretboard.generalSettings.tuning) }
+                ]
+            case 'nofrets':
+                return [
+                    { property: 'generalSettings.nofrets', value: parseInt(value) || 22 },
+                    { property: 'fretboard', value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
+                ];
             default:
                 return null;
         }
+
+        console.log(selectedFretboard)
     };
     
-    const dispatchPropertyUpdate = (update) => {
-        if (update) {
-            dispatch(updateFretboardProperty(selectedFretboardIndex, update.property, update.value));
+    const dispatchPropertiesUpdate = (updates) => {
+        if (updates !== null && updates.length > 0) {
+            for(let i = 0 ; i < updates.length; i++){
+                dispatch(updateFretboardProperty(selectedFretboardIndex, updates[i].property, updates[i].value));
+            }
         }
     };
     
@@ -386,8 +414,8 @@ const Fretboard = withRouter((props) => {
                 selectedFretboardIndex={selectedFretboardIndex}
                 fretboards={fretboards}
                 getNoteIndex={getNoteIndex}
-                numberOfStrings={selectedFretboard?.generalSettings.nostrs || 6}
-                numberOfFrets={selectedFretboard?.generalSettings.nofrets || 22}
+                numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
+                numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
                 toggleNote={toggleNote}
                 handleFretboardSelect={handleFretboardSelect}
                 onElementChange={onElementChange}

@@ -80,7 +80,7 @@ const FretboardControls = ({
                         </Select>
                     </FormControl>
 
-                    {scaleModes && (
+                    {scaleModes.length > 0 && (
                         <FormControl className={`${classes.formControl} ${classes.fixedWidth}`}>
                             <InputLabel id="scale-mode-label">Choose Mode</InputLabel>
                             <Select
