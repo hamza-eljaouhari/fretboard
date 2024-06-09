@@ -27,54 +27,35 @@ import {
     UPDATE_FRETBOARD_PROPERTY
   } from "../actionTypes";
 
+import { 
+    newFretboard, newLayout,
+} from '../actions';
+
 import guitar from '../../config/guitar'
 
-export function newLayout(numberOfStrings, numberOfFrets, tuning){
-    return Array.from({length: numberOfStrings}, () => Array(numberOfFrets).fill({
-        show: false,
-        current: ''
-    })).map((string, i) => string.map((fret, j) => ({
-        show: false,
-        current: guitar.notes.sharps[(tuning[i] + j) % 12]
-    })))
+const updateNestedObject = (object, path, value) => {
+    const keys = path.split('.');
+    const lastKey = keys.pop();
+    const nestedObject = keys.reduce((obj, key) => {
+      if (!obj[key]) {
+        obj[key] = {};
+      }
+      return obj[key];
+    }, object);
+    nestedObject[lastKey] = value;
+    return { ...object };
 };
-
-export function newFretboard(numberOfStrings, numberOfFrets, tuning){
-
-    const defaultTuning = [4, 7, 2, 9, 11, 4];
-    
-    return {
-        fretboard: newLayout(numberOfStrings, numberOfFrets, tuning || defaultTuning),
-        tuning: tuning || defaultTuning,
-        keySettings: {
-            scales: '',
-            modes: '',
-            arpeggios: '',
-            chords: ''
-        },
-        scale: '',
-        mode: '',
-        arppegio: '',
-        chord: '',
-        notesDisplay: true,
-        scaleNotes: [],
-        scaleIntervals: [],
-        modeNotes: [],
-        modeIntervals: [],
-        arppegioNotes: [],
-        arppegioIntervals: [],
-        shape: '',
-        fret: '',
-        nofrets: 22,
-        nostr: 6,
-        url: ''
-    };
-}
 
 const initialState = {
     fretboard: newFretboard(guitar.numberOfStrings, guitar.numberOfFrets, guitar.tuning),
     fretboards: [],
     keySettings: {
+        scales: '',
+        modes: '',
+        arpeggios: '',
+        chords: ''
+    },
+    urlSettings: {
         scales: '',
         modes: '',
         arpeggios: '',
@@ -272,16 +253,29 @@ const fretboard = (state = initialState, action) => {
         return { ...state, fretboards: updatedFretboards };
     }
     case UPDATE_FRETBOARD_PROPERTY:
-        const { fretboardIndex, propertyName, value } = action.payload;
-        return {
+        const { fretboardIndex, propertyPath, value } = action.payload;
+
+        const keys = propertyPath.split('.');
+        
+        if (keys.length === 1) {
+          return {
             ...state,
-            fretboards: state.fretboards.map((fretboard, index) => {
-                if (index === fretboardIndex) {
-                    return { ...fretboard, [propertyName]: value };
-                }
-                return fretboard;
-            })
-        };
+            fretboards: state.fretboards.map((fretboard, index) =>
+              index === fretboardIndex
+                ? { ...fretboard, [propertyPath]: value }
+                : fretboard
+            ),
+          };
+        } else {
+          return {
+            ...state,
+            fretboards: state.fretboards.map((fretboard, index) =>
+              index === fretboardIndex
+                ? updateNestedObject(fretboard, propertyPath, value)
+                : fretboard
+            ),
+          };
+        }
     default: {
       return state;
     }

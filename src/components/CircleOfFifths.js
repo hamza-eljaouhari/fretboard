@@ -15,9 +15,6 @@ const CircleOfFifths = ({
     const majorTones = guitar.circleOfFifths.map((key) => key.key);
     const minorTones = guitar.circleOfFifths.map((key) => key.relative);
 
-    console.log("MMajor tones", majorTones);
-    console.log("minorTones", minorTones);
-    
     const calculatePosition = (angleDegrees, radius) => {
         const radians = ((angleDegrees - 90) * Math.PI) / 180; // Adjusting the starting angle by -90 degrees to move 'C' to the top
         return {

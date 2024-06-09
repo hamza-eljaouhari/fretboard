@@ -34,9 +34,57 @@ import {
   
 } from "./actionTypes";
 
-export const updateFretboardProperty = (fretboardIndex, propertyName, value) => ({
+import guitar from '../config/guitar';
+
+export function newLayout(numberOfStrings, numberOfFrets, tuning){
+  return Array.from({length: numberOfStrings}, () => Array(numberOfFrets).fill({
+      show: false,
+      current: ''
+  })).map((string, i) => string.map((fret, j) => ({
+      show: false,
+      current: guitar.notes.sharps[(tuning[i] + j) % 12]
+  })))
+};
+
+
+export function newFretboard(numberOfStrings, numberOfFrets, tuning = [4, 7, 2, 9, 11, 4]){
+  return {
+      fretboard: newLayout(numberOfStrings, numberOfFrets, tuning),
+      tuning: tuning,
+      keySettings: {
+          scales: '',
+          modes: '',
+          arpeggios: '',
+          chords: ''
+      },
+      urlSettings: {
+          scales: '',
+          modes: '',
+          arpeggios: '',
+          chords: ''
+      },
+      scale: '',
+      mode: '',
+      arppegio: '',
+      chord: '',
+      notesDisplay: true,
+      scaleNotes: [],
+      scaleIntervals: [],
+      modeNotes: [],
+      modeIntervals: [],
+      arppegioNotes: [],
+      arppegioIntervals: [],
+      shape: '',
+      fret: '',
+      nofrets: 22,
+      nostr: 6,
+      url: ''
+  };
+}
+
+export const updateFretboardProperty = (fretboardIndex, propertyPath, value) => ({
   type: UPDATE_FRETBOARD_PROPERTY,
-  payload: { fretboardIndex, propertyName, value }
+  payload: { fretboardIndex, propertyPath, value }
 });
 
 export const setKeyForChoice = (fretboardIndex, choice, key) => ({
