@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fretboardTable: {
-    maxWidth: '1550px',
-    width: '1550px',
+    maxWidth: '1240px',
+    width: '1240px',
     minWidth: '1000px',
   },
   table: {
