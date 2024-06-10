@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ProgressionSelector = ({ setChordProgression, playChordProgression }) => {
+const ProgressionSelector = ({ setProgression, playProgression }) => {
   const classes = useStyles();
   const [selectedProgression, setSelectedProgression] = useState('');
   const [selectedKey, setSelectedKey] = useState('');
@@ -51,9 +51,13 @@ const ProgressionSelector = ({ setChordProgression, playChordProgression }) => {
           };
         });
 
-        setChordProgression(transposedChords);
+        setProgression(transposedChords);
       }
     }
+  };
+
+  const handlePlayProgression = () => {
+    playProgression();
   };
 
   return (
@@ -94,7 +98,7 @@ const ProgressionSelector = ({ setChordProgression, playChordProgression }) => {
         variant="contained"
         color="primary"
         className={classes.button}
-        onClick={playChordProgression}
+        onClick={playProgression}
       >
         Play Progression
       </Button>

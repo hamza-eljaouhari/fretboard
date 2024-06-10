@@ -11,11 +11,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { withRouter } from 'react-router-dom';
 import { 
-    setChordProgression,
-    setKey,
-    setChord,
-    setFret,
-    setShape
+    setProgression,
 } from "../redux/actions";
 
 
@@ -44,7 +40,7 @@ const options = [
 
 const queryString = require('query-string');
 
-const Partitions = withRouter(({chordProgression, setChordProgression, history}) => {
+const Partitions = withRouter(({chordProgression, setProgression, history}) => {
     var search = queryString.parse(history.location.search);
     const chordOrder = parseInt(search['chordOrder']);
     const [anchorEls, setAnchorEls] = useState([]);
@@ -80,7 +76,7 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
             var newChordProgression = [...chordProgression];
             const indexOfCurrentChord = newChordProgression.indexOf(chordObject)
             newChordProgression.splice(indexOfCurrentChord, 1);
-            setChordProgression(newChordProgression);
+            setProgression(newChordProgression);
         }else if (optionId === 2){
 
         }else if (optionId === 3){
@@ -104,7 +100,7 @@ const Partitions = withRouter(({chordProgression, setChordProgression, history})
         newChordProgression[chordIndex] = newChordProgression[chordIndex + step];
         newChordProgression[chordIndex + step] = temp;
 
-        setChordProgression(newChordProgression);
+        setProgression(newChordProgression);
     }
 
     // Divide into sets of 4's
@@ -231,10 +227,6 @@ const mapStateToProps = state => {
 export default connect(
     mapStateToProps,
     {
-        setChordProgression,
-        setKey,
-        setChord,
-        setFret,
-        setShape
+        setProgression,
     }
 )(Partitions);

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import ChordProgressionSelector from './ChordProgressionSelector';
 import ChordProgressionDisplay from './ChordProgressionDisplay';
 
-const Progressor = ({ chordProgression, setChordProgression, playChordProgression }) => {
+const Progressor = ({ progression, setProgression, playProgression }) => {
 
     return (
         <div>
-            <ChordProgressionSelector setChordProgression={setChordProgression} playChordProgression={playChordProgression} />
-            <ChordProgressionDisplay chordProgression={chordProgression} setChordProgression={setChordProgression} />
+            <ChordProgressionSelector setProgression={setProgression} playProgression={playProgression} />
+            <ChordProgressionDisplay progression={progression} setProgression={setProgression} />
         </div>
     );
 };

@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
-import { toggleNote } from '../redux/actions'; // Ensure this action is properly defined to handle note toggling
 
 const useStyles = makeStyles((theme) => ({
   formElement: {
@@ -15,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TabReader({ toggleNote }) {
+function TabReader() {
   const [tabs, setTabs] = useState('');
   const [practiceRate, setPracticeRate] = useState(1000);
   const classes = useStyles();
@@ -73,13 +72,13 @@ function TabReader({ toggleNote }) {
         // Schedule to toggle the note on
         setTimeout(() => {
           // Toggle the note on
-          toggleNote(note.string, note.fret, true); // Assuming toggleNote accepts a parameter to toggle on/off
+          // toggleNote(note.string, note.fret, true); // Assuming toggleNote accepts a parameter to toggle on/off
         }, totalDelay + noteIndex * practiceRate);
   
         // Schedule to toggle the note off after `noteDuration`
         setTimeout(() => {
           // Toggle the note off
-          toggleNote(note.string, note.fret, false); // Adjust this call based on your toggleNote implementation
+          // toggleNote(note.string, note.fret, false); // Adjust this call based on your toggleNote implementation
         }, totalDelay + noteIndex * practiceRate + noteDuration);
       });
   
@@ -134,4 +133,4 @@ function TabReader({ toggleNote }) {
   );
 }
 
-export default connect(null, { toggleNote })(TabReader);
+export default connect(null, {  })(TabReader);

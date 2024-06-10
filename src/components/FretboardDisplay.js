@@ -4,19 +4,16 @@ import classNames from 'classnames'; // Ensure you've installed and imported cla
 import guitar from '../config/guitar';
 
 const FretboardDisplay = ({
-  fretboards,
+  boards,
   onElementChange,
-  getNoteIndex,
-  toggleNote,
   handleFretboardSelect,
 }) => {
   // Updated logic to render each fretboard with its rows and heads
-  const fretboardElements = fretboards.map((fretboard, fretboardIndex) => {
+  const fretboardElements = boards.length && boards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
     const newRows = [...Array(fretboard.generalSettings.nostrs)].map((_, i) => (
       <tr key={`row-${fretboardIndex}-${i}`}>
         <td>
-          Tuning
           <input
             value={guitar.notes.flats[fretboard.generalSettings.tuning[i]] || ''}
             onChange={(e) => {
@@ -26,11 +23,20 @@ const FretboardDisplay = ({
                 onElementChange(newTuning.join('-'), 'tuning');
               } 
             }}
-            style={{ width: '50px' }}
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '50%',
+              border: '1px solid #ccc',
+              textAlign: 'center',
+              outline: 'none',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.15)'
+            }}
           />
         </td>
+
         {[...Array(fretboard.generalSettings.nofrets)].map((_, j) => {
-          const note = fretboard.fretboard[i][j];
+          const note = fretboard[fretboard.generalSettings.choice + 'Settings'].fretboard[i][j];
           const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
           
@@ -45,7 +51,8 @@ const FretboardDisplay = ({
 
          
           return (
-            <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
+            // <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
+            <td key={`note-${i}-${j}`}>
               <span
                 className={classNames({
                   'note': note.show === true,

@@ -10,8 +10,7 @@ import TabReader from './TabReader';
 import FretboardDisplay from './FretboardDisplay';
 import guitar from '../config/guitar';
 import {
-    newFretboard, newLayout,
-    setFretboards, toggleNote, updateFretboardProperty, setChordProgression
+    newFretboard, newLayout, updateStateProperty    , setProgression, addFretboard
 } from '../redux/actions';
 import { getNoteFromFretboard, getChordIntervals } from '../redux/helpers';
 import './guitar-neck.css';
@@ -37,46 +36,48 @@ const Fretboard = withRouter((props) => {
     const dispatch = useDispatch();
 
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(-1);
-    const { setFretboards, fretboards, chordProgression, setChordProgression } = props;
-    const selectedFretboard = selectedFretboardIndex >= 0 ? fretboards[selectedFretboardIndex] : newFretboard();
+    const { setFretboards, boards, progressions, setProgression } = props;
+    const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
+
+    console.log("   BOARDS  ", boards);
+    console.log("   PROGRESSION  ", progressions);
 
     useEffect(() => {
         const restoredChordProgression = JSON.parse(localStorage.getItem('progression'));
         if (restoredChordProgression?.length) {
-            dispatch(setChordProgression(restoredChordProgression));
+            dispatch(setProgression(restoredChordProgression));
         }
-    }, [setChordProgression]);
+    }, [setProgression]);
 
     const handleFretboardSelect = (index) => {
         setSelectedFretboardIndex(index);
     };
 
     const handleChoiceChange = (newChoice) => {
-        dispatch(updateFretboardProperty(selectedFretboardIndex, 'generalSettings.choice', newChoice));
+        dispatch(updateStateProperty(selectedFretboardIndex, 'generalSettings.choice', newChoice));
         const storedURL = selectedFretboard.urlSettings[newChoice];
         props.history.push('/fretboard' + storedURL);
     };
 
-    const addFretboard = () => {
-        const newFretboards = [...fretboards, newFretboard(6, 22, defaultTuning)];
-        dispatch(setFretboards(newFretboards))
-        setSelectedFretboardIndex(newFretboards.length - 1);
-        onElementChange(newFretboards.length - 1, 'nofb');
+    const createNewBoardDisplay = () => {
+        const newBoard = newFretboard();
+        console.log(newBoard)
+        dispatch(addFretboard(newBoard));
+        setSelectedFretboardIndex(boards.length);
     };
-
     const cleanFretboard = useCallback(() => {
         if (selectedFretboardIndex === -1) return;
-        const updatedFretboards = [...fretboards];
-        updatedFretboards[selectedFretboardIndex].fretboard.forEach(string => string.forEach(note => note.show = false));
-        dispatch(setFretboards(updatedFretboards))
-    }, [selectedFretboardIndex, fretboards, setFretboards]);
+        const updatedboards = [...boards];
+        updatedboards[selectedFretboardIndex].fretboard.forEach(string => string.forEach(note => note.show = false));
+        dispatch(setFretboards(updatedboards))
+    }, [selectedFretboardIndex, boards, setFretboards]);
   
     const onElementChange = (value, element) => {
         const newElement = getNewElementValue(value, element);
         updateUrl(element, newElement);
         const propertiesUpdate = getPropertiesUpdate(element, value, newElement);
         dispatchPropertiesUpdate(propertiesUpdate);
-        updateUrlSettings();
+        updateUrlSettings('');
     };
     
     const getNewElementValue = (value, element) => {
@@ -125,7 +126,6 @@ const Fretboard = withRouter((props) => {
                     { property: 'generalSettings.notesDisplay', value: newElement }
                 ];
             case 'tuning':
-                console.log(value)
                 return [
                     { property: 'generalSettings.tuning', value: value.split('-').map(num => parseInt(num, 10)) || defaultTuning }
                 ];
@@ -152,13 +152,13 @@ const Fretboard = withRouter((props) => {
     const dispatchPropertiesUpdate = (updates) => {
         if (updates !== null && updates.length > 0) {
             for(let i = 0 ; i < updates.length; i++){
-                dispatch(updateFretboardProperty(selectedFretboardIndex, updates[i].property, updates[i].value));
+                dispatch(updateStateProperty(selectedFretboardIndex, updates[i].property, updates[i].value));
             }
         }
     };
     
     const updateUrlSettings = (choice) => {
-        dispatch(updateFretboardProperty(selectedFretboardIndex, `urlSettings.${choice}`, props.history.location.search));
+        dispatch(updateStateProperty(selectedFretboardIndex, `urlSettings.${choice || 'scale'}`, props.history.location.search, choice));
     };
     
     const onCleanFretboard = () => {
@@ -236,50 +236,68 @@ const Fretboard = withRouter((props) => {
         // Find the starting point of the matchingScale within the parentScale
         return guitar.scales[parentScale].modes.findIndex(mode => mode.name.toLowerCase() === matchingScale.toLowerCase());
     };
-    
     const displayChordPortion = useCallback((chordObject) => {
         const { key, chord, shape } = chordObject;
+        const { choice } = selectedFretboard.generalSettings;
         const cagedShape = guitar.arppegios[chord]?.cagedShapes[shape];
-
+    
         if (!cagedShape) return;
-
+    
         const { formula } = guitar.arppegios[chord];
-
+    
+        // Calculate chord notes
         let currentNoteIndex = key;
         let chordNotes = [guitar.notes.sharps[currentNoteIndex]];
-
+    
+        console.log("Initial Key:", currentNoteIndex, "Note:", guitar.notes.sharps[currentNoteIndex]);
+    
         formula.forEach(step => {
             currentNoteIndex = (currentNoteIndex + step) % 12;
             chordNotes.push(guitar.notes.sharps[currentNoteIndex]);
         });
-
+    
         chordNotes = chordNotes.slice(0, -1);
-
+    
         const chordIntervals = guitar.arppegios[chord].intervals;
-        const nf = JSON.parse(JSON.stringify(selectedFretboard));
-
-        nf.fretboard.forEach(string => string.forEach(note => {note.show = false}));
-
-
+        const newComponent = JSON.parse(JSON.stringify(selectedFretboard));
+        const newFretboardSettings = newComponent[choice + 'Settings'];
+        const newBoard = newComponent[choice + 'Settings'].fretboard;
+    
+        newBoard.forEach(string => string.forEach(note => {
+            note.show = false;
+            note.interval = null;  // Reset interval
+        }));
+    
+        console.log("Chord Intervals:", chordIntervals);
+        console.log("Chord Notes:", chordNotes);
+        console.log("CAGED Shape:", cagedShape);
+    
         cagedShape.forEach((fret, stringIndex) => {
             if (fret !== null) {
-                const displayFret = fret + key + guitar.shapes.intervals[guitar.shapes.names.indexOf(shape)];
-                if (displayFret < nf.fretboard[guitar.numberOfStrings - 1 - stringIndex].length) {
-                    nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].show = true;
-                    const noteIndex = chordNotes.indexOf(nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].current);
-                    nf.fretboard[guitar.numberOfStrings - 1 - stringIndex][displayFret].interval = chordIntervals[noteIndex];
+                const shapeIndex = guitar.shapes.names.indexOf(shape);
+                const shapeInterval = guitar.shapes.intervals[shapeIndex];
+                let displayFret = fret + key + shapeInterval;
+    
+                // Transpose displayFret back by 12 if it is beyond the 12th fret
+                if (displayFret >= 12) {
+                    displayFret -= 12;
+                }
+    
+                if (displayFret < newBoard[0].length) {
+                    console.log("Display fret:", displayFret);
+                    newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][displayFret].show = true;
+                    newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][displayFret].interval = chordIntervals[chordNotes.indexOf(newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][fret + shapeInterval].current)];
                 }
             }
         });
-
-        const updatedFretboards = [...fretboards];
-        updatedFretboards[selectedFretboardIndex] = nf;
-
-        if (JSON.stringify(updatedFretboards) !== JSON.stringify(fretboards)) {
-            dispatch(setFretboards(updatedFretboards));
+    
+        const oldFretboardSettings = selectedFretboard[choice + 'Settings'].fretboard;
+    
+        if (JSON.stringify(oldFretboardSettings) !== JSON.stringify(newBoard)) {
+            dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.fretboard`, newBoard));
         }
-    }, [setFretboards, fretboards, selectedFretboardIndex]);
-
+    }, [setFretboards, boards, selectedFretboardIndex]);
+    
     useEffect(() => {
         if (selectedFretboardIndex === -1) return;
         const {chordSettings, keySettings, scaleSettings, generalSettings, modeSettings, arppegioSettings } = selectedFretboard;
@@ -296,7 +314,6 @@ const Fretboard = withRouter((props) => {
         let intervals = [];
         
         if (choice === 'chord' && chord && shape) {
-            console.log(chord);
             displayChordPortion({ key: keySettings[choice], chord, shape: shape });
             return;
         } else if (choice === 'arppegio') {
@@ -318,25 +335,25 @@ const Fretboard = withRouter((props) => {
         
         const fretboardClone = JSON.parse(JSON.stringify(selectedFretboard));
 
-        fretboardClone.fretboard.forEach(string => string.forEach((note) => {
+        fretboardClone[choice + 'Settings'].fretboard.forEach(string => string.forEach((note) => {
             note.show = false;
             note.interval = undefined;
             return note;
         }));
 
-        fretboardClone.fretboard.forEach((string, stringIndex) => {
+        fretboardClone[choice + 'Settings'].fretboard.forEach((string, stringIndex) => {
             for (let fretIndex = 0; fretIndex < fretboardClone.generalSettings.nofrets; fretIndex++) {
                 const currentNote = getNoteFromFretboard(stringIndex, fretIndex, fretboardClone.generalSettings.tuning);
                 if (notes.includes(currentNote)) {
-                    fretboardClone.fretboard[stringIndex][fretIndex].show = true;
-                    fretboardClone.fretboard[stringIndex][fretIndex].current = selectedFretboard.generalSettings.notesDisplay ? currentNote : intervals[notes.indexOf(currentNote)];
-                    fretboardClone.fretboard[stringIndex][fretIndex].interval = intervals[notes.indexOf(currentNote)];
+                    fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].show = true;
+                    fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].current = selectedFretboard.generalSettings.notesDisplay ? currentNote : intervals[notes.indexOf(currentNote)];
+                    fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].interval = intervals[notes.indexOf(currentNote)];
                 }
             }
         });
 
-        if (JSON.stringify(selectedFretboard.fretboard) !== JSON.stringify(fretboardClone.fretboard)) {
-            dispatch(updateFretboardProperty(selectedFretboardIndex, 'fretboard', fretboardClone.fretboard));
+        if (JSON.stringify(selectedFretboard[choice + 'Settings']) !== JSON.stringify(fretboardClone[choice + 'Settings'])) {
+            dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.fretboard`, fretboardClone[choice + 'Settings'].fretboard));
         }
     }, [selectedFretboard]);
 
@@ -350,31 +367,33 @@ const Fretboard = withRouter((props) => {
             fret: parseInt(fret, 10),
             highlighted: false,
             quality: guitar.arppegios[chord].quality,
-            id: chordProgression.length + 1
+            id: progressions.length + 1
         };
-        const newChordProgression = [...chordProgression, chordObject];
-        dispatch(setChordProgression(newChordProgression));
+        const newChordProgression = [...progressions, chordObject];
+        dispatch(setProgression(newChordProgression));
         localStorage.setItem('progression', JSON.stringify(newChordProgression));
     };
 
     const saveProgression = () => {
-        if (chordProgression.length) {
-            localStorage.setItem("progression", JSON.stringify(chordProgression));
+        if (progressions.length) {
+            localStorage.setItem("progression", JSON.stringify(progressions));
         }
     };
 
-    const playChordProgression = useCallback(async () => {
-        for (let i = 0; i < chordProgression.length; i++) {
-            const { chord, shape, key } = chordProgression[i];
+    const playProgression = useCallback(async () => {
+        const { progression } = progressions;
+
+        for (let i = 0; i < progression.length; i++) {
+            const { chord, shape, key } = progression[i];
             displayChordPortion({ key, chord, shape });
             await new Promise(r => setTimeout(r, 4000));
         }
-    }, [chordProgression, selectedFretboardIndex]);
+    }, [progressions, selectedFretboardIndex]);
 
 
     const getDegree = (choice) => {
         const defaultDegree = 'Major';
-        if (!choice || selectedFretboardIndex === -1 || !fretboards.length) return defaultDegree;
+        if (!choice || selectedFretboardIndex === -1 || !boards.length) return defaultDegree;
         const selectedKey = selectedFretboard.keySettings[choice];
         if (choice === 'scale') {
             const scale = guitar.scales[selectedFretboard.scaleSettings.scale];
@@ -388,7 +407,7 @@ const Fretboard = withRouter((props) => {
 
     const getCircleData = () => {
         const defaultPoint = { tone: 'C', degree: 'Major' };
-        if (!selectedFretboard.generalSettings.choice || selectedFretboardIndex === -1 || !fretboards.length || !selectedFretboard) return defaultPoint;
+        if (!selectedFretboard.generalSettings.choice || selectedFretboardIndex === -1 || !boards.length || !selectedFretboard) return defaultPoint;
         const selectedKey = selectedFretboard.keySettings[selectedFretboard.generalSettings.choice];
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
@@ -402,17 +421,16 @@ const Fretboard = withRouter((props) => {
 
     return (
         <div className="fretboard-container">
-            <IconButton onClick={addFretboard}>
+            <IconButton onClick={createNewBoardDisplay}>
                 <AddCircleOutlineIcon />
             </IconButton>
 
             <FretboardDisplay
-                chordProgression={chordProgression}
+                progressions={progressions}
                 selectedFretboardIndex={selectedFretboardIndex}
-                fretboards={fretboards}
+                boards={boards}
                 numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
                 numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
-                toggleNote={toggleNote}
                 handleFretboardSelect={handleFretboardSelect}
                 onElementChange={onElementChange}
             />
@@ -425,53 +443,49 @@ const Fretboard = withRouter((props) => {
                 quality={circleData.degree}
             />
 
-            <TabReader toggleNote={toggleNote} />
+            <TabReader />
 
             <Progressor
                 className={classes.chordPressionDisplay}
-                chordProgression={chordProgression}
-                setChordProgression={setChordProgression}
-                playChordProgression={playChordProgression}
+                progression={progressions.progression}
+                setProgression={setProgression}
+                playProgression={playProgression}
             />
 
-            {selectedFretboardIndex >= 0 && (
-                <section className="controls">
-                    <FretboardControls
-                        classes={classes}
-                        handleChoiceChange={handleChoiceChange}
-                        scaleModes={scaleModes}
-                        arppegiosNames={Object.keys(guitar.arppegios)}
-                        choice={selectedFretboard.generalSettings.choice}
-                        onCleanFretboard={onCleanFretboard}
-                        keySignature={selectedFretboard.keySettings}
-                        onCopyLink={onCopyLink}
-                        selectedMode={selectedFretboard.modeSettings.mode}
-                        selectedScale={selectedFretboard.scaleSettings.scale}
-                        selectedChord={selectedFretboard.chordSettings.chord}
-                        selectedShape={selectedFretboard.chordSettings.shape}
-                        selectedArppegio={selectedFretboard.arppegioSettings.arppegio}
-                        selectedFret={selectedFretboard.chordSettings.fret}
-                        addChordToProgression={addChordToProgression}
-                        saveProgression={saveProgression}
-                        playChordProgression={playChordProgression}
-                        chordProgression={chordProgression}
-                        onElementChange={onElementChange}
-                    />
-                </section>
-            )}
+            <section className="controls">
+                <FretboardControls
+                    classes={classes}
+                    handleChoiceChange={handleChoiceChange}
+                    scaleModes={scaleModes}
+                    arppegiosNames={Object.keys(guitar.arppegios)}
+                    choice={selectedFretboard.generalSettings.choice}
+                    onCleanFretboard={onCleanFretboard}
+                    keySignature={selectedFretboard.keySettings}
+                    onCopyLink={onCopyLink}
+                    selectedMode={selectedFretboard.modeSettings.mode}
+                    selectedScale={selectedFretboard.scaleSettings.scale}
+                    selectedChord={selectedFretboard.chordSettings.chord}
+                    selectedShape={selectedFretboard.chordSettings.shape}
+                    selectedArppegio={selectedFretboard.arppegioSettings.arppegio}
+                    selectedFret={selectedFretboard.chordSettings.fret}
+                    addChordToProgression={addChordToProgression}
+                    saveProgression={saveProgression}
+                    playProgression={playProgression}
+                    progressions={progressions}
+                    onElementChange={onElementChange}
+                />
+            </section>
         </div>
     );
 });
 
 const mapStateToProps = state => {
-    const { fretboards } = state.fretboard;
-    const { chordProgression } = state.partitions;
-    return { fretboards, chordProgression };
+    return { boards: state.fretboard.components, progressions: state.partitions };
 };
 
 export default connect(
     mapStateToProps, 
     { 
-        setFretboards, toggleNote, updateFretboardProperty, setChordProgression 
+        addFretboard, updateStateProperty, setProgression 
     }
 )(Fretboard);

@@ -175,7 +175,7 @@ export default {
       "cagedShapes": {
         "C": [null, 3, 1, 0, 1, null],
         "A": [null, 0, 2, 2, 1, 0],
-        "G": [3, 1, 0, 0, 0, 3],
+        "G": [3, 1, 0, 0, 3, 3],
         "E": [0, 2, 2, 0, 0, 0],
         "D": [null, null, 0, 2, 3, 1]
       }
@@ -353,9 +353,9 @@ export default {
       "degree": "Minor",
       "matchingScale": "Dorian",
       "cagedShapes": {
-        "C": [null, 3, 1, 3, 1, 0],
+        "C": [null, 3, 1, 3, 1, null],
         "A": [null, 0, 2, 0, 1, 0],
-        "G": [3, 1, 0, 0, 0, 1],
+        "G": [3, 1, 3, 0, null, null],
         "E": [0, 2, 0, 0, 0, 0],
         "D": [null, null, 0, 2, 1, 1]
       }

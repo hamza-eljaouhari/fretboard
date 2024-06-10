@@ -1,5 +1,5 @@
 import { 
-    SET_CHORD_PROGRESSION
+    SET_PROGRESSION
 } from "../actionTypes";
 
 const initialState = {
@@ -8,10 +8,10 @@ const initialState = {
 
 const partitions = (state = initialState, action) => {
   switch (action.type) {
-    case SET_CHORD_PROGRESSION: {
+    case SET_PROGRESSION: {
         return {
             ...state,
-            chordProgression: action.payload.chordProgression
+            progression: action.payload.progression
         };
     }
     default: {

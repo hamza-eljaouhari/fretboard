@@ -3,7 +3,6 @@ import guitar from '../config/guitar';
 import React from 'react';
 
 const CircleOfFifths = ({
-    setKeyForChoice,
     selectedTone,
     quality,
     selectedFretboardIndex,
@@ -25,7 +24,6 @@ const CircleOfFifths = ({
 
     const selectKey = (tone) => {
         const indexOfTone = guitar.notes.flats.indexOf(tone.replace('m', '')); // Remove 'm' for minor tones
-        setKeyForChoice(selectedFretboardIndex, choice, indexOfTone);
         onElementChange(indexOfTone, 'key');
     };
 

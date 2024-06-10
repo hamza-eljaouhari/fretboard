@@ -19,10 +19,10 @@ const FretboardControls = ({
     selectedArppegio,
     selectedFret,
     selectedShape,
-    addChordToProgression,
+    addToProgression,
     saveProgression,
-    playChordProgression,
-    chordProgression,
+    playProgression,
+    progression,
 }) => {
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -186,7 +186,7 @@ const FretboardControls = ({
             <Button
                 variant="contained"
                 color="primary"
-                onClick={addChordToProgression}
+                onClick={addToProgression}
                 disabled={!selectedChord || (!selectedShape && !selectedFret)}
             >
                 Add Chord
@@ -196,7 +196,7 @@ const FretboardControls = ({
                 variant="contained"
                 color="secondary"
                 onClick={saveProgression}
-                disabled={chordProgression && chordProgression.length === 0}
+                disabled={progression && progression.length === 0}
             >
                 Save
             </Button>
@@ -204,8 +204,8 @@ const FretboardControls = ({
             <Button
                 variant="contained"
                 color="default"
-                onClick={playChordProgression}
-                disabled={!chordProgression || chordProgression.length === 0}
+                onClick={playProgression}
+                disabled={!progression || progression.length === 0}
             >
                 Play
             </Button>

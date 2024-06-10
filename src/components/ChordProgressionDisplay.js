@@ -4,28 +4,28 @@ import { Card, Typography, CardContent, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import guitar from '../config/guitar';
 
-const ChordProgressionDisplay = ({ chordProgression, setChordProgression}) => {
+const ChordProgressionDisplay = ({ progression, setProgression}) => {
     // State to keep track of the chord progression
 
     // Function to handle the end of a drag event
     const onDragEnd = (result) => {
         if (!result.destination) return;
 
-        const items = Array.from(chordProgression);
+        const items = Array.from(progression);
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
 
-        setChordProgression(items);
+        setProgression(items);
     };
 
-    if (!chordProgression || chordProgression.length === 0) {
+    if (!progression || progression.length === 0) {
         return <Typography>No chord progression to display.</Typography>;
     }
 
     const handleDelete = (index) => {
         // Filter out the chord that needs to be deleted
-        const newProgression = chordProgression.filter((_, i) => i !== index);
-        setChordProgression(newProgression);
+        const newProgression = progression.filter((_, i) => i !== index);
+        setProgression(newProgression);
     };
 
     return (
@@ -33,7 +33,7 @@ const ChordProgressionDisplay = ({ chordProgression, setChordProgression}) => {
             <Droppable droppableId="chords">
                 {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef} style={{ display: 'flex', justifyContent: 'left', flexWrap: 'wrap', gap: '16px', padding: '20px' }}>
-                        {chordProgression.map((object, index) => (
+                        {progression.length && progression.map((object, index) => (
                             <Draggable key={index} draggableId={String(index)} index={index}>
                                 {(provided, snapshot) => (
                                     <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
