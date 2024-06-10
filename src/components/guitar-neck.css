@@ -3,7 +3,6 @@
     overflow-x: auto; /* Enable horizontal scrolling */
     max-width: 100vw; /* Limit the maximum width of the container */
     padding: 0 20px;
-
 }
 
 /* Ensure the fretboard table doesn't break the layout */
