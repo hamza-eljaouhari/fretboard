@@ -88,6 +88,9 @@ const Fretboard = withRouter((props) => {
         props.history.push('/fretboard' + storedURL);
     };
 
+    useEffect(() => {
+        createNewBoardDisplay()
+    }, [])
     const createNewBoardDisplay = () => {
         const newBoard = newFretboard();
         dispatch(addFretboard(newBoard));
