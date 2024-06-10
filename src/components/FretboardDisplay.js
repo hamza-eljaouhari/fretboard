@@ -8,6 +8,20 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     overflowX: 'auto',
     maxWidth: '100vw',
+    '&::-webkit-scrollbar': {
+      width: '8px',
+      borderRadius: '10px',
+      height: '8px'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'darkgrey',
+      borderRadius: '10px',
+      height: '8px'
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'grey',
+      height: '8px'
+    },
   },
   fretboardTable: {
     maxWidth: '1550px',

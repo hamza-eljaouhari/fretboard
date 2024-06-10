@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     fretboardContainer: {
         width: '100%',
         overflowX: 'auto',
-        maxWidth: '100vw',
+        maxWidth: '100vw'
     },
     fretboardArea: {
         flex: 1,

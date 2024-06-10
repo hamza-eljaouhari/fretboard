@@ -115,20 +115,6 @@ const useStyles = makeStyles((theme) => ({
     width: '100vw',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    scrollbarWidth: 'thin',
-    scrollbarColor: 'darkgrey',
-    '&::-webkit-scrollbar': {
-      width: '8px',
-      height: '8px',
-      borderRadius: '10px',
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'darkgrey',
-      borderRadius: '10px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: 'grey',
-    },
   },
 
   card: {
@@ -148,7 +134,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '20px',
   },
   fixedWidth: {
-    maxWidth: '100%'
+    maxWidth: '100%',
+    '&::-webkit-scrollbar': {
+      width: '8px',
+      borderRadius: '10px',
+      height: '8px'
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'darkgrey',
+      borderRadius: '10px',
+      height: '8px'
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'grey',
+      height: '8px'
+    }
   }
 }));
 
