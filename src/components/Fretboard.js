@@ -4,18 +4,15 @@ import { connect } from 'react-redux';
 import { makeStyles, IconButton } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import FretboardControls from './FretboardControls';
-import CircleOfFifths from './CircleOfFifths';
 import Progressor from './Progressor';
-import TabReader from './TabReader';
 import FretboardDisplay from './FretboardDisplay';
 import guitar from '../config/guitar';
 import {
     newFretboard, newLayout, updateStateProperty, setProgression, addFretboard, setProgressionKey
 } from '../redux/actions';
-import { getNoteFromFretboard, getChordIntervals } from '../redux/helpers';
+import { getNoteFromFretboard } from '../redux/helpers';
 import './guitar-neck.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { $CombinedState } from 'redux';
+import { useDispatch } from 'react-redux';
 const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({

@@ -100,8 +100,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
   },
   button: {
-      margin: theme.spacing(0.5),
+      margin: theme.spacing(1),
       borderRadius: '20px',
+  },
+  backButton: {
+    margin: 20,
+    borderRadius: '20px',
   },
   cardContainer: {
     display: 'flex',
@@ -147,6 +151,8 @@ const useStyles = makeStyles((theme) => ({
   playProgression: {
     margin: 20,
     borderRadius: '20px',
+  },
+  progressions: {
   }
 }));
 
@@ -237,18 +243,16 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
       {showChordProgression ? (
         <div>
           {/* Render chord progression cards */}
-          <Typography variant="h6">Chord Progressions:</Typography>
-          <div className={classes.buttonContainer}>
+          <Typography variant="h6" className={classes.backButton}>Chord Progressions:</Typography>
             <Button
               variant="outlined"
               color="primary"
-              className={classes.button}
+              className={classes.backButton}
               onClick={handleBackButtonClick}
             >
               Back
             </Button>
             <div className={classes.cardContainer}>
-
               {selectedChordProgression.map((chord, index) => (
                 <Card
                   key={index}
@@ -262,6 +266,7 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
                   </CardContent>
                 </Card>
               ))}
+          <div className={classes.buttonContainer}>
             </div>
           </div>
         </div>
