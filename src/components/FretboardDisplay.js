@@ -87,13 +87,21 @@ const FretboardDisplay = ({
     // Construct the full fretboard element
     return (
       <div key={`fretboard-${fretboardIndex}`} onFocus={() => handleFretboardSelect(fretboardIndex)} onClick={() => handleFretboardSelect(fretboardIndex)}>
-        <label>
-          Number of Strings:
-          <input type="number" key="strings-changer" value={fretboard.generalSettings.nostrs} onChange={(e) => onElementChange(e.target.value, 'nostrs')} min="4" max="12" />
+        <label style={{
+            fontWeight: "bold",
+          }}>
+          #Strings:
+          <input type="number" key="strings-changer" style={{
+            margin: "6px",
+          }} value={fretboard.generalSettings.nostrs} onChange={(e) => onElementChange(e.target.value, 'nostrs')} min="4" max="12" />
         </label>
-        <label>
-          Number of Frets:
-          <input type="number" key="frets-changer" value={fretboard.generalSettings.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
+        <label style={{
+            fontWeight: "bold",
+          }}>
+          #Frets:
+          <input type="number" key="frets-changer" style={{
+            margin: "6px"
+          }} value={fretboard.generalSettings.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
         </label>
         <table className="fretboard-table">
           <tbody>{newRows}</tbody>
