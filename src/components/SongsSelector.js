@@ -92,30 +92,46 @@ const chordMap = {
   },
 };
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
   button: {
-    margin: theme.spacing(0.5),
-    borderRadius: '20px',
-    padding: '5px',
+      margin: theme.spacing(0.5),
+      borderRadius: '20px',
   },
   cardContainer: {
     display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    marginTop: theme.spacing(2),
+    flexDirection: 'row',
+    padding: 20,
+    flexWrap: 'nowrap',
+    justifyContent: 'flex-start', // Align cards to the left
+    alignItems: 'flex-start',
+    alignContent: 'flex-start',
+    justifyItems: 'flex-start',
+    width: '100vw',
     overflowX: 'auto',
-    width: '100%',
-    scrollbarWidth: 'none',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    scrollbarWidth: 'thin',
+    scrollbarColor: 'darkgrey',
     '&::-webkit-scrollbar': {
-      display: 'none',
+      width: '8px',
+      height: '8px',
+      borderRadius: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'darkgrey',
+      borderRadius: '10px',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: 'grey',
     },
   },
+  
   card: {
     margin: theme.spacing(1),
     minWidth: 200,
@@ -125,7 +141,15 @@ const useStyles = makeStyles((theme) => ({
       transform: 'scale(1.05)',
     },
   },
+  buttonsContainer: {
+    padding: 20
+  },
+  playProgression: {
+    margin: 20,
+    borderRadius: '20px',
+  }
 }));
+
 
 function generateRandomCagedSystem() {
   const systems = ['C', 'A', 'G', 'E', 'D'];
@@ -198,6 +222,14 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
     setSelectedSongIndex(null); // Reset selected song index when filter changes
   };
 
+  function chunkArray(array, chunkSize) {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  }
+
   const uniqueGenres = Array.from(new Set(mostCommonSongs.songs.map(song => song.genre)));
 
   return (
@@ -230,8 +262,8 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
                   </CardContent>
                 </Card>
               ))}
+            </div>
           </div>
-        </div>
         </div>
       ) : (
         <>
@@ -255,30 +287,35 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
           <Button
             variant="contained"
             color="primary"
-            className={classes.button}
+            className={classes.playProgression}
             onClick={handlePlayProgression}
           >
             Play Progression
           </Button>
 
           <div className={classes.cardContainer}>
-            {/* Render song cards */}
-            {filteredSongs.map((song, index) => (
-              <Card
-                key={index}
-                className={classes.card}
-                onClick={() => handleSongCardClick(index)}
-              >
-                <CardContent>
-                  <Typography variant="h6">{song.title}</Typography>
-                  <Typography variant="subtitle1">{song.artist}</Typography>
-                  <Typography variant="body2">Key: {song.key}</Typography>
-                  <Typography variant="body2">Chords: {song.chords}</Typography>
-                  <Typography variant="body2">Genre: {song.genre}</Typography>
-                </CardContent>
-              </Card>
+            {/* Render song cards in chunks of 33 items each */}
+            {chunkArray(filteredSongs, filteredSongs.length / 100).map((chunk, rowIndex) => (
+              <div key={rowIndex} className={classes.row}>
+                {chunk.map((song, index) => (
+                  <Card
+                    key={index}
+                    className={classes.card}
+                    onClick={() => handleSongCardClick(index)}
+                  >
+                    <CardContent>
+                      <Typography variant="h6">{song.title}</Typography>
+                      <Typography variant="subtitle1">{song.artist}</Typography>
+                      <Typography variant="body2">Key: {song.key}</Typography>
+                      <Typography variant="body2">Chords: {song.chords}</Typography>
+                      <Typography variant="body2">Genre: {song.genre}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             ))}
           </div>
+
         </>
       )}
     </div>

@@ -95,7 +95,7 @@ const FretboardDisplay = ({
           Number of Frets:
           <input type="number" key="frets-changer" value={fretboard.generalSettings.nofrets} onChange={(e) => onElementChange(e.target.value, 'nofrets')} min="12" max="24" />
         </label>
-        <table>
+        <table className="fretboard-table">
           <tbody>{newRows}</tbody>
           <tfoot>
             <tr>{newHeads}</tr>

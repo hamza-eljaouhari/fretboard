@@ -1,3 +1,7 @@
 .circleOfFifthsTransition {
     transition: transform 1s;
   }
+
+.circle-container {
+  width: 100vw;
+}

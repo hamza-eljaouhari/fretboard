@@ -80,7 +80,7 @@ const CircleOfFifths = ({
     };
     
     return (
-        <div>
+        <div className="circle-container">
             <svg width="400" height="400" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
                 <g className="circleOfFifthsTransition" transform={`rotate(${rotationAngle}, 0, 0)`}>
                     <circle cx="0" cy="0" r={majorRadius} fill="none" stroke="black" />

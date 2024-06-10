@@ -1,5 +1,14 @@
-.fretboard-container{
-    width: 1000px;
+.fretboard-container {
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    max-width: 100vw; /* Limit the maximum width of the container */
+    padding: 0 20px;
+
+}
+
+/* Ensure the fretboard table doesn't break the layout */
+.fretboard-table {
+    width: 1000px; /* Set minimum width to prevent collapsing */
 }
 
 .table {
@@ -89,3 +98,4 @@
 .content-table th {
     height: 25%;
 }
+
