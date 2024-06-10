@@ -126,19 +126,27 @@ const Fretboard = withRouter((props) => {
                     { property: 'generalSettings.tuning', value: value.split('-').map(num => parseInt(num, 10)) || defaultTuning }
                 ];
             case 'nostrs':
+                const newBoardForStr = newLayout(parseInt(value), selectedFretboard.generalSettings.nofrets, selectedFretboard.generalSettings.tuning);
                 return [
                     { property: 'generalSettings.nostrs', value: parseInt(value) || 6 },
-                    { property: 'fretboard', value: newLayout(parseInt(value), selectedFretboard.generalSettings.nofrets, selectedFretboard.generalSettings.tuning) }
+                    { property: 'scaleSettings.fretboard', value: newBoardForStr },
+                    { property: 'chordSettings.fretboard', value: newBoardForStr },
+                    { property: 'modeSettings.fretboard', value: newBoardForStr },
+                    { property: 'arppegioSettings.fretboard', value: newBoardForStr }
                 ]
             case 'nofrets':
+                const newBordForFrets = newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning);
                 return [
                     { property: 'generalSettings.nofrets', value: parseInt(value) || 22 },
-                    { property: 'fretboard', value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
+                    { property: 'scaleSettings.fretboard', value: newBordForFrets },
+                    { property: 'chordSettings.fretboard', value: newBordForFrets },
+                    { property: 'modeSettings.fretboard', value: newBordForFrets },
+                    { property: 'arppegioSettings.fretboard', value: newBordForFrets }
                 ];
             case 'arppegio':
                 return [
                     { property: 'arppegioSettings.arppegio', value: value },
-                    { property: 'fretboard', value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
+                    { property:  `arppegioSettings.fretboard`, value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
                 ];
             default:
                 return null;
@@ -233,10 +241,10 @@ const Fretboard = withRouter((props) => {
         return guitar.scales[parentScale].modes.findIndex(mode => mode.name.toLowerCase() === matchingScale.toLowerCase());
     };
 
-    const displayChordPortion = useCallback((chordObject, player) => {
+    const displayChordPortion = (chordObject, player) => {
         const { key, chord, shape, notes } = chordObject;
         const { choice } = selectedFretboard.generalSettings;
-        const cagedShape = guitar.arppegios[chord]?.cagedShapes[shape];
+        const cagedShape = JSON.parse(JSON.stringify(guitar.arppegios[chord]?.cagedShapes[shape]));
 
         if (!cagedShape) return;
 
@@ -261,8 +269,12 @@ const Fretboard = withRouter((props) => {
             note.show = false;
             note.interval = null;  // Reset interval
         }));
+        
+        let newCagedShape = cagedShape;
 
-        cagedShape.forEach((fret, stringIndex) => {
+        newCagedShape.reverse()
+        
+        newCagedShape.forEach((fret, stringIndex) => {
             if (fret !== null) {
                 const shapeIndex = guitar.shapes.names.indexOf(shape);
                 const shapeInterval = guitar.shapes.intervals[shapeIndex];
@@ -274,18 +286,18 @@ const Fretboard = withRouter((props) => {
                 }
 
                 if (displayFret < newBoard[0].length) {
-                    newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][displayFret].show = true;
-                    newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][displayFret].interval = chordIntervals[chordNotes.indexOf(newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][fret + shapeInterval].current)];
+                    newBoard[stringIndex][displayFret].show = true;
+                    newBoard[stringIndex][displayFret].interval = chordIntervals[chordNotes.indexOf(newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][fret + shapeInterval].current)];
                 }
             }
         });
 
-        const oldFretboardSettings = selectedFretboard[choice + 'Settings'].fretboard;
+        const oldFretboardSettings = selectedFretboard['chordSettings'].fretboard;
 
         if (JSON.stringify(oldFretboardSettings) !== JSON.stringify(newBoard)) {
-            dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.fretboard`, newBoard));
+            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.fretboard', newBoard));
         }
-    }, [setFretboards, boards, selectedFretboardIndex]);
+    }
 
     useEffect(() => {
         if (selectedFretboardIndex === -1) return;
