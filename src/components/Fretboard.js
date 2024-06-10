@@ -5,6 +5,7 @@ import { makeStyles, IconButton } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import FretboardControls from './FretboardControls';
 import Progressor from './Progressor';
+import CircleOfFifths from './CircleOfFifths';
 import FretboardDisplay from './FretboardDisplay';
 import guitar from '../config/guitar';
 import {
@@ -92,7 +93,7 @@ const Fretboard = withRouter((props) => {
         dispatch(addFretboard(newBoard));
         setSelectedFretboardIndex(boards.length);
     };
-    
+
     const cleanFretboard = () => {
         if (selectedFretboardIndex === -1) return;
 
@@ -102,7 +103,7 @@ const Fretboard = withRouter((props) => {
 
         dispatch(updateStateProperty(selectedFretboardIndex, `keySettings.${choice}`, ''));
         dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.${choice}`, ''));
-        if(choice === 'chord'){
+        if (choice === 'chord') {
             dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.shape`, ''));
         }
         dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.${choice}`, ''));
@@ -344,7 +345,7 @@ const Fretboard = withRouter((props) => {
         if (selectedFretboardIndex === -1) return;
         const { chordSettings, keySettings, scaleSettings, generalSettings, modeSettings, arppegioSettings } = selectedFretboard;
         if (keySettings[selectedFretboard.generalSettings.choice] === "") return;
-        
+
         const { chord } = chordSettings;
         const { shape } = chordSettings;
         const { scale } = scaleSettings;
@@ -441,7 +442,7 @@ const Fretboard = withRouter((props) => {
             const scale = guitar.scales[selectedFretboard.scaleSettings.scale];
             return scale ? scale.degree : defaultDegree;
         } else if (choice === 'chord' || choice === 'arppegio') {
-            const chord = guitar.arppegios[selectedFretboard.chord];
+            const chord = guitar.arppegios[selectedFretboard[choice + 'Settings'][choice]];
             return chord ? chord.quality : defaultDegree;
         }
         return defaultDegree;
@@ -462,7 +463,7 @@ const Fretboard = withRouter((props) => {
 
     return (
         <div className={classes.root}>
-            <div >
+            <div>
                 <IconButton onClick={createNewBoardDisplay}>
                     <AddCircleOutlineIcon />
                 </IconButton>
@@ -500,8 +501,14 @@ const Fretboard = withRouter((props) => {
                         onElementChange={onElementChange}
                     />
                 </section>
-                {/* 
-                <TabReader /> */}
+                
+                <CircleOfFifths
+                    className={classes.circleOfFifths}
+                    selectedTone={circleData.tone}
+                    onElementChange={onElementChange}
+                    selectedFretboardIndex={selectedFretboardIndex}
+                    quality={circleData.degree}
+                />
 
                 <Progressor
                     className={classes.chordPressionDisplay}
