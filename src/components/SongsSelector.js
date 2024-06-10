@@ -99,6 +99,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
+  choiceButton: {
+    width : '100%'
+  },
   button: {
       margin: theme.spacing(1),
       borderRadius: '20px',

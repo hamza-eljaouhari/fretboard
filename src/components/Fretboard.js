@@ -16,14 +16,91 @@ import { useDispatch } from 'react-redux';
 const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
-    root: { display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', position: 'relative' },
-    fretboardArea: { flex: 1, overflowY: 'auto' },
-    footer: { position: 'fixed', left: 0, bottom: 0, width: '100%', backgroundColor: theme.palette.background.paper, boxShadow: '0 -2px 10px rgba(0,0,0,0.2)', padding: theme.spacing(2), display: 'flex', justifyContent: 'space-around', alignItems: 'center', zIndex: 1000 },
-    selectControl: { minWidth: 120 },
-    formControl: { margin: theme.spacing(1), minWidth: 120, width: '100%' },
-    fixedWidth: { width: '200px' },
-    buttonGroup: { display: 'flex', justifyContent: 'center', gap: theme.spacing(1) },
-    chordPressionDisplay: {}
+    fretboardContainer: {
+        width: '100%',
+        overflowX: 'auto',
+        maxWidth: '100vw',
+        padding: '0 20px',
+    },
+    fretboardTable: {
+        width: '1000px',
+    },
+    table: {
+        borderSpacing: 0,
+        width: '100%',
+    },
+    tableRow: {
+        margin: 0,
+        padding: 0,
+    },
+    tableData: {
+        height: '32px',
+        padding: 0,
+        borderRight: '1px solid black',
+        verticalAlign: 'middle',
+        position: 'relative',
+        cursor: 'pointer',
+    },
+    tableDataSecondChild: {
+        borderRight: '4px solid rgba(0, 0, 0, 0.6)',
+    },
+    tableDataHr: {
+        width: '100%',
+        margin: 0,
+        padding: 0,
+    },
+    note: {
+        display: 'inline-block',
+        backgroundColor: 'teal',
+        borderRadius: '50%',
+        border: '1px solid black',
+        width: '28px',
+        height: '28px',
+        position: 'absolute',
+        top: '3px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        cursor: 'pointer',
+        textAlign: 'center',
+        lineHeight: '28px',
+        fontSize: '20px',
+    },
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        height: 'calc(100vh - 64px)',
+        position: 'relative',
+        backgroundColor: 'orange',
+    },
+    fretboardArea: {
+        flex: 1,
+        overflowY: 'auto',
+    },
+    shadowyContainer: {
+        backgroundColor: '#ffffff',
+        boxShadow: '0 -2px 10px rgba(0,0,0,0.2)',
+        padding: '16px',
+        display: 'flex',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        zIndex: 1000,
+    },
+    selectControl: {
+        minWidth: '120px',
+    },
+    formControl: {
+        margin: '8px',
+        width: '100vw'
+    },
+    fixedWidth: {
+        width: '200px',
+    },
+    buttonGroup: {
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '8px',
+    },
+    chordPressionDisplay: {},
 }));
 
 const defaultTuning = [4, 11, 7, 2, 9, 4];
@@ -416,12 +493,11 @@ const Fretboard = withRouter((props) => {
 
     const circleData = getCircleData();
 
-
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
 
     return (
-        <div className="main-container">
+        <div>
             <div className="fretboard-container">
                 <IconButton onClick={createNewBoardDisplay}>
                     <AddCircleOutlineIcon />
@@ -436,25 +512,9 @@ const Fretboard = withRouter((props) => {
                     handleFretboardSelect={handleFretboardSelect}
                     onElementChange={onElementChange}
                 />
-            </div>
-            <div className="components-container">
-         
-{/* 
-                <TabReader /> */}
-
-                <Progressor
-                    className={classes.chordPressionDisplay}
-                    progression={progressions.progression}
-                    setProgression={setProgression}
-                    playProgression={playProgression}
-                    setProgressionKey={setProgressionKey}
-                    selectedKey={progressions.key}
-                    getScaleNotes={getScaleNotes}
-                />
 
                 <section className="controls">
                     <FretboardControls
-                        classes={classes}
                         handleChoiceChange={handleChoiceChange}
                         scaleModes={scaleModes}
                         arppegiosNames={Object.keys(guitar.arppegios)}
@@ -475,6 +535,21 @@ const Fretboard = withRouter((props) => {
                         onElementChange={onElementChange}
                     />
                 </section>
+            </div>
+            <div >
+         
+{/* 
+                <TabReader /> */}
+
+                <Progressor
+                    className={classes.chordPressionDisplay}
+                    progression={progressions.progression}
+                    setProgression={setProgression}
+                    playProgression={playProgression}
+                    setProgressionKey={setProgressionKey}
+                    selectedKey={progressions.key}
+                    getScaleNotes={getScaleNotes}
+                />
             </div>
         </div>
     );
