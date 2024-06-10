@@ -232,8 +232,9 @@ const Fretboard = withRouter((props) => {
         // Find the starting point of the matchingScale within the parentScale
         return guitar.scales[parentScale].modes.findIndex(mode => mode.name.toLowerCase() === matchingScale.toLowerCase());
     };
+
     const displayChordPortion = useCallback((chordObject, player) => {
-        const { key, chord, shape } = chordObject;
+        const { key, chord, shape, notes } = chordObject;
         const { choice } = selectedFretboard.generalSettings;
         const cagedShape = guitar.arppegios[chord]?.cagedShapes[shape];
     
@@ -370,10 +371,12 @@ const Fretboard = withRouter((props) => {
     const playProgression = useCallback(async (progression) => {
 
         for (let i = 0; i < progression.length; i++) {
-            const { chord, shape, key } = progression[i];
+            const { chord, shape, key, notes} = progression[i];
             dispatch(updateStateProperty(selectedFretboardIndex, 'generalSettings.choice', 'chord'));
             dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.chord', chord));
             dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.shape', shape));
+            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.notes', notes));
+            dispatch(updateStateProperty(selectedFretboardIndex, 'keySettings.chord', key));
             displayChordPortion({ key, chord, shape });
             await new Promise(r => setTimeout(r, 4000));
         }
@@ -441,7 +444,7 @@ const Fretboard = withRouter((props) => {
                 playProgression={playProgression}
                 setProgressionKey={setProgressionKey}
                 selectedKey={progressions.key}
-                getScaleNotes={getScaleNotes}
+                getScaleNotes={getScaleNotes} 
             />
 
             <section className="controls">

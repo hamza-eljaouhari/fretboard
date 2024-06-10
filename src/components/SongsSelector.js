@@ -132,7 +132,7 @@ function generateRandomCagedSystem() {
   return systems[Math.floor(Math.random() * systems.length)];
 }
 
-const SongsSelector = ({ playProgression }) => {
+const SongsSelector = ({ playProgression, getScaleNotes }) => {
   const classes = useStyles();
   const [selectedSongIndex, setSelectedSongIndex] = useState(null);
   const [selectedKey, setSelectedKey] = useState('');
@@ -152,12 +152,17 @@ const SongsSelector = ({ playProgression }) => {
 
   const convertChordProgression = (progressionString, selectedKey) => {
     const keyIndex = keys.indexOf(selectedKey);
+
+    const isMajorScale = selectedKey.includes('m') === false;
+    const scaleNotes = getScaleNotes(isMajorScale ? 'major' : 'minor', keyIndex)
+
     return progressionString.split('-').map(chordSymbol => {
       const chordType = chordMap[chordSymbol].chord;
       const chordCaged = chordMap[chordSymbol].caged;
       const chordIndex = chordMap[chordSymbol].index;
+
       return {
-        key: chordIndex,
+        key: guitar.notes.sharps.indexOf(scaleNotes[chordIndex]),
         chord: chordType,
         shape: chordCaged,
       };
