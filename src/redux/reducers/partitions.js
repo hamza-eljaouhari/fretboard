@@ -1,9 +1,11 @@
 import { 
-    SET_PROGRESSION
+    SET_PROGRESSION,
+    SET_PROGRESSION_KEY
 } from "../actionTypes";
 
 const initialState = {
-    chordProgression: []
+    progression: [],
+    key: ''
 };
 
 const partitions = (state = initialState, action) => {
@@ -14,6 +16,12 @@ const partitions = (state = initialState, action) => {
             progression: action.payload.progression
         };
     }
+    case SET_PROGRESSION_KEY: {
+      return {
+          ...state,
+          key: action.payload.key
+      };
+  }
     default: {
       return state;
     }

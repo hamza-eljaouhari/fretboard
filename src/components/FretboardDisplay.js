@@ -9,7 +9,7 @@ const FretboardDisplay = ({
   handleFretboardSelect,
 }) => {
   // Updated logic to render each fretboard with its rows and heads
-  const fretboardElements = boards.length && boards.map((fretboard, fretboardIndex) => {
+  const fretboardElements = boards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
     const newRows = [...Array(fretboard.generalSettings.nostrs)].map((_, i) => (
       <tr key={`row-${fretboardIndex}-${i}`}>
@@ -73,7 +73,7 @@ const FretboardDisplay = ({
 
     const newHeads = [
       (
-      <th key="tuner" width={fretboard.generalSettings.nofrets - 0 + 30}>
+      <th key="tuner" width={fretboard.generalSettings.nofrets + 30}>
         <span className="fretNumber">tuner</span>
       </th>
       ),

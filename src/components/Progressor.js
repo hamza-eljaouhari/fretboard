@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import ChordProgressionSelector from './ChordProgressionSelector';
-import ChordProgressionDisplay from './ChordProgressionDisplay';
+import SongsSelector from './SongsSelector';
 
-const Progressor = ({ progression, setProgression, playProgression }) => {
+const Progressor = ({ progression, setProgression, playProgression, setProgressionKey, selectedKey, getScaleNotes}) => {
 
     return (
         <div>
-            <ChordProgressionSelector setProgression={setProgression} playProgression={playProgression} />
-            <ChordProgressionDisplay progression={progression} setProgression={setProgression} />
+            <SongsSelector 
+            getScaleNotes={getScaleNotes} 
+            setProgression={setProgression} 
+            progression={progression} 
+            playProgression={playProgression} 
+            setProgressionKey={setProgressionKey} 
+            selectedkey={selectedKey} />
         </div>
     );
 };

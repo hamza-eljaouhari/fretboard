@@ -1,7 +1,8 @@
 import { 
   ADD_FRETBOARD,
   UPDATE_FRETBOARD_PROPERTY,
-  SET_PROGRESSION
+  SET_PROGRESSION,
+  SET_PROGRESSION_KEY
 } from "./actionTypes";
 
 import guitar from '../config/guitar';
@@ -85,8 +86,12 @@ export const addFretboard = (fretboard) => ({
   payload: { fretboard }
 });   
 
-
 export const setProgression = (progression) => ({
   type: SET_PROGRESSION,
   payload: { progression }
+});
+
+export const setProgressionKey = (key) => ({
+  type: SET_PROGRESSION_KEY,
+  payload: { key }
 });   
