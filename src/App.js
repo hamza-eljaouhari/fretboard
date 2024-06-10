@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingBottom: '100px'
   },
   appBar: {
     display: 'flex',
@@ -70,7 +69,7 @@ export default function App(props) {
             <Typography variant="h6">Interactive fretboard and circle of fifths</Typography>
             <Button variant="contained" color="secondary" startIcon={<FavoriteIcon />}>Have fun</Button>
           </AppBar>
-            <div className={classes.fixedSection}>
+            <div>
               <Fretboard onSetTitle={onSetTitle} />
             </div>
       </Router>

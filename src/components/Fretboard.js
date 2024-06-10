@@ -16,61 +16,22 @@ import { useDispatch } from 'react-redux';
 const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '65%', // Adjusted width for desktop screens
+        [theme.breakpoints.up('xs')]: {
+            width: '90%', // For desktop screens
+        },
+        [theme.breakpoints.up('sm')]: {
+            width: '65%', // For desktop screens
+        },
+        margin: '0 auto', // Center the content horizontally
+    },
     fretboardContainer: {
         width: '100%',
         overflowX: 'auto',
         maxWidth: '100vw',
-        padding: '0 20px',
-    },
-    fretboardTable: {
-        width: '1000px',
-    },
-    table: {
-        borderSpacing: 0,
-        width: '100%',
-    },
-    tableRow: {
-        margin: 0,
-        padding: 0,
-    },
-    tableData: {
-        height: '32px',
-        padding: 0,
-        borderRight: '1px solid black',
-        verticalAlign: 'middle',
-        position: 'relative',
-        cursor: 'pointer',
-    },
-    tableDataSecondChild: {
-        borderRight: '4px solid rgba(0, 0, 0, 0.6)',
-    },
-    tableDataHr: {
-        width: '100%',
-        margin: 0,
-        padding: 0,
-    },
-    note: {
-        display: 'inline-block',
-        backgroundColor: 'teal',
-        borderRadius: '50%',
-        border: '1px solid black',
-        width: '28px',
-        height: '28px',
-        position: 'absolute',
-        top: '3px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        cursor: 'pointer',
-        textAlign: 'center',
-        lineHeight: '28px',
-        fontSize: '20px',
-    },
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        height: 'calc(100vh - 64px)',
-        position: 'relative',
-        backgroundColor: 'orange',
     },
     fretboardArea: {
         flex: 1,
@@ -79,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
     shadowyContainer: {
         backgroundColor: '#ffffff',
         boxShadow: '0 -2px 10px rgba(0,0,0,0.2)',
-        padding: '16px',
         display: 'flex',
         justifyContent: 'space-around',
         alignItems: 'center',
@@ -91,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
     formControl: {
         margin: '8px',
         width: '100vw'
-    },
-    fixedWidth: {
-        width: '200px',
     },
     buttonGroup: {
         display: 'flex',
@@ -220,7 +177,7 @@ const Fretboard = withRouter((props) => {
             case 'arppegio':
                 return [
                     { property: 'arppegioSettings.arppegio', value: value },
-                    { property:  `arppegioSettings.fretboard`, value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
+                    { property: `arppegioSettings.fretboard`, value: newLayout(selectedFretboard.generalSettings.nostrs, parseInt(value), selectedFretboard.generalSettings.tuning) }
                 ];
             default:
                 return null;
@@ -343,11 +300,11 @@ const Fretboard = withRouter((props) => {
             note.show = false;
             note.interval = null;  // Reset interval
         }));
-        
+
         let newCagedShape = cagedShape;
 
         newCagedShape.reverse()
-        
+
         newCagedShape.forEach((fret, stringIndex) => {
             if (fret !== null) {
                 const shapeIndex = guitar.shapes.names.indexOf(shape);
@@ -497,8 +454,8 @@ const Fretboard = withRouter((props) => {
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
 
     return (
-        <div>
-            <div className="fretboard-container">
+        <div className={classes.root}>
+            <div >
                 <IconButton onClick={createNewBoardDisplay}>
                     <AddCircleOutlineIcon />
                 </IconButton>
@@ -512,7 +469,8 @@ const Fretboard = withRouter((props) => {
                     handleFretboardSelect={handleFretboardSelect}
                     onElementChange={onElementChange}
                 />
-
+            </div>
+            <div >
                 <section className="controls">
                     <FretboardControls
                         handleChoiceChange={handleChoiceChange}
@@ -535,10 +493,7 @@ const Fretboard = withRouter((props) => {
                         onElementChange={onElementChange}
                     />
                 </section>
-            </div>
-            <div >
-         
-{/* 
+                {/* 
                 <TabReader /> */}
 
                 <Progressor

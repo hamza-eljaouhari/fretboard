@@ -3,12 +3,6 @@ import {
   UPDATE_FRETBOARD_PROPERTY
 } from "../actionTypes";
 
-import {
-  newFretboard, newLayout,
-} from '../actions';
-
-import guitar from '../../config/guitar'
-
 const updateNestedObject = (object, path, value) => {
   const keys = path.split('.');
   const lastKey = keys.pop();

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Select, MenuItem, FormControl, InputLabel, makeStyles, Card, CardContent, Typography, IconButton } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Button, makeStyles, Card, CardContent, Typography } from '@material-ui/core';
 import { keys, mostCommonSongs } from '../config/mostCommonSongs';
 import guitar from '../config/guitar';
 
@@ -92,7 +91,6 @@ const chordMap = {
   },
 };
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -100,27 +98,21 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
   },
   choiceButton: {
-    width : '100%'
+    width: '100%'
   },
   button: {
-      margin: theme.spacing(1),
-      borderRadius: '20px',
+    margin: theme.spacing(1),
+    borderRadius: '20px',
   },
   backButton: {
     margin: 20,
     borderRadius: '20px',
   },
-  cardContainer: {
+  cardsContainer: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 20,
     flexWrap: 'nowrap',
-    justifyContent: 'flex-start', // Align cards to the left
-    alignItems: 'flex-start',
-    alignContent: 'flex-start',
-    justifyItems: 'flex-start',
     width: '100vw',
-    overflowX: 'auto',
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     scrollbarWidth: 'thin',
@@ -138,7 +130,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'grey',
     },
   },
-  
+
   card: {
     margin: theme.spacing(1),
     minWidth: 200,
@@ -155,7 +147,8 @@ const useStyles = makeStyles((theme) => ({
     margin: 20,
     borderRadius: '20px',
   },
-  progressions: {
+  fixedWidth: {
+    maxWidth: '100%'
   }
 }));
 
@@ -244,18 +237,19 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
   return (
     <div className={classes.root}>
       {showChordProgression ? (
-        <div>
+        <>
           {/* Render chord progression cards */}
           <Typography variant="h6" className={classes.backButton}>Chord Progressions:</Typography>
-            <Button
-              variant="outlined"
-              color="primary"
-              className={classes.backButton}
-              onClick={handleBackButtonClick}
-            >
-              Back
-            </Button>
-            <div className={classes.cardContainer}>
+          <Button
+            variant="outlined"
+            color="primary"
+            className={classes.backButton}
+            onClick={handleBackButtonClick}
+          >
+            Back
+          </Button>
+          <div className={classes.fixedWidth} style={{ overflowX: 'auto', width: '100vw' }}>
+            <div className={classes.cardsContainer}>
               {selectedChordProgression.map((chord, index) => (
                 <Card
                   key={index}
@@ -269,10 +263,11 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
                   </CardContent>
                 </Card>
               ))}
-          <div className={classes.buttonContainer}>
+              <div className={classes.buttonContainer}>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         <>
           <div className={classes.buttonsContainer}>
@@ -300,28 +295,29 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
           >
             Play Progression
           </Button>
-
-          <div className={classes.cardContainer}>
-            {/* Render song cards in chunks of 33 items each */}
-            {chunkArray(filteredSongs, filteredSongs.length / 100).map((chunk, rowIndex) => (
-              <div key={rowIndex} className={classes.row}>
-                {chunk.map((song, index) => (
-                  <Card
-                    key={index}
-                    className={classes.card}
-                    onClick={() => handleSongCardClick(index)}
-                  >
-                    <CardContent>
-                      <Typography variant="h6">{song.title}</Typography>
-                      <Typography variant="subtitle1">{song.artist}</Typography>
-                      <Typography variant="body2">Key: {song.key}</Typography>
-                      <Typography variant="body2">Chords: {song.chords}</Typography>
-                      <Typography variant="body2">Genre: {song.genre}</Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ))}
+          <div className={classes.fixedWidth} style={{ overflowX: 'auto', width: '100vw' }}>
+            <div className={classes.cardsContainer}>
+              {/* Render song cards in chunks of 33 items each */}
+              {chunkArray(filteredSongs, filteredSongs.length / 100).map((chunk, rowIndex) => (
+                <div key={rowIndex} className={classes.row}>
+                  {chunk.map((song, index) => (
+                    <Card
+                      key={index}
+                      className={classes.card}
+                      onClick={() => handleSongCardClick(index)}
+                    >
+                      <CardContent>
+                        <Typography variant="h6">{song.title}</Typography>
+                        <Typography variant="subtitle1">{song.artist}</Typography>
+                        <Typography variant="body2">Key: {song.key}</Typography>
+                        <Typography variant="body2">Chords: {song.chords}</Typography>
+                        <Typography variant="body2">Genre: {song.genre}</Typography>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
 
         </>
