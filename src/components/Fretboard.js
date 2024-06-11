@@ -453,7 +453,7 @@ const Fretboard = withRouter((props) => {
 
     const getCircleData = () => {
         const defaultPoint = { tone: 'C', degree: 'Major' };
-        if (!selectedFretboard.generalSettings.choice || selectedFretboardIndex === -1 || !boards.length || !selectedFretboard) return defaultPoint;
+        if (!selectedFretboard.generalSettings.choice || selectedFretboardIndex === -1) return defaultPoint;
         const selectedKey = selectedFretboard.keySettings[selectedFretboard.generalSettings.choice];
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
