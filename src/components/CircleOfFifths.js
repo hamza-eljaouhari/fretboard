@@ -5,8 +5,6 @@ import React from 'react';
 const CircleOfFifths = ({
     selectedTone,
     quality,
-    selectedFretboardIndex,
-    choice,
     onElementChange
 }) => {
     const majorRadius = 150; // Radius of the circle for major tones

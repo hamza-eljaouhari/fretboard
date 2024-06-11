@@ -27,12 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "no-wrap",
     justifyContent: 'space-between'
   },
-  content: {
-    display: 'flex', // Use flexbox to layout children side by side
-    justifyContent: 'space-between',
-    paddingTop: theme.spacing(12), // Adjust the padding to ensure content is visible below the AppBar
-    minHeight: '100vh', // Ensure the container takes up at least the full height of the viewport
-  },
+ 
   controlsContainer: {
     flex: 1, // Adjust based on your layout needs
     overflowY: 'auto', // Make only this container scrollable
@@ -61,19 +56,15 @@ export default function App(props) {
   }
 
   return (
-    <div className={classes.root}>
-      <main className={classes.content}>
-        <Router>
-          <CssBaseline />
-          <AppBar className={classes.appBar} position="fixed">
-            <Typography variant="h6">Interactive fretboard and circle of fifths</Typography>
-            <Button variant="contained" color="secondary" startIcon={<FavoriteIcon />}>Have fun</Button>
-          </AppBar>
-            <div>
-              <Fretboard onSetTitle={onSetTitle} />
-            </div>
+    <main className={classes.root}>
+      <Router>
+        <CssBaseline />
+        <AppBar className={classes.appBar} position="fixed">
+          <Typography variant="h6">Interactive fretboard and circle of fifths</Typography>
+          <Button variant="contained" color="secondary" startIcon={<FavoriteIcon />}>Have fun</Button>
+        </AppBar>
+        <Fretboard onSetTitle={onSetTitle} />
       </Router>
-      </main>
-    </div>
+    </main>
   );
 };
