@@ -36,7 +36,7 @@ export default {
     { "key": "A", "relative": "F#m" },
     { "key": "E", "relative": "Dbm" },
     { "key": "B", "flat": "Cb", "relative": "Abm" },
-    { "key": "Gb", "sharp": "F#", "relative": "Gbm" },
+    { "key": "Gb", "sharp": "F#", "relative": "Ebm" },
     { "key": "Db", "sharp": "C#", "relative": "Bbm" },
     { "key": "Ab", "relative": "Fm" },
     { "key": "Eb", "relative": "Cm" },
