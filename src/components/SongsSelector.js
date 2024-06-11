@@ -298,7 +298,7 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
           <div className={classes.fixedWidth} style={{ overflowX: 'auto', width: '100vw' }}>
             <div className={classes.cardsContainer}>
               {/* Render song cards in chunks of 33 items each */}
-              {chunkArray(filteredSongs, filteredSongs.length / 100).map((chunk, rowIndex) => (
+              {chunkArray(filteredSongs, filteredSongs.length / 10).map((chunk, rowIndex) => (
                 <div key={rowIndex} className={classes.row}>
                   {chunk.map((song, index) => (
                     <Card
