@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    padding: '100px 0'
   },
   appBar: {
     display: 'flex',
@@ -26,25 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
     flexWrap: "no-wrap",
     justifyContent: 'space-between'
-  },
- 
-  controlsContainer: {
-    flex: 1, // Adjust based on your layout needs
-    overflowY: 'auto', // Make only this container scrollable
-    maxHeight: 'calc(100vh - 64px)', // Adjust the height to prevent controls from going under the AppBar. Assumes AppBar height is 64px.
-  },
-  fixedSection: {
-    display: 'flex',
-    flexDirection: 'row', // Layout the fretboard and Circle of Fifths side by side
-    justifyContent: 'flex-start',
-    alignItems: 'start',
-    flex: 3, // Adjust based on your layout needs
-  },
-  circleOfFifths: {
-    // Your existing circleOfFifths styles
-    flex: 1, // Make the Circle of Fifths take up 1/4 of the fixed section
-  },
-  // You might need additional styles for the fretboard section to adjust its width
+  }
 }));
 
 export default function App(props) {
