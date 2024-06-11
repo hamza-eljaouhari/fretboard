@@ -18,7 +18,7 @@ The Interactive Fretboard and Circle of Fifths project is designed to assist mus
 
 To get started with the project, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/interactive-fretboard.git`
+1. Clone the repository: `git clone https://github.com/hamza.eljaouhari/fretboard.git`
 2. Navigate to the project directory: `cd interactive-fretboard`
 3. Install dependencies: `npm install`
 
