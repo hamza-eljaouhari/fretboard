@@ -1,0 +1,6 @@
+/* Add this CSS to your styles */
+.note-playing {
+    transform: scale(1.3);
+    transition: transform 0.1s ease-in-out;
+  }
+  

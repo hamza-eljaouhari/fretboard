@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classNames from 'classnames';
 import guitar from '../config/guitar';
 import { makeStyles } from '@material-ui/core';
+import * as Tone from 'tone';
 
 const useStyles = makeStyles((theme) => ({
   fretboardContainer: {
@@ -55,7 +56,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'teal',
     cursor: 'pointer',
     lineHeight: '36px',
-    zIndex: 1000
+    zIndex: 1000,
+    transition: 'transform 0.1s ease-in-out', // Add transition for scaling effect
   },
   noteContent: {
     fontSize: '20px',
@@ -85,6 +87,10 @@ const useStyles = makeStyles((theme) => ({
   seventh: {
     backgroundColor: 'purple',
   },
+  playing: {
+    transform: 'scale(1.3)', // Scale up the note when playing
+    backgroundColor: 'yellow',
+  }
 }));
 
 const FretboardDisplay = ({
@@ -93,6 +99,21 @@ const FretboardDisplay = ({
   handleFretboardSelect,
 }) => {
   const classes = useStyles();
+
+  const playNote = (note, octave, stringIndex, fretIndex, fretboardIndex) => {
+    console.log(`Playing note: ${note}${octave}`);
+    const synth = new Tone.Synth().toDestination();
+    synth.triggerAttackRelease(`${note}${octave}`, '8n');
+
+    const noteElement = document.getElementById(`note-${fretboardIndex}-${stringIndex}-${fretIndex}`);
+    if (noteElement) {
+      noteElement.classList.add(classes.playing);
+      setTimeout(() => {
+        noteElement.classList.remove(classes.playing);
+      }, 500); // Adjust the timeout duration as needed
+    }
+  };
+
   // Updated logic to render each fretboard with its rows and heads
   const fretboardElements = boards.map((fretboard, fretboardIndex) => {
     // Construct rows and heads for the fretboard
@@ -124,6 +145,7 @@ const FretboardDisplay = ({
           const note = fretboard[fretboard.generalSettings.choice + 'Settings'].fretboard[i][j];
           const displayedNoteIndex = (fretboard.generalSettings.tuning[i] + j) % 12;
           const displayedNote = guitar.notes.sharps[displayedNoteIndex];
+          const octave = Math.floor((fretboard.generalSettings.tuning[i] + j) / 12) + 4; // Determine the octave
 
           let newChoice = fretboard.generalSettings.choice;
           let noteIndex = '';
@@ -135,9 +157,8 @@ const FretboardDisplay = ({
           }
 
           return (
-            // <td key={`note-${i}-${j}`} onClick={() => toggleNote(i, j)}>
-            <td key={`note-${i}-${j}`} className={classes.tableData}>
-              <div className={classNames({
+            <td key={`note-${fretboardIndex}-${i}-${j}`} className={classes.tableData} onClick={() => playNote(displayedNote, octave, i, j, fretboardIndex)}>
+              <div id={`note-${fretboardIndex}-${i}-${j}`} className={classNames({
                 [classes.note]: note.show,
                 [classes.root]: note.show && (noteIndex === 0 || note.interval === '1'),
                 [classes.third]: note.show && (noteIndex === 2 || ["3", "b3"].includes(note.interval)),

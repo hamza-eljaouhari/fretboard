@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { makeStyles, IconButton } from '@material-ui/core';
+import { makeStyles, IconButton, Button } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import FretboardControls from './FretboardControls';
 import Progressor from './Progressor';
@@ -13,6 +13,7 @@ import {
 } from '../redux/actions';
 import { getNoteFromFretboard } from '../redux/helpers';
 import './guitar-neck.css';
+import * as Tone from 'tone';
 import { useDispatch } from 'react-redux';
 const queryString = require('query-string');
 
@@ -459,8 +460,126 @@ const Fretboard = withRouter((props) => {
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
     };
 
+    const playChordNotes = async () => {
+        if (selectedFretboardIndex === -1) return;
+      
+        const synth = new Tone.PolySynth().toDestination();
+        const chordNotes = [];
+      
+        selectedFretboard.chordSettings.fretboard.forEach((string, stringIndex) => {
+          string.forEach((note, fretIndex) => {
+            if (note.show) {
+              const noteIndex = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
+              const displayedNote = guitar.notes.sharps[noteIndex];
+              const octave = Math.floor((selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) / 12) + 4; // Determine the octave
+              const noteWithOctave = `${displayedNote}${octave}`;
+              chordNotes.push({ note: noteWithOctave, stringIndex, fretIndex });
+              console.log(`Adding note to chord: ${noteWithOctave}`);
+            }
+          });
+        });
+      
+        // Sort the notes by stringIndex and fretIndex
+        chordNotes.sort((a, b) => {
+          if (a.stringIndex === b.stringIndex) {
+            return a.fretIndex - b.fretIndex;
+          }
+          return a.stringIndex - b.stringIndex;
+        });
+      
+        // Play each note individually
+        for (let i = 0; i < chordNotes.length; i++) {
+          const { note, stringIndex, fretIndex } = chordNotes[i];
+          highlightNoteForDuration(stringIndex, fretIndex, 500);
+          synth.triggerAttackRelease(note, '8n');
+          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+        }
+      
+        // Play all notes together
+        synth.triggerAttackRelease(chordNotes.map(chordNote => chordNote.note), '1n');
+      };
+      
+      const playNotesWithinInterval = async (notes) => {
+        const synth = new Tone.Synth().toDestination();
+      
+        // Sort notes by stringIndex descending and fretIndex ascending
+        notes.sort((a, b) => {
+          if (a.stringIndex === b.stringIndex) {
+            return a.fretIndex - b.fretIndex;
+          }
+          return b.stringIndex - a.stringIndex; // highest string index first
+        });
+      
+        // Play notes down the scale (left to right on each string)
+        for (let i = 0; i < notes.length; i++) {
+          const { note, stringIndex, fretIndex } = notes[i];
+          console.log(`Playing note down the scale: ${note}`);
+          highlightNoteForDuration(stringIndex, fretIndex, 500);
+          synth.triggerAttackRelease(note, '8n');
+          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+        }
+      
+        // Reverse the order of notes for playing up the scale
+        notes.reverse();
+      
+        // Play notes up the scale (right to left on each string)
+        for (let i = 0; i < notes.length; i++) {
+          const { note, stringIndex, fretIndex } = notes[i];
+          console.log(`Playing note up the scale: ${note}`);
+          highlightNoteForDuration(stringIndex, fretIndex, 500);
+          synth.triggerAttackRelease(note, '8n');
+          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+        }
+      };
+      
+      const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
+        const noteElement = document.getElementById(`note-${selectedFretboardIndex}-${stringIndex}-${fretIndex}`);
+        if (noteElement) {
+          noteElement.classList.add('note-playing');
+          setTimeout(() => {
+            noteElement.classList.remove('note-playing');
+          }, duration);
+        }
+      };
+      
+      const playSelectedNotes = async () => {
+        const choiceSettings = selectedFretboard[selectedFretboard.generalSettings.choice + 'Settings'];
+        const intervals = guitar.shapes.intervals;
+        const indexes = guitar.shapes.indexes;
+      
+        if (selectedFretboard.generalSettings.choice === 'chord') {
+          await playChordNotes();
+        } else {
+          for (let intervalIndex = 0; intervalIndex < indexes.length; intervalIndex++) {
+            const interval = indexes[intervalIndex];
+            const notesInInterval = [];
+      
+            for (let stringIndex = 0; stringIndex < choiceSettings.fretboard.length; stringIndex++) { // Highest string index first
+              const string = choiceSettings.fretboard[stringIndex];
+              for (let fretIndex = interval.start; fretIndex <= interval.end; fretIndex++) {
+                const note = string[fretIndex];
+                if (note.show) {
+                  const displayedNote = note.current;
+                  const octave = Math.floor((selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) / 12) + 4; // Determine the octaves
+                  const noteWithOctave = `${displayedNote}${octave}`;
+                  notesInInterval.push({ note: noteWithOctave, stringIndex, fretIndex });
+                  console.log(`Adding note to interval: ${noteWithOctave}`);
+                }
+              }
+            }
+      
+            if (notesInInterval.length > 0) {
+              await playNotesWithinInterval(notesInInterval);
+            }
+          }
+        }
+      };
+
+      
     const circleData = getCircleData();
 
+    console.log(selectedFretboard.generalSettings.choice)
+    console.log(selectedFretboard)
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
 
@@ -483,6 +602,9 @@ const Fretboard = withRouter((props) => {
             </div>
             <div >
                 <section className="controls">
+                    <Button onClick={playSelectedNotes} variant="contained" color="primary">
+                        Play Selected Notes
+                    </Button>
                     <FretboardControls
                         handleChoiceChange={handleChoiceChange}
                         scaleModes={scaleModes}
@@ -504,7 +626,7 @@ const Fretboard = withRouter((props) => {
                         onElementChange={onElementChange}
                     />
                 </section>
-                
+
                 <CircleOfFifths
                     className={classes.circleOfFifths}
                     selectedTone={circleData.tone}
