@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Select, MenuItem, FormControl, makeStyles, InputLabel, Grid, FormControlLabel, Checkbox } from '@material-ui/core';
+import { Typography, Button, Select, MenuItem, FormControl, makeStyles, InputLabel, Grid } from '@material-ui/core';
 import guitar from '../config/guitar.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,9 +40,7 @@ const FretboardControls = ({
     saveProgression,
     playProgression,
     progression,
-    playSelectedNotes,
-    restrainDisplay,
-    setRestrainDisplay
+    playSelectedNotes
 }) => {
     const classes = useStyles();
 
@@ -51,6 +49,8 @@ const FretboardControls = ({
     const handleButtonClick = (newChoice) => {
         handleChoiceChange(newChoice);
     };
+
+    const ensureDefined = (value) => (value !== undefined ? value : '');
 
     return (
         <footer>
@@ -80,7 +80,7 @@ const FretboardControls = ({
                     onClick={() => handleButtonClick('arppegio')}
                     className={classes.choiceButton}
                 >
-                    Arpeggios
+                    arppegios
                 </Button>
             </div>
 
@@ -88,7 +88,7 @@ const FretboardControls = ({
                 {choice === 'scale' && (
                     <>
                         <Grid item xs={12}>
-                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
+                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}  />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
@@ -96,7 +96,7 @@ const FretboardControls = ({
                                 <Select
                                     labelId="scale-name-label"
                                     id="scale-name-select"
-                                    value={selectedScale}
+                                    value={ensureDefined(selectedScale)}
                                     onChange={(e) => onElementChange(e.target.value, 'scale')}
                                     displayEmpty
                                     className={classes.selectContainer}
@@ -114,7 +114,7 @@ const FretboardControls = ({
                                     <Select
                                         labelId="scale-mode-label"
                                         id="scale-mode-select"
-                                        value={selectedMode}
+                                        value={ensureDefined(selectedMode)}
                                         onChange={(e) => onElementChange(e.target.value, 'mode')}
                                         displayEmpty
                                         className={classes.selectContainer}
@@ -126,36 +126,6 @@ const FretboardControls = ({
                                 </FormControl>
                             </Grid>
                         )}
-                        <Grid item xs={12}>
-                            <FormControl className={classes.selectContainer}>
-                                <InputLabel id="shape-label">Choose Shape</InputLabel>
-                                <Select
-                                    labelId="shape-label"
-                                    id="shape-select"
-                                    value={selectedShape}
-                                    onChange={(e) => onElementChange(e.target.value, 'shape')}
-                                    displayEmpty
-                                    className={classes.select}
-                                >
-                                    {guitar.shapes.names.map((shapeName, index) => (
-                                        <MenuItem key={index} value={shapeName}>{shapeName}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={restrainDisplay}
-                                        onChange={() => setRestrainDisplay(!restrainDisplay)}
-                                        name="restrainDisplay"
-                                        color="primary"
-                                    />
-                                }
-                                label="Restrain Display"
-                            />
-                        </Grid>
                     </>
                 )}
 
@@ -170,7 +140,7 @@ const FretboardControls = ({
                                 <Select
                                     labelId="chord-name-label"
                                     id="chord-name-select"
-                                    value={selectedChord}
+                                    value={ensureDefined(selectedChord)}
                                     onChange={(e) => onElementChange(e.target.value, 'chord')}
                                     displayEmpty
                                     className={classes.select}
@@ -183,28 +153,11 @@ const FretboardControls = ({
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
-                                <InputLabel id="shape-label">Choose Shape</InputLabel>
-                                <Select
-                                    labelId="shape-label"
-                                    id="shape-select"
-                                    value={selectedShape}
-                                    onChange={(e) => onElementChange(e.target.value, 'shape')}
-                                    displayEmpty
-                                    className={classes.select}
-                                >
-                                    {guitar.shapes.names.map((shapeName, index) => (
-                                        <MenuItem key={index} value={shapeName}>{shapeName}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl className={classes.selectContainer}>
                                 <InputLabel id="fret-label">Choose Fret</InputLabel>
                                 <Select
                                     labelId="fret-label"
                                     id="fret-select"
-                                    value={selectedFret}
+                                    value={ensureDefined(selectedFret)}
                                     onChange={(e) => onElementChange(e.target.value, 'fret')}
                                     displayEmpty
                                     className={classes.select}
@@ -225,11 +178,11 @@ const FretboardControls = ({
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
-                                <InputLabel id="arppegio-name-label">Choose Arpeggio</InputLabel>
+                                <InputLabel id="arppegio-name-label">Choose arppegio</InputLabel>
                                 <Select
                                     labelId="arppegio-name-label"
                                     id="arppegio-name-select"
-                                    value={selectedArppegio}
+                                    value={ensureDefined(selectedArppegio)}
                                     onChange={(e) => onElementChange(e.target.value, 'arppegio')}
                                     displayEmpty
                                     className={classes.select}
@@ -240,13 +193,15 @@ const FretboardControls = ({
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={12}>
+                    </>
+                )}
+                <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
                                 <InputLabel id="shape-label">Choose Shape</InputLabel>
                                 <Select
                                     labelId="shape-label"
                                     id="shape-select"
-                                    value={selectedShape}
+                                    value={ensureDefined(selectedShape)}
                                     onChange={(e) => onElementChange(e.target.value, 'shape')}
                                     displayEmpty
                                     className={classes.select}
@@ -256,23 +211,7 @@ const FretboardControls = ({
                                     ))}
                                 </Select>
                             </FormControl>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={restrainDisplay}
-                                        onChange={() => setRestrainDisplay(!restrainDisplay)}
-                                        name="restrainDisplay"
-                                        color="primary"
-                                    />
-                                }
-                                label="Restrain Display"
-                            />
-                        </Grid>
-                    </>
-                )}
-
+                </Grid>
                 <Grid item xs={6}>
                     <Button
                         variant="contained"

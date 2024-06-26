@@ -47,15 +47,15 @@ export default {
   "numberOfFrets": 25,
   "tuning": [4, 11, 7, 2, 9, 4], // E, A, D, G, B, E standard tuning
   "shapes": {
-    "names": ["C", "A", "G", "E", "D"],
-    "intervals": [0, 3, 5, 8, 10, 12],
-    "indexes": [
-      { "start": 0, "end": 3 },
-      { "start": 2, "end": 6 },
-      { "start": 4, "end": 8 },
-      { "start": 7, "end": 10 },
-      { "start": 9, "end": 13 }
-    ]
+      "names": ["C", "A", "G", "E", "D"],
+      "intervals": [0, 3, 5, 8, 10, 12],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 6 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 13 } // D shape
+      ]
   },
   "intervalMap": {
     "1": "root",
@@ -92,6 +92,13 @@ export default {
         { "name": "Mixolydian", "intervals": ["1", "2", "3", "4", "5", "6", "b7"] },
         { "name": "Aeolian", "intervals": ["1", "2", "b3", "4", "5", "b6", "b7"] },
         { "name": "Locrian", "intervals": ["1", "b2", "b3", "4", "b5", "b6", "b7"] }
+      ],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
       ]
     },
     "minor": {
@@ -100,6 +107,13 @@ export default {
       "formula": [2, 1, 2, 2, 1, 2, 2],
       "intervals": ["1", "2", "b3", "4", "5", "b6", "b7"],
       "isModal": false,
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
+      ]
     },
     "harmonic": {
       "name": "Harmonic",
@@ -115,6 +129,13 @@ export default {
         { "name": "Phrygian dominant", "intervals": ["1", "b2", "3", "4", "5", "b6", "b7"] },
         { "name": "Lydian #2", "intervals": ["1", "#2", "3", "#4", "5", "6", "7"] },
         { "name": "Ultra locrian", "intervals": ["1", "b2", "b3", "b4", "b5", "b6", "bb7"] }
+      ],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
       ]
     },
     "melodic": {
@@ -131,6 +152,13 @@ export default {
         { "name": "Hindu", "intervals": ["1", "2", "b3", "4", "5", "6", "7"] },
         { "name": "Locrian #2", "intervals": ["1", "2", "b3", "4", "b5", "b6", "b7"] },
         { "name": "Super locrian", "intervals": ["1", "b2", "b3", "3", "b5", "b6", "b7"] }
+      ],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
       ]
     },
     "blues-minor": {
@@ -138,14 +166,28 @@ export default {
       "degree": "Minor",
       "isModal": false,
       "intervals": ["1", "b3", "4", "b5", "5", "b7"],
-      "formula": [3, 2, 2, 3, 2]
+      "formula": [3, 2, 2, 3, 2],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
+      ]
     },
     "blues-major": {
       "name": "Blues major",
       "degree": "Major",
       "formula": [2, 2, 3, 2, 3],
       "isModal": false,
-      "intervals": ["1", "2", "b3", "3", "5", "6"]
+      "intervals": ["1", "2", "b3", "3", "5", "6"],
+      "indexes": [
+        { "start": 0, "end": 3 },  // C shape
+        { "start": 2, "end": 5 },  // A shape
+        { "start": 5, "end": 8 }, // G shape
+        { "start": 7, "end": 10 },// E shape
+        { "start": 9, "end": 12 } // D shape
+      ]
     }
   },
   "cagedIntervals": [0, 3, 5],
