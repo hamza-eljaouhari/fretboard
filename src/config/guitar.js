@@ -95,10 +95,10 @@ export default {
       ],
       "indexes": [
         { "start": 0, "end": 3 },  // C shape
-        { "start": 2, "end": 5 },  // A shape
-        { "start": 5, "end": 8 }, // G shape
+        { "start": 2, "end": 6 },  // A shape
+        { "start": 4, "end": 8 }, // G shape
         { "start": 7, "end": 10 },// E shape
-        { "start": 9, "end": 12 } // D shape
+        { "start": 9, "end": 13 } // D shape
       ]
     },
     "minor": {
@@ -132,7 +132,7 @@ export default {
       ],
       "indexes": [
         { "start": 0, "end": 3 },  // C shape
-        { "start": 2, "end": 5 },  // A shape
+        { "start": 2, "end": 6 },  // A shape
         { "start": 5, "end": 8 }, // G shape
         { "start": 7, "end": 10 },// E shape
         { "start": 9, "end": 12 } // D shape
@@ -194,7 +194,7 @@ export default {
   "arppegios": {
     "M": {
       "name": "Major",
-      "formula": [4, 3, 4],
+      "formula": [4, 3, 5],
       "intervals": ["1", "3", "5"],
       "quality": "Major",
       "degree": "Major",
