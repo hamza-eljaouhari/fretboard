@@ -40,6 +40,7 @@ const FretboardControls = ({
     saveProgression,
     playProgression,
     progression,
+    playSelectedNotes
 }) => {
     const classes = useStyles();
 
@@ -255,6 +256,15 @@ const FretboardControls = ({
                         disabled={!progression || progression.length === 0}
                     >
                         Play
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button 
+                        className={classes.button}
+                        onClick={playSelectedNotes} 
+                        variant="contained" 
+                        color="primary">
+                        Play Sound
                     </Button>
                 </Grid>
             </Grid>

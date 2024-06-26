@@ -625,10 +625,8 @@ const Fretboard = withRouter((props) => {
             </div>
             <div >
                 <section className="controls">
-                    <Button onClick={playSelectedNotes} variant="contained" color="primary">
-                        Play Selected Notes
-                    </Button>
                     <FretboardControls
+                        playSelectedNotes={playSelectedNotes}
                         handleChoiceChange={handleChoiceChange}
                         scaleModes={scaleModes}
                         arppegiosNames={Object.keys(guitar.arppegios)}
