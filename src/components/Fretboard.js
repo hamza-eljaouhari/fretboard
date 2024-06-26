@@ -460,140 +460,145 @@ const Fretboard = withRouter((props) => {
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
     };
+
+
     const playChordNotes = async () => {
         if (selectedFretboardIndex === -1) return;
-      
-        const guitar = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
-      
+
+        const guitarSound = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
+
         const chordNotes = [];
-      
+
         selectedFretboard.chordSettings.fretboard.forEach((string, stringIndex) => {
-          string.forEach((note, fretIndex) => {
-            if (note.show) {
-              const noteIndex = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
-              const displayedNote = guitar.notes.sharps[noteIndex];
-              const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
-              const noteWithOctave = `${displayedNote}${octave}`;
-              chordNotes.push({ note: noteWithOctave, stringIndex, fretIndex });
-              console.log(`Adding note to chord: ${noteWithOctave}`);
-            }
-          });
+            string.forEach((note, fretIndex) => {
+                if (note.show) {
+                    const noteIndex = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
+                    const displayedNote = guitar.notes.sharps[noteIndex];
+                    const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
+                    const noteWithOctave = `${displayedNote}${octave}`;
+                    chordNotes.push({ note: noteWithOctave, stringIndex, fretIndex });
+                    console.log(`Adding note to chord: ${noteWithOctave}`);
+                }
+            });
         });
-      
+
         // Sort the notes by stringIndex and fretIndex
         chordNotes.sort((a, b) => {
-          if (a.stringIndex === b.stringIndex) {
-            return a.fretIndex - b.fretIndex;
-          }
-          return a.stringIndex - b.stringIndex;
+            if (a.stringIndex === b.stringIndex) {
+                return a.fretIndex - b.fretIndex;
+            }
+            return a.stringIndex - b.stringIndex;
         });
-      
+
         // Play each note individually
-        for (let i = 0; i < chordNotes.length; i++) {
-          const { note, stringIndex, fretIndex } = chordNotes[i];
-          highlightNoteForDuration(stringIndex, fretIndex, 500);
-          guitar.play(note);
-          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+        for (let i = chordNotes.length - 1; i >= 0; i--) {
+            const { note, stringIndex, fretIndex } = chordNotes[i];
+            highlightNoteForDuration(stringIndex, fretIndex, 500);
+            guitarSound.play(note);
+            await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
-      
+
         // Play all notes together
-        chordNotes.forEach(chordNote => guitar.play(chordNote.note));
-      };
-      
-      const playNotesWithinInterval = async (notes) => {
-        const guitar = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
-      
+        chordNotes.forEach(chordNote => guitarSound.play(chordNote.note));
+    };
+
+    const playNotesWithinInterval = async (notes) => {
+        const guitarSound = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
+
         // Sort notes by stringIndex descending and fretIndex ascending
         notes.sort((a, b) => {
-          if (a.stringIndex === b.stringIndex) {
-            return a.fretIndex - b.fretIndex;
-          }
-          return b.stringIndex - a.stringIndex; // highest string index first
+            if (a.stringIndex === b.stringIndex) {
+                return a.fretIndex - b.fretIndex;
+            }
+            return b.stringIndex - a.stringIndex; // highest string index first
         });
-      
+
         // Play notes down the scale (left to right on each string)
         for (let i = 0; i < notes.length; i++) {
-          const { note, stringIndex, fretIndex } = notes[i];
-          console.log(`Playing note down the scale: ${note}`);
-          highlightNoteForDuration(stringIndex, fretIndex, 500);
-          guitar.play(note);
-          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+            const { note, stringIndex, fretIndex } = notes[i];
+            console.log(`Playing note down the scale: ${note}`);
+            highlightNoteForDuration(stringIndex, fretIndex, 500);
+            guitarSound.play(note);
+            await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
-      
+
         // Reverse the order of notes for playing up the scale
         notes.reverse();
-      
+
         // Play notes up the scale (right to left on each string)
         for (let i = 0; i < notes.length; i++) {
-          const { note, stringIndex, fretIndex } = notes[i];
-          console.log(`Playing note up the scale: ${note}`);
-          highlightNoteForDuration(stringIndex, fretIndex, 500);
-          guitar.play(note);
-          await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
+            const { note, stringIndex, fretIndex } = notes[i];
+            console.log(`Playing note up the scale: ${note}`);
+            highlightNoteForDuration(stringIndex, fretIndex, 500);
+            guitarSound.play(note);
+            await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
-      };
-      
-      const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
+    };
+
+    const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
         const noteElement = document.getElementById(`note-${selectedFretboardIndex}-${stringIndex}-${fretIndex}`);
         if (noteElement) {
-          noteElement.classList.add('note-playing');
-          setTimeout(() => {
-            noteElement.classList.remove('note-playing');
-          }, duration);
+            noteElement.classList.add('note-playing');
+            setTimeout(() => {
+                noteElement.classList.remove('note-playing');
+            }, duration);
         }
-      };
-      
-      const playSelectedNotes = async () => {
+    };
+
+    const playSelectedNotes = async () => {
         const choiceSettings = selectedFretboard[selectedFretboard.generalSettings.choice + 'Settings'];
         const intervals = guitar.shapes.intervals;
         const indexes = guitar.shapes.indexes;
-      
+
         if (selectedFretboard.generalSettings.choice === 'chord') {
-          await playChordNotes();
+            await playChordNotes();
         } else {
-          for (let intervalIndex = 0; intervalIndex < indexes.length; intervalIndex++) {
-            const interval = indexes[intervalIndex];
-            const notesInInterval = [];
-      
-            for (let stringIndex = 0; stringIndex < choiceSettings.fretboard.length; stringIndex++) { // Highest string index first
-              const string = choiceSettings.fretboard[stringIndex];
-              for (let fretIndex = interval.start; fretIndex <= interval.end; fretIndex++) {
-                const note = string[fretIndex];
-                if (note.show) {
-                  const displayedNote = note.current;
-                  const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
-                  const noteWithOctave = `${displayedNote}${octave}`;
-                  notesInInterval.push({ note: noteWithOctave, stringIndex, fretIndex });
-                  console.log(`Adding note to interval: ${noteWithOctave}`);
+            for (let intervalIndex = 0; intervalIndex < indexes.length; intervalIndex++) {
+                const interval = indexes[intervalIndex];
+                const notesInInterval = [];
+
+                for (let stringIndex = 0; stringIndex < choiceSettings.fretboard.length; stringIndex++) { // Highest string index first
+                    const string = choiceSettings.fretboard[stringIndex];
+                    for (let fretIndex = interval.start; fretIndex <= interval.end; fretIndex++) {
+                        const note = string[fretIndex];
+                        if (note.show) {
+                            const displayedNote = note.current;
+                            const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
+                            const noteWithOctave = `${displayedNote}${octave}`;
+                            notesInInterval.push({ note: noteWithOctave, stringIndex, fretIndex });
+                            console.log(`Adding note to interval: ${noteWithOctave}`);
+                        }
+                    }
                 }
-              }
+
+                if (notesInInterval.length > 0) {
+                    await playNotesWithinInterval(notesInInterval);
+                }
             }
-      
-            if (notesInInterval.length > 0) {
-              await playNotesWithinInterval(notesInInterval);
-            }
-          }
         }
-      };
-      
-      const calculateOctave = (stringIndex, fretIndex, note) => {
+    };
+
+    const calculateOctave = (stringIndex, fretIndex, note) => {
         // The base octaves for each string according to the tuning
-        const baseOctaves = [4, 3, 3, 3, 2, 2]; // E4, B3, G3, D3, A2, E2
-      
+        const baseOctaves = [4, 3, 3, 3, 2, 2]; // E2, A2, D3, G3, B3, E4
+
         let octave = baseOctaves[stringIndex];
-      
+
         // Calculate the total number of half steps from the open string
-        const totalHalfSteps = selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex;
-      
-        // Adjust the octave based on the total number of half steps and the specific note
-        if (note === 'B' && (totalHalfSteps % 12) === 11) {
-          octave++;
-        }
-        
+        const totalHalfSteps = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
+
+        // Adjust the octave based on the total number of half steps
         octave += Math.floor(totalHalfSteps / 12);
-      
+
+        // Special adjustment: Whenever we hit a B note, the octave increases
+        if (note === 'B' && (totalHalfSteps % 12) >= 11) {
+            octave++;
+        }
+
         return octave;
-      };
+    };
+
+
     const circleData = getCircleData();
 
     console.log(selectedFretboard.generalSettings.choice)
