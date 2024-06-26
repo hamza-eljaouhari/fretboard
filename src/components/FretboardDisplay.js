@@ -189,7 +189,7 @@ const FretboardDisplay = ({
       <div key={`fretboard-${fretboardIndex}`} onFocus={() => handleFretboardSelect(fretboardIndex)} onClick={() => handleFretboardSelect(fretboardIndex)} className={classes.fretboardContainer}>
         <label style={{ fontWeight: "bold" }}>
           #Strings:
-          <input type="number" key="strings-changer" style={{ margin: "6px" }} value={fretboard.generalSettings.nostrs} onChange={(e) => onElementChange(e.target.value, 'nostrs')} min="4" max="12" />
+          <input type="number" key="strings-changer" style={{ margin: "6px" }} value={fretboard.generalSettings.nostrs} onChange={(e) => onElementChange(e.target.value, 'nostrs')} min="4" max="7" />
         </label>
         <label style={{ fontWeight: "bold" }}>
           #Frets:

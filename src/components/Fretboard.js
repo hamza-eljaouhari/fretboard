@@ -173,7 +173,17 @@ const Fretboard = withRouter((props) => {
                 ];
             case 'nostrs':
                 const newBoardForStr = newLayout(parseInt(value), selectedFretboard.generalSettings.nofrets, selectedFretboard.generalSettings.tuning);
+
+                let baseOctaves = selectedFretboard.generalSettings.baseOctaves;
+
+                if(parseInt(value) === 6){
+                    baseOctaves = [...selectedFretboard.generalSettings.baseOctaves, 2]
+                } else if (parseInt(value) === 7) {
+                    baseOctaves = [...selectedFretboard.generalSettings.baseOctaves, 1]
+                }
+                
                 return [
+                    { property: 'generalSettings.baseOctaves', value: baseOctaves},
                     { property: 'generalSettings.nostrs', value: parseInt(value) || 6 },
                     { property: 'scaleSettings.fretboard', value: newBoardForStr },
                     { property: 'chordSettings.fretboard', value: newBoardForStr },
@@ -645,7 +655,7 @@ const Fretboard = withRouter((props) => {
     };
 
     const calculateOctave = (stringIndex, fretIndex) => {
-        const baseOctaves = [4, 3, 3, 3, 2, 2]; // Initial octaves for open strings: E4, B3, G3, D3, A2, E2
+        const baseOctaves = selectedFretboard.generalSettings.baseOctaves // Initial octaves for open strings: E4, B3, G3, D3, A2, E2
         let octave = baseOctaves[stringIndex];
         const tuning = selectedFretboard.generalSettings.tuning;
         const notes = guitar.notes.sharps;

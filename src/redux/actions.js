@@ -18,7 +18,7 @@ export function newLayout(numberOfStrings, numberOfFrets, tuning){
 };
 
 
-export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [4, 7, 2, 9, 11, 4]){
+export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [4, 7, 2, 9, 11, 4], baseOctaves = [4, 3, 3, 3, 2, 2]){
   return {
     keySettings: {
       scale: '',
@@ -72,7 +72,8 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
       nofrets: numberOfFrets,
       nostrs: numberOfStrings,
       tuning: guitar.tuning,
-      choice: 'scale'
+      choice: 'scale',
+      baseOctaves: baseOctaves
     }
   }
 }
