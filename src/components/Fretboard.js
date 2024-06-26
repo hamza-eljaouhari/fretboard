@@ -91,9 +91,6 @@
             props.history.push('/fretboard' + storedURL);
         };
 
-        useEffect(() => {
-            createNewBoardDisplay()
-        }, [])
 
         const createNewBoardDisplay = () => {
             const newBoard = newFretboard();

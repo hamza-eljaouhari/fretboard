@@ -2,7 +2,7 @@ import {
   ADD_FRETBOARD,
   UPDATE_FRETBOARD_PROPERTY
 } from "../actionTypes";
-
+import { newFretboard } from '../actions';
 const updateNestedObject = (object, path, value) => {
   const keys = path.split('.');
   const lastKey = keys.pop();
@@ -18,7 +18,7 @@ const updateNestedObject = (object, path, value) => {
 
 const initialState = {
   components: [
-    
+    newFretboard()
   ]
 };
 
