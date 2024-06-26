@@ -8,6 +8,7 @@ import Progressor from './Progressor';
 import CircleOfFifths from './CircleOfFifths';
 import FretboardDisplay from './FretboardDisplay';
 import guitar from '../config/guitar';
+import Soundfont from 'soundfont-player';
 import {
     newFretboard, newLayout, updateStateProperty, setProgression, addFretboard, setProgressionKey
 } from '../redux/actions';
@@ -459,11 +460,11 @@ const Fretboard = withRouter((props) => {
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
     };
-
     const playChordNotes = async () => {
         if (selectedFretboardIndex === -1) return;
       
-        const synth = new Tone.PolySynth().toDestination();
+        const guitar = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
+      
         const chordNotes = [];
       
         selectedFretboard.chordSettings.fretboard.forEach((string, stringIndex) => {
@@ -471,7 +472,7 @@ const Fretboard = withRouter((props) => {
             if (note.show) {
               const noteIndex = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
               const displayedNote = guitar.notes.sharps[noteIndex];
-              const octave = Math.floor((selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) / 12) + 4; // Determine the octave
+              const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
               const noteWithOctave = `${displayedNote}${octave}`;
               chordNotes.push({ note: noteWithOctave, stringIndex, fretIndex });
               console.log(`Adding note to chord: ${noteWithOctave}`);
@@ -491,16 +492,16 @@ const Fretboard = withRouter((props) => {
         for (let i = 0; i < chordNotes.length; i++) {
           const { note, stringIndex, fretIndex } = chordNotes[i];
           highlightNoteForDuration(stringIndex, fretIndex, 500);
-          synth.triggerAttackRelease(note, '8n');
+          guitar.play(note);
           await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
       
         // Play all notes together
-        synth.triggerAttackRelease(chordNotes.map(chordNote => chordNote.note), '1n');
+        chordNotes.forEach(chordNote => guitar.play(chordNote.note));
       };
       
       const playNotesWithinInterval = async (notes) => {
-        const synth = new Tone.Synth().toDestination();
+        const guitar = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
       
         // Sort notes by stringIndex descending and fretIndex ascending
         notes.sort((a, b) => {
@@ -515,7 +516,7 @@ const Fretboard = withRouter((props) => {
           const { note, stringIndex, fretIndex } = notes[i];
           console.log(`Playing note down the scale: ${note}`);
           highlightNoteForDuration(stringIndex, fretIndex, 500);
-          synth.triggerAttackRelease(note, '8n');
+          guitar.play(note);
           await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
       
@@ -527,7 +528,7 @@ const Fretboard = withRouter((props) => {
           const { note, stringIndex, fretIndex } = notes[i];
           console.log(`Playing note up the scale: ${note}`);
           highlightNoteForDuration(stringIndex, fretIndex, 500);
-          synth.triggerAttackRelease(note, '8n');
+          guitar.play(note);
           await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
       };
@@ -560,7 +561,7 @@ const Fretboard = withRouter((props) => {
                 const note = string[fretIndex];
                 if (note.show) {
                   const displayedNote = note.current;
-                  const octave = Math.floor((selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) / 12) + 4; // Determine the octaves
+                  const octave = calculateOctave(stringIndex, fretIndex, displayedNote);
                   const noteWithOctave = `${displayedNote}${octave}`;
                   notesInInterval.push({ note: noteWithOctave, stringIndex, fretIndex });
                   console.log(`Adding note to interval: ${noteWithOctave}`);
@@ -574,8 +575,25 @@ const Fretboard = withRouter((props) => {
           }
         }
       };
-
       
+      const calculateOctave = (stringIndex, fretIndex, note) => {
+        // The base octaves for each string according to the tuning
+        const baseOctaves = [4, 3, 3, 3, 2, 2]; // E4, B3, G3, D3, A2, E2
+      
+        let octave = baseOctaves[stringIndex];
+      
+        // Calculate the total number of half steps from the open string
+        const totalHalfSteps = selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex;
+      
+        // Adjust the octave based on the total number of half steps and the specific note
+        if (note === 'B' && (totalHalfSteps % 12) === 11) {
+          octave++;
+        }
+        
+        octave += Math.floor(totalHalfSteps / 12);
+      
+        return octave;
+      };
     const circleData = getCircleData();
 
     console.log(selectedFretboard.generalSettings.choice)
