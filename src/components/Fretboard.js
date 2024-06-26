@@ -70,6 +70,7 @@ const Fretboard = withRouter((props) => {
     const dispatch = useDispatch();
 
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(-1);
+    const [restrainDisplay, setRestrainDisplay] = useState(false);
     const { setFretboards, boards, progressions, setProgression, setProgressionKey } = props;
     const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
 
@@ -397,10 +398,28 @@ const Fretboard = withRouter((props) => {
             }
         });
 
+        if (restrainDisplay && choice === 'arppegio' && shape) {
+            const cagedShape = guitar.arppegios[arppegio]?.cagedShapes[shape];
+            const fretboardRestrained = newLayout(fretboardClone.generalSettings.nostrs, fretboardClone.generalSettings.nofrets, fretboardClone.generalSettings.tuning);
+
+            fretboardClone[choice + 'Settings'].fretboard.forEach((string, stringIndex) => {
+                for (let fretIndex = 0; fretIndex < fretboardClone.generalSettings.nofrets; fretIndex++) {
+                    if (cagedShape && cagedShape[stringIndex] !== null) {
+                        const cagedFret = cagedShape[stringIndex] + keySettings[choice];
+                        if (fretIndex >= cagedFret && fretIndex < cagedFret + 4) {
+                            fretboardRestrained[stringIndex][fretIndex] = fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex];
+                        }
+                    }
+                }
+            });
+
+            fretboardClone[choice + 'Settings'].fretboard = fretboardRestrained;
+        }
+
         if (JSON.stringify(selectedFretboard[choice + 'Settings']) !== JSON.stringify(fretboardClone[choice + 'Settings'])) {
             dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.fretboard`, fretboardClone[choice + 'Settings'].fretboard));
         }
-    }, [selectedFretboard]);
+    }, [selectedFretboard, restrainDisplay]);
 
     const addChordToProgression = () => {
         const { keySignature, chord, shape, fret } = selectedFretboard;
@@ -460,15 +479,34 @@ const Fretboard = withRouter((props) => {
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };
     };
-
-
+    const calculateOctave = (stringIndex, fretIndex) => {
+        const baseOctaves = [4, 3, 3, 3, 2, 2]; // Initial octaves for open strings: E2, A2, D3, G3, B3, E4
+        let octave = baseOctaves[stringIndex];
+        const tuning = selectedFretboard.generalSettings.tuning;
+        const notes = guitar.notes.sharps;
+    
+        // Calculate the number of half steps from the open string
+        let halfSteps = (tuning[stringIndex] + fretIndex) % 12;
+        let currentNoteIndex = tuning[stringIndex] % 12;
+    
+        // Loop through each fret and determine if we pass a B note
+        for (let i = 0; i <= fretIndex; i++) {
+            const note = notes[(currentNoteIndex + i) % 12];
+            if (note === 'B') {
+                octave++;
+            }
+        }
+    
+        return octave;
+    };
+    
     const playChordNotes = async () => {
         if (selectedFretboardIndex === -1) return;
-
+    
         const guitarSound = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
-
+    
         const chordNotes = [];
-
+    
         selectedFretboard.chordSettings.fretboard.forEach((string, stringIndex) => {
             string.forEach((note, fretIndex) => {
                 if (note.show) {
@@ -481,7 +519,7 @@ const Fretboard = withRouter((props) => {
                 }
             });
         });
-
+    
         // Sort the notes by stringIndex and fretIndex
         chordNotes.sort((a, b) => {
             if (a.stringIndex === b.stringIndex) {
@@ -489,7 +527,7 @@ const Fretboard = withRouter((props) => {
             }
             return a.stringIndex - b.stringIndex;
         });
-
+    
         // Play each note individually
         for (let i = chordNotes.length - 1; i >= 0; i--) {
             const { note, stringIndex, fretIndex } = chordNotes[i];
@@ -497,14 +535,14 @@ const Fretboard = withRouter((props) => {
             guitarSound.play(note);
             await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
-
+    
         // Play all notes together
         chordNotes.forEach(chordNote => guitarSound.play(chordNote.note));
     };
-
+    
     const playNotesWithinInterval = async (notes) => {
         const guitarSound = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
-
+    
         // Sort notes by stringIndex descending and fretIndex ascending
         notes.sort((a, b) => {
             if (a.stringIndex === b.stringIndex) {
@@ -512,7 +550,7 @@ const Fretboard = withRouter((props) => {
             }
             return b.stringIndex - a.stringIndex; // highest string index first
         });
-
+    
         // Play notes down the scale (left to right on each string)
         for (let i = 0; i < notes.length; i++) {
             const { note, stringIndex, fretIndex } = notes[i];
@@ -521,10 +559,10 @@ const Fretboard = withRouter((props) => {
             guitarSound.play(note);
             await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
-
+    
         // Reverse the order of notes for playing up the scale
         notes.reverse();
-
+    
         // Play notes up the scale (right to left on each string)
         for (let i = 0; i < notes.length; i++) {
             const { note, stringIndex, fretIndex } = notes[i];
@@ -534,29 +572,19 @@ const Fretboard = withRouter((props) => {
             await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
     };
-
-    const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
-        const noteElement = document.getElementById(`note-${selectedFretboardIndex}-${stringIndex}-${fretIndex}`);
-        if (noteElement) {
-            noteElement.classList.add('note-playing');
-            setTimeout(() => {
-                noteElement.classList.remove('note-playing');
-            }, duration);
-        }
-    };
-
+    
     const playSelectedNotes = async () => {
         const choiceSettings = selectedFretboard[selectedFretboard.generalSettings.choice + 'Settings'];
         const intervals = guitar.shapes.intervals;
         const indexes = guitar.shapes.indexes;
-
+    
         if (selectedFretboard.generalSettings.choice === 'chord') {
             await playChordNotes();
         } else {
             for (let intervalIndex = 0; intervalIndex < indexes.length; intervalIndex++) {
                 const interval = indexes[intervalIndex];
                 const notesInInterval = [];
-
+    
                 for (let stringIndex = 0; stringIndex < choiceSettings.fretboard.length; stringIndex++) { // Highest string index first
                     const string = choiceSettings.fretboard[stringIndex];
                     for (let fretIndex = interval.start; fretIndex <= interval.end; fretIndex++) {
@@ -570,39 +598,29 @@ const Fretboard = withRouter((props) => {
                         }
                     }
                 }
-
+    
                 if (notesInInterval.length > 0) {
                     await playNotesWithinInterval(notesInInterval);
                 }
             }
         }
     };
-
-    const calculateOctave = (stringIndex, fretIndex, note) => {
-        // The base octaves for each string according to the tuning
-        const baseOctaves = [4, 3, 3, 3, 2, 2]; // E2, A2, D3, G3, B3, E4
-
-        let octave = baseOctaves[stringIndex];
-
-        // Calculate the total number of half steps from the open string
-        const totalHalfSteps = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
-
-        // Adjust the octave based on the total number of half steps
-        octave += Math.floor(totalHalfSteps / 12);
-
-        // Special adjustment: Whenever we hit a B note, the octave increases
-        if (note === 'B' && (totalHalfSteps % 12) >= 11) {
-            octave++;
+    
+    const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
+        const noteElement = document.getElementById(`note-${selectedFretboardIndex}-${stringIndex}-${fretIndex}`);
+        if (noteElement) {
+            noteElement.classList.add('note-playing');
+            setTimeout(() => {
+                noteElement.classList.remove('note-playing');
+            }, duration);
         }
-
-        return octave;
     };
+
+    
 
 
     const circleData = getCircleData();
 
-    console.log(selectedFretboard.generalSettings.choice)
-    console.log(selectedFretboard)
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
 
@@ -645,6 +663,8 @@ const Fretboard = withRouter((props) => {
                         playProgression={playProgression}
                         progressions={progressions}
                         onElementChange={onElementChange}
+                        restrainDisplay={restrainDisplay}
+                        setRestrainDisplay={setRestrainDisplay}
                     />
                 </section>
 
