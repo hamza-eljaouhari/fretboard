@@ -223,27 +223,27 @@ const Fretboard = withRouter((props) => {
     const getArppegioNotes = (arppegio) => {
         const formula = guitar.arppegios[arppegio]?.formula;
         const keyIndex = parseInt(selectedFretboard.keySettings['arppegio']); // Ensure the key is correctly interpreted
-    
+
         if (!formula || isNaN(keyIndex)) {
             return [];
         }
-    
+
         let currentIndex = keyIndex;
         const arppegioNotes = [guitar.notes.sharps[currentIndex]]; // Include the root note
-    
+
         formula.forEach(step => {
             currentIndex = (currentIndex + step) % 12;
             arppegioNotes.push(guitar.notes.sharps[currentIndex]);
         });
-    
+
         return arppegioNotes;
     }
 
     const getArppegioIntervals = (arppegio) => {
         const formula = guitar.arppegios[arppegio]?.intervals;
-
         return formula;
     }
+
 
     const getScaleNotes = (scale, key) => {
         if (scale === '' || key === '') return [];
@@ -276,27 +276,6 @@ const Fretboard = withRouter((props) => {
         return guitar.scales[scale]?.intervals || [];
     }
 
-    const getParentScale = (modeName) => {
-        for (const [scaleKey, scale] of Object.entries(guitar.scales)) {
-            if (scale.isModal) {
-                const mode = scale.modes.find(mode => mode.name.toLowerCase() === modeName.toLowerCase());
-                if (mode) {
-                    return scaleKey;
-                }
-            }
-        }
-        return null;
-    };
-
-    const getModeIntervals = (scale, mode) => {
-        return guitar.scales[scale].modes[parseInt(mode)]?.intervals || [];
-    }
-
-    const getModeIndex = (parentScale, matchingScale) => {
-        // Find the starting point of the matchingScale within the parentScale
-        return guitar.scales[parentScale].modes.findIndex(mode => mode.name.toLowerCase() === matchingScale.toLowerCase());
-    };
-
     const displayChordPortion = (chordObject, player) => {
         const { key, chord, shape, notes } = chordObject;
         const { choice } = selectedFretboard.generalSettings;
@@ -308,14 +287,14 @@ const Fretboard = withRouter((props) => {
 
         // Calculate chord notes
         let currentNoteIndex = key;
-        let chordNotes = [guitar.notes.sharps[currentNoteIndex]];
+        const chordNotes = [guitar.notes.sharps[currentNoteIndex]];
 
         formula.forEach(step => {
             currentNoteIndex = (currentNoteIndex + step) % 12;
             chordNotes.push(guitar.notes.sharps[currentNoteIndex]);
         });
 
-        chordNotes = chordNotes.slice(0, -1);
+        chordNotes.pop(); // Remove the last note which is a duplicate of the first
 
         const chordIntervals = guitar.arppegios[chord].intervals;
         const newComponent = JSON.parse(JSON.stringify(selectedFretboard));
@@ -326,26 +305,19 @@ const Fretboard = withRouter((props) => {
             note.interval = null;  // Reset interval
         }));
 
-        let newCagedShape = cagedShape;
-
-        newCagedShape.reverse()
-
-        newCagedShape.forEach((fret, stringIndex) => {
-            if (fret !== null) {
+        newBoard.forEach((string, stringIndex) => {
+            string.forEach((note, fretIndex) => {
                 const shapeIndex = guitar.shapes.names.indexOf(shape);
-                const shapeInterval = guitar.shapes.intervals[shapeIndex];
-                let displayFret = fret + key + shapeInterval;
+                const shapeIntervals = guitar.shapes.indexes[shapeIndex];
 
-                // Transpose displayFret back by 12 if it is beyond the 12th fret
-                if (displayFret >= 12) {
-                    displayFret -= 12;
-                }
+                const noteIndex = (selectedFretboard.generalSettings.tuning[stringIndex] + fretIndex) % 12;
+                const noteName = guitar.notes.sharps[noteIndex];
 
-                if (displayFret < newBoard[0].length) {
-                    newBoard[stringIndex][displayFret].show = true;
-                    newBoard[stringIndex][displayFret].interval = chordIntervals[chordNotes.indexOf(newBoard[newComponent.generalSettings.nostrs - 1 - stringIndex][fret + shapeInterval].current)];
+                if (chordNotes.includes(noteName) && fretIndex <= shapeIntervals.end + key && fretIndex >= shapeIntervals.start + key) {
+                    newBoard[stringIndex][fretIndex].show = true;
+                    newBoard[stringIndex][fretIndex].interval = chordIntervals[chordNotes.indexOf(noteName)];
                 }
-            }
+            });
         });
 
         const oldFretboardSettings = selectedFretboard['chordSettings'].fretboard;
@@ -409,13 +381,13 @@ const Fretboard = withRouter((props) => {
             const shapeIndex = guitar.shapes.names.indexOf(shape);
             const rootNoteIndex = keySettings[choice];
             const shapeIntervals = guitar.shapes.indexes[shapeIndex];
-    
+
             fretboardClone[choice + 'Settings'].fretboard.forEach((string, stringIndex) => {
                 for (let fretIndex = rootNoteIndex; fretIndex < fretboardClone.generalSettings.nofrets + rootNoteIndex; fretIndex++) {
                     const currentNote = getNoteFromFretboard(stringIndex, fretIndex, fretboardClone.generalSettings.tuning);
                     if (notes.includes(currentNote)) {
                         const fretPosition = fretIndex;
-                        if (fretPosition >= ( shapeIntervals.start + rootNoteIndex ) && fretPosition <= ( shapeIntervals.end + rootNoteIndex )) {
+                        if (fretPosition >= (shapeIntervals.start + rootNoteIndex) && fretPosition <= (shapeIntervals.end + rootNoteIndex)) {
                             fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].show = true;
                             fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].current = selectedFretboard.generalSettings.notesDisplay ? currentNote : intervals[notes.indexOf(currentNote)];
                             fretboardClone[choice + 'Settings'].fretboard[stringIndex][fretIndex].interval = intervals[notes.indexOf(currentNote)];
@@ -546,7 +518,7 @@ const Fretboard = withRouter((props) => {
         const selectedScale = selectedFretboard.scaleSettings.scale;
         const shape = selectedFretboard[choice + 'Settings'].shape;
         const scale = selectedFretboard[choice + 'Settings'].scale;
-        let rootNoteIndex =  0;
+        let rootNoteIndex = 0;
         // Function to compute the cumulative intervals for each mode
         const computeModeOffsets = (formula) => {
             let offsets = [0];
@@ -555,30 +527,30 @@ const Fretboard = withRouter((props) => {
             }
             return offsets;
         };
-    
-        if(choice === 'scale'){
+
+        if (choice === 'scale') {
             const modeIndex = selectedFretboard.modeSettings.mode || 0;
             const selectedMode = guitar.scales[selectedScale].modes[modeIndex]// Default to Ionian if no mode is selected
             const scaleInfo = guitar.scales[selectedScale.toLowerCase()];
             const modeOffsets = computeModeOffsets(scaleInfo.formula);
             const modeOffset = modeOffsets[modeIndex];
             rootNoteIndex = (selectedFretboard.keySettings[selectedFretboard.generalSettings.choice] + modeOffset) % 12;
-        } else if(choice === 'arppegio'){
+        } else if (choice === 'arppegio') {
             const arppegiokey = selectedFretboard.keySettings[choice];
             rootNoteIndex = arppegiokey
         }
-    
+
         if (choice === 'chord') {
             await playChordNotes();
         } else {
             const isArpeggio = choice === 'arppegio';
-    
+
             let selectedCagedShapes = [];
             if (!shape == choice == 'scale') {
                 selectedCagedShapes = guitar.scales[scale].indexes;
             } else if (!shape == choice == 'arppegio') {
                 selectedCagedShapes = guitar.shapes.indexes;
-            } else if(shape && choice === 'scale'){
+            } else if (shape && choice === 'scale') {
                 const shapeIndex = guitar.shapes.names.indexOf(shape);
                 const scaleIndexes = guitar.scales[scale].indexes;
                 selectedCagedShapes = [scaleIndexes[shapeIndex]];
@@ -589,10 +561,10 @@ const Fretboard = withRouter((props) => {
             }
 
             let notesForShape = [];
-    
+
             selectedCagedShapes.forEach((caged) => {
                 const notesInShape = [];
-    
+
                 choiceSettings.fretboard.forEach((string, stringIndex) => {
                     for (let fretIndex = 0; fretIndex < string.length; fretIndex++) {
                         const note = string[fretIndex];
@@ -600,10 +572,10 @@ const Fretboard = withRouter((props) => {
                             const displayedNote = note.current;
                             const octave = calculateOctave(stringIndex, fretIndex);
                             const noteWithOctave = `${displayedNote}${octave}`;
-    
+
                             if (!isArpeggio && caged) {
                                 const fretPosition = (fretIndex + rootNoteIndex);
-    
+
                                 if (fretPosition >= caged.start + rootNoteIndex && fretPosition <= caged.end + rootNoteIndex) {
                                     notesInShape.push({ note: noteWithOctave, stringIndex, fretIndex });
                                 }
@@ -613,37 +585,37 @@ const Fretboard = withRouter((props) => {
                         }
                     }
                 });
-    
+
                 notesForShape.push(notesInShape);
             });
-    
+
             for (const scopedNotes of notesForShape) {
                 if (scopedNotes.length > 0) {
                     // Find the lowest root note
                     const rootNote = scopedNotes.filter(n => n.note.startsWith(guitar.notes.sharps[rootNoteIndex]))
                         .sort((a, b) => b.stringIndex - a.stringIndex || a.fretIndex - b.fretIndex)[0];
-    
+
                     // Sort notes by stringIndex descending and fretIndex ascending
                     scopedNotes.sort((a, b) => b.stringIndex - a.stringIndex || a.fretIndex - b.fretIndex);
-    
+
                     const startNoteIndex = scopedNotes.indexOf(rootNote);
-    
+
                     // Create the desired sequence starting and ending with the lowest root note
                     const downAfterRoot = scopedNotes.slice(startNoteIndex + 1);
                     const upScale = scopedNotes.slice().reverse();
                     const downBeforeRoot = scopedNotes.slice(0, startNoteIndex);
                     const fullSequence = [rootNote, ...downAfterRoot, ...upScale, ...downBeforeRoot, rootNote];
-    
+
                     await playNotesWithinInterval(fullSequence);
                 }
             }
         }
     };
-    
-    
+
+
     const playNotesWithinInterval = async (notes) => {
         const guitarSound = await Soundfont.instrument(new AudioContext(), 'acoustic_guitar_nylon');
-    
+
         // Play each note in sequence
         for (let i = 0; i < notes.length; i++) {
             const { note, stringIndex, fretIndex } = notes[i];
@@ -652,7 +624,7 @@ const Fretboard = withRouter((props) => {
             await new Promise(r => setTimeout(r, 500)); // Adjust delay as needed
         }
     };
-    
+
     const highlightNoteForDuration = (stringIndex, fretIndex, duration) => {
         const noteElement = document.getElementById(`note-${selectedFretboardIndex}-${stringIndex}-${fretIndex}`);
         if (noteElement) {
@@ -662,17 +634,17 @@ const Fretboard = withRouter((props) => {
             }, duration);
         }
     };
-    
+
     const calculateOctave = (stringIndex, fretIndex) => {
         const baseOctaves = [4, 3, 3, 3, 2, 2]; // Initial octaves for open strings: E4, B3, G3, D3, A2, E2
         let octave = baseOctaves[stringIndex];
         const tuning = selectedFretboard.generalSettings.tuning;
         const notes = guitar.notes.sharps;
-    
+
         // Calculate the number of half steps from the open string
         let halfSteps = (tuning[stringIndex] + fretIndex) % 12;
         let currentNoteIndex = tuning[stringIndex] % 12;
-    
+
         // Loop through each fret and determine if we pass a B note
         for (let i = 0; i <= fretIndex; i++) {
             const note = notes[(currentNoteIndex + i) % 12];
@@ -680,10 +652,10 @@ const Fretboard = withRouter((props) => {
                 octave++;
             }
         }
-    
+
         return octave;
     };
-    
+
     const circleData = getCircleData();
 
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
