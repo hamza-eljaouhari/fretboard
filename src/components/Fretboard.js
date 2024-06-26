@@ -383,7 +383,7 @@ const Fretboard = withRouter((props) => {
             const shapeIntervals = guitar.shapes.indexes[shapeIndex];
 
             fretboardClone[choice + 'Settings'].fretboard.forEach((string, stringIndex) => {
-                for (let fretIndex = rootNoteIndex; fretIndex < fretboardClone.generalSettings.nofrets + rootNoteIndex; fretIndex++) {
+                for (let fretIndex = rootNoteIndex; fretIndex < fretboardClone.generalSettings.nofrets; fretIndex++) {
                     const currentNote = getNoteFromFretboard(stringIndex, fretIndex, fretboardClone.generalSettings.tuning);
                     if (notes.includes(currentNote)) {
                         const fretPosition = fretIndex;
