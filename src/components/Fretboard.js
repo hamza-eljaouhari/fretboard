@@ -69,7 +69,7 @@
         const classes = useStyles();
         const dispatch = useDispatch();
 
-        const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(-1);
+        const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
         const [restrainDisplay, setRestrainDisplay] = useState(false);
         const { setFretboards, boards, progressions, setProgression, setProgressionKey } = props;
         const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
