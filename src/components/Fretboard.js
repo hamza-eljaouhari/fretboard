@@ -722,24 +722,26 @@ const Fretboard = withRouter((props) => {
                         setRestrainDisplay={setRestrainDisplay}
                     />
                 </section>
-
-                <CircleOfFifths
-                    className={classes.circleOfFifths}
-                    selectedTone={circleData.tone}
-                    onElementChange={onElementChange}
-                    selectedFretboardIndex={selectedFretboardIndex}
-                    quality={circleData.degree}
-                />
-
-                <Progressor
-                    className={classes.chordPressionDisplay}
-                    progression={progressions.progression}
-                    setProgression={setProgression}
-                    playProgression={playProgression}
-                    setProgressionKey={setProgressionKey}
-                    selectedKey={progressions.key}
-                    getScaleNotes={getScaleNotes}
-                />
+                <section>
+                    <CircleOfFifths
+                        className={classes.circleOfFifths}
+                        selectedTone={circleData.tone}
+                        onElementChange={onElementChange}
+                        selectedFretboardIndex={selectedFretboardIndex}
+                        quality={circleData.degree}
+                    />
+                </section>
+                <section>
+                    <Progressor
+                        className={classes.chordPressionDisplay}
+                        progression={progressions.progression}
+                        setProgression={setProgression}
+                        playProgression={playProgression}
+                        setProgressionKey={setProgressionKey}
+                        selectedKey={progressions.key}
+                        getScaleNotes={getScaleNotes}
+                    />
+                </section>
             </div>
         </div>
     );
