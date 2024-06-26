@@ -380,8 +380,17 @@ const Fretboard = withRouter((props) => {
         if (shape) {
             const shapeIndex = guitar.shapes.names.indexOf(shape);
             const rootNoteIndex = keySettings[choice];
-            const shapeIntervals = guitar.shapes.indexes[shapeIndex];
+            let shapeIntervals = null;
 
+            if(choice === 'arppegio'){
+                shapeIntervals = guitar.shapes.indexes[shapeIndex];
+            } 
+
+            if(choice === 'scale'){
+                shapeIntervals = guitar.scales[scale].indexes[shapeIndex];
+            } 
+            
+            console.log(shapeIntervals)
             fretboardClone[choice + 'Settings'].fretboard.forEach((string, stringIndex) => {
                 for (let fretIndex = rootNoteIndex; fretIndex < fretboardClone.generalSettings.nofrets; fretIndex++) {
                     const currentNote = getNoteFromFretboard(stringIndex, fretIndex, fretboardClone.generalSettings.tuning);
