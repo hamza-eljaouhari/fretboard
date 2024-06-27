@@ -29,10 +29,8 @@ const CircleOfFifths = ({
     };
 
     const selectKey = (tone, quality) => {
-        const indexOfTone = guitar.notes.flats.indexOf(tone.replace('m', '')); // Remove 'm' for minor tones
         setSelectedTone(tone);
         setSelectedQuality(quality);
-        console.log(quality)
     };
 
     let rotationAngle = 0;

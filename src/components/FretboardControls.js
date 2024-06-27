@@ -43,8 +43,6 @@ const FretboardControls = ({
 }) => {
     const classes = useStyles();
 
-    console.log("selected key",selectedKey);
-
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
     const handleButtonClick = (newChoice) => {
@@ -273,8 +271,6 @@ const FretboardControls = ({
 };
 
 const KeySelector = ({ choice, selectedKey, onElementChange, classes }) => {
-
-    console.log("integer", selectedKey)
     return (
         choice && (
             <FormControl className={classes.selectContainer}>

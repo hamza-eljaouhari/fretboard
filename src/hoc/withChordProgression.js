@@ -7,7 +7,6 @@ const withChordProgression = (WrappedComponent) => {
         const dispatch = useDispatch();
         const { progressions, selectedFretboard, selectedKey } = props;
 
-        console.log("test", selectedKey)
         const addChordToProgression = () => {
             const { keySignature, chord, shape, fret } = selectedFretboard;
             if (!keySignature || !chord || (!shape && !fret)) return;

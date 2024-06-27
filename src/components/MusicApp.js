@@ -75,9 +75,6 @@ const MusicApp = (props) => {
 
     const selectedFretboardIndex = boards.indexOf(selectedFretboard);
 
-    console.log(boards);
-    console.log(selectedFretboardIndex);
-
     const getCircleData = () => {
         const defaultPoint = { tone: 'C', degree: 'Major' };
         if (selectedFretboardIndex === -1 || !selectedFretboard) return defaultPoint;
@@ -117,7 +114,6 @@ const MusicApp = (props) => {
     const currentScale = selectedFretboardIndex >= 0 && selectedFretboard ? guitar.scales[selectedFretboard.scaleSettings.scale] : 'major';
     const scaleModes = currentScale?.isModal ? currentScale.modes : [];
 
-    console.log("selectedFretboard.keySettings[selectedFretboard.generalSettings.choice]", selectedFretboard.keySettings)
     return (
         <div className={classes.root}>
             <div>
