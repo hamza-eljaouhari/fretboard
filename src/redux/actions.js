@@ -81,6 +81,7 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
   }
 }
 
+
 export const updateStateProperty = (fretboardId, propertyPath, value) => ({
   type: 'UPDATE_FRETBOARD_PROPERTY',
   payload: { fretboardId, propertyPath, value }

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import './FretboardDisplay.css'; // Ensure you have the appropriate CSS for styling
 import classNames from 'classnames';
 import guitar from '../config/guitar';
 import { makeStyles } from '@material-ui/core';
@@ -94,14 +96,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FretboardDisplay = ({
-  boards,
-  onElementChange,
-  handleFretboardSelect,
+  boards, 
+  handleFretboardSelect, 
+  onElementChange 
 }) => {
   const classes = useStyles();
 
   const playNote = (note, octave, stringIndex, fretIndex, fretboardIndex) => {
-    console.log(`Playing note: ${note}${octave}`);
     const synth = new Tone.Synth().toDestination();
     synth.triggerAttackRelease(`${note}${octave}`, '8n');
 
@@ -210,6 +211,12 @@ const FretboardDisplay = ({
       {fretboardElements}
     </div>
   );
+};
+
+FretboardDisplay.propTypes = {
+  boards: PropTypes.array.isRequired,
+  handleFretboardSelect: PropTypes.func.isRequired,
+  onElementChange: PropTypes.func.isRequired,
 };
 
 export default FretboardDisplay;

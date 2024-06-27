@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles, FormControl, InputLabel, Select, MenuItem, Button, Grid } from '@material-ui/core';
 import ChordGraph from './ChordGraph';
 import guitar from '../config/guitar'; // Import your guitar configuration
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,25 +32,6 @@ const initialRomanNumerals = [
     'I', 'ii', 'iii', 'IV', 'V', 'vi', 'vii°',
     'i', 'ii°', 'III', 'iv', 'V', 'VI', 'VII'
 ];
-
-const convertRomanToChord = (roman, key, scaleType) => {
-    const majorToMinor = {
-        I: 'vi', ii: 'vii°', iii: 'i', IV: 'ii', V: 'iii', vi: 'iv', 'vii°': 'V'
-    };
-    const minorToMajor = {
-        i: 'III', ii: 'IV', iii: 'V', iv: 'VI', v: 'VII', VI: 'I', VII: 'ii'
-    };
-
-    const scale = scaleType === 'minor' ? minorToMajor : majorToMinor;
-    const newKey = guitar.circleOfFifths.find((k) => k.key === key || k.relative === key);
-    const relativeKey = scaleType === 'minor' ? newKey.key : newKey.relative;
-    const romanNumeral = scale[roman] || roman;
-    return {
-        key: relativeKey,
-        roman: romanNumeral,
-        quality: scaleType
-    };
-};
 
 const ChordComposer = ({ addChordToProgression, saveProgression, playProgression }) => {
     const classes = useStyles();
@@ -146,6 +128,12 @@ const ChordComposer = ({ addChordToProgression, saveProgression, playProgression
             <Button onClick={() => playProgression(chordPath)}>Play Progression</Button>
         </div>
     );
+};
+
+ChordComposer.propTypes = {
+    addChordToProgression: PropTypes.func.isRequired,
+    playProgression: PropTypes.func.isRequired,
+    saveProgression: PropTypes.func.isRequired,
 };
 
 export default ChordComposer;

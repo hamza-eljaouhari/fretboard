@@ -1,6 +1,7 @@
 import React from 'react';
-import { Typography, Button, Select, MenuItem, FormControl, makeStyles, InputLabel, Grid } from '@material-ui/core';
+import { Button, Select, MenuItem, FormControl, makeStyles, InputLabel, Grid } from '@material-ui/core';
 import guitar from '../config/guitar.js';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
     choiceButton: {
@@ -25,11 +26,9 @@ const FretboardControls = ({
     handleChoiceChange,
     keySignature,
     onElementChange,
-    buttonText,
     scaleModes,
     arppegiosNames,
     onCleanFretboard,
-    onCopyLink,
     selectedMode,
     selectedScale,
     selectedChord,
@@ -49,8 +48,6 @@ const FretboardControls = ({
     const handleButtonClick = (newChoice) => {
         handleChoiceChange(newChoice);
     };
-
-    const ensureDefined = (value) => (value !== undefined ? value : '');
 
     return (
         <footer>
@@ -80,7 +77,7 @@ const FretboardControls = ({
                     onClick={() => handleButtonClick('arppegio')}
                     className={classes.choiceButton}
                 >
-                    arppegios
+                    Arpeggios
                 </Button>
             </div>
 
@@ -88,7 +85,7 @@ const FretboardControls = ({
                 {choice === 'scale' && (
                     <>
                         <Grid item xs={12}>
-                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes}  />
+                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
@@ -96,7 +93,7 @@ const FretboardControls = ({
                                 <Select
                                     labelId="scale-name-label"
                                     id="scale-name-select"
-                                    value={ensureDefined(selectedScale)}
+                                    value={selectedScale}
                                     onChange={(e) => onElementChange(e.target.value, 'scale')}
                                     displayEmpty
                                     className={classes.selectContainer}
@@ -114,7 +111,7 @@ const FretboardControls = ({
                                     <Select
                                         labelId="scale-mode-label"
                                         id="scale-mode-select"
-                                        value={ensureDefined(selectedMode)}
+                                        value={selectedMode}
                                         onChange={(e) => onElementChange(e.target.value, 'mode')}
                                         displayEmpty
                                         className={classes.selectContainer}
@@ -140,7 +137,7 @@ const FretboardControls = ({
                                 <Select
                                     labelId="chord-name-label"
                                     id="chord-name-select"
-                                    value={ensureDefined(selectedChord)}
+                                    value={selectedChord}
                                     onChange={(e) => onElementChange(e.target.value, 'chord')}
                                     displayEmpty
                                     className={classes.select}
@@ -157,7 +154,7 @@ const FretboardControls = ({
                                 <Select
                                     labelId="fret-label"
                                     id="fret-select"
-                                    value={ensureDefined(selectedFret)}
+                                    value={selectedFret}
                                     onChange={(e) => onElementChange(e.target.value, 'fret')}
                                     displayEmpty
                                     className={classes.select}
@@ -178,11 +175,11 @@ const FretboardControls = ({
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
-                                <InputLabel id="arppegio-name-label">Choose arppegio</InputLabel>
+                                <InputLabel id="arppegio-name-label">Choose Arpeggio</InputLabel>
                                 <Select
                                     labelId="arppegio-name-label"
                                     id="arppegio-name-select"
-                                    value={ensureDefined(selectedArppegio)}
+                                    value={selectedArppegio}
                                     onChange={(e) => onElementChange(e.target.value, 'arppegio')}
                                     displayEmpty
                                     className={classes.select}
@@ -196,21 +193,21 @@ const FretboardControls = ({
                     </>
                 )}
                 <Grid item xs={12}>
-                            <FormControl className={classes.selectContainer}>
-                                <InputLabel id="shape-label">Choose Shape</InputLabel>
-                                <Select
-                                    labelId="shape-label"
-                                    id="shape-select"
-                                    value={ensureDefined(selectedShape)}
-                                    onChange={(e) => onElementChange(e.target.value, 'shape')}
-                                    displayEmpty
-                                    className={classes.select}
-                                >
-                                    {guitar.shapes.names.map((shapeName, index) => (
-                                        <MenuItem key={index} value={shapeName}>{shapeName}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                    <FormControl className={classes.selectContainer}>
+                        <InputLabel id="shape-label">Choose Shape</InputLabel>
+                        <Select
+                            labelId="shape-label"
+                            id="shape-select"
+                            value={selectedShape}
+                            onChange={(e) => onElementChange(e.target.value, 'shape')}
+                            displayEmpty
+                            className={classes.select}
+                        >
+                            {guitar.shapes.names.map((shapeName, index) => (
+                                <MenuItem key={index} value={shapeName}>{shapeName}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={6}>
                     <Button
@@ -260,10 +257,10 @@ const FretboardControls = ({
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button 
+                    <Button
                         className={classes.button}
-                        onClick={playSelectedNotes} 
-                        variant="contained" 
+                        onClick={playSelectedNotes}
+                        variant="contained"
                         color="primary">
                         Play Sound
                     </Button>
@@ -295,6 +292,28 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
             </FormControl>
         )
     );
+};
+
+FretboardControls.propTypes = {
+    playSelectedNotes: PropTypes.func.isRequired,
+    handleChoiceChange: PropTypes.func.isRequired,
+    scaleModes: PropTypes.array.isRequired,
+    arppegiosNames: PropTypes.array.isRequired,
+    choice: PropTypes.string.isRequired,
+    onCleanFretboard: PropTypes.func.isRequired,
+    keySignature: PropTypes.object.isRequired,
+    onCopyLink: PropTypes.func.isRequired,
+    selectedMode: PropTypes.number,
+    selectedScale: PropTypes.string,
+    selectedChord: PropTypes.string,
+    selectedShape: PropTypes.string,
+    selectedArppegio: PropTypes.string,
+    selectedFret: PropTypes.string,
+    addToProgression: PropTypes.func,
+    saveProgression: PropTypes.func.isRequired,
+    playProgression: PropTypes.func.isRequired,
+    progression: PropTypes.array,
+    onElementChange: PropTypes.func.isRequired,
 };
 
 export default FretboardControls;

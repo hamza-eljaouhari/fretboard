@@ -20,6 +20,7 @@ import PlayAndVisualize from './pages/PlayAndVisualize';
 import ComposeAndShare from './pages/ComposeAndShare';
 import LearnSongs from './pages/LearnSongs';
 import TheCircleOfFifths from './pages/TheCircleOfFifths';
+import MusicApp from './components/MusicApp';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,6 +98,9 @@ export default function App(props) {
         <ListItem button component={Link} to="/circle" onClick={handleDrawerToggle}>
           <ListItemText primary="The Circle Of Fifths" />
         </ListItem>
+        <ListItem button component={Link} to="/test" onClick={handleDrawerToggle}>
+          <ListItemText primary="Test" />
+        </ListItem>
       </List>
       <Divider />
     </div>
@@ -139,6 +143,9 @@ export default function App(props) {
               <Link to="/circle" className={classes.link}>
                 <Button color="inherit">The Circle Of Fifths</Button>
               </Link>
+              <Link to="/test" className={classes.link}>
+                <Button color="inherit">Test</Button>
+              </Link>
             </div>
           </Hidden>
         </Toolbar>
@@ -166,6 +173,7 @@ export default function App(props) {
           <Route path="/compose" component={ComposeAndShare} />
           <Route path="/learn" component={LearnSongs} />
           <Route path="/circle" component={TheCircleOfFifths} />
+          <Route path="/test" component={MusicApp} />
         </Switch>
       </main>
     </Router>

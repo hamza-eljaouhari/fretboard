@@ -1,14 +1,19 @@
 import './circle-of-fifths.css';
 import guitar from '../config/guitar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CircleOfFifths = ({
-    selectedTone: initialSelectedTone = null,
-    quality: initialQuality = null,
-    onElementChange = null
+    tone,
+    quality,
+    onElementChange
 }) => {
-    const [selectedTone, setSelectedTone] = useState(initialSelectedTone);
-    const [quality, setQuality] = useState(initialQuality);
+    const [selectedTone, setSelectedTone] = useState(null);
+    const [selectedQuality, setSelectedQuality] = useState(null);
+
+    useEffect(() => {
+        setSelectedTone(tone);
+        setSelectedQuality(quality);
+    }, [tone, quality])
 
     const majorRadius = 150; // Radius of the circle for major tones
     const minorRadius = 110; // Radius for the inner circle of minor tones
@@ -26,23 +31,21 @@ const CircleOfFifths = ({
     const selectKey = (tone, quality) => {
         const indexOfTone = guitar.notes.flats.indexOf(tone.replace('m', '')); // Remove 'm' for minor tones
         setSelectedTone(tone);
-        setQuality(quality);
-        if (onElementChange) {
-            onElementChange(indexOfTone, 'key');
-        }
+        setSelectedQuality(quality);
+        console.log(quality)
     };
 
     let rotationAngle = 0;
     let selectedMajorTone = selectedTone;
     let selectedMinorTone = selectedTone;
 
-    if (quality === "Major") {
+    if (selectedQuality === "Major") {
         const majorIndex = majorTones.indexOf(selectedTone);
         if (majorIndex !== -1) {
             rotationAngle = -30 * majorIndex;
             selectedMinorTone = guitar.circleOfFifths[majorIndex].relative;
         }
-    } else if (quality === "Minor") {
+    } else if (selectedQuality === "Minor") {
         const minorIndex = minorTones.indexOf(selectedTone + 'm');
         if (minorIndex !== -1) {
             rotationAngle = -30 * minorIndex;
