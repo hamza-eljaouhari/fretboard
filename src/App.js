@@ -127,16 +127,16 @@ export default function App(props) {
           </Button>
           <Hidden smDown>
             <div className={classes.navLinks}>
-              <Link to="/" className={classes.link}>
+              <Link to="/fretboard" className={classes.link}>
                 <Button color="inherit">Play and Visualize</Button>
               </Link>
-              <Link to="/compose" className={classes.link}>
+              <Link to="/fretboard/compose" className={classes.link}>
                 <Button color="inherit">Compose and Share</Button>
               </Link>
-              <Link to="/learn" className={classes.link}>
+              <Link to="/fretboard/learn" className={classes.link}>
                 <Button color="inherit">Learn Songs</Button>
               </Link>
-              <Link to="/circle" className={classes.link}>
+              <Link to="/fretboard/circle" className={classes.link}>
                 <Button color="inherit">The Circle Of Fifths</Button>
               </Link>
             </div>
@@ -162,10 +162,10 @@ export default function App(props) {
       </nav>
       <main className={classes.root}>
         <Switch>
-          <Route exact path="/" component={PlayAndVisualize} />
-          <Route path="/compose" component={ComposeAndShare} />
-          <Route path="/learn" component={LearnSongs} />
-          <Route path="/circle" component={TheCircleOfFifths} />
+          <Route exact path="/fretboard" component={PlayAndVisualize} />
+          <Route path="/fretboard/compose" component={ComposeAndShare} />
+          <Route path="/fretboard/learn" component={LearnSongs} />
+          <Route path="/fretboard/circle" component={TheCircleOfFifths} />
         </Switch>
       </main>
     </Router>
