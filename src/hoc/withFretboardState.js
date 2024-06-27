@@ -201,9 +201,11 @@ const withFretboardState = (WrappedComponent) => {
         };
 
         const createNewBoardDisplay = () => {
-            const newBoard = newFretboard(6, 22, [4, 7, 2, 9, 11, 4], [4, 3, 3, 3, 2, 2], "/test", 'scale');
+            const currentPath = props.history.location.pathname; // Get the current route
+            const newBoard = newFretboard(6, 22, [4, 7, 2, 9, 11, 4], [4, 3, 3, 3, 2, 2], currentPath, 'scale'); // Use the current route
             dispatch(addFretboard(newBoard));
         };
+        
 
         const cleanFretboard = () => {
             if (selectedFretboardIndex === -1) return;
