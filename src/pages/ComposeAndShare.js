@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Fretboard from '../components/Fretboard';
-import ChordComposer from '../components/ChordComposer';
+import MusicApp from '../components/MusicApp';
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,7 +16,7 @@ const ComposeAndShare = () => {
 
   return (
     <div className={classes.root}>
-      <Fretboard  hideCircleOfFifths={true} hideChordProgressor={true} hideFretboardControls={true} hideAddMoreFretboards={true} />
+      <MusicApp />
     </div>
   );
 };

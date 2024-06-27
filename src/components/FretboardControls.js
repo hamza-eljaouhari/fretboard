@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const FretboardControls = ({
     choice,
     handleChoiceChange,
-    keySignature,
+    selectedKey,
     onElementChange,
     scaleModes,
     arppegiosNames,
@@ -42,6 +42,8 @@ const FretboardControls = ({
     playSelectedNotes
 }) => {
     const classes = useStyles();
+
+    console.log("selected key",selectedKey);
 
     const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -85,7 +87,7 @@ const FretboardControls = ({
                 {choice === 'scale' && (
                     <>
                         <Grid item xs={12}>
-                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
+                            <KeySelector choice={choice} selectedKey={selectedKey} onElementChange={onElementChange} classes={classes} />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
@@ -129,7 +131,7 @@ const FretboardControls = ({
                 {choice === 'chord' && (
                     <>
                         <Grid item xs={12}>
-                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
+                            <KeySelector choice={choice} selectedKey={selectedKey} onElementChange={onElementChange} classes={classes} />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
@@ -171,7 +173,7 @@ const FretboardControls = ({
                 {choice === 'arppegio' && (
                     <>
                         <Grid item xs={12}>
-                            <KeySelector choice={choice} keySignature={keySignature} onElementChange={onElementChange} classes={classes} />
+                            <KeySelector choice={choice} selectedKey={selectedKey} onElementChange={onElementChange} classes={classes} />
                         </Grid>
                         <Grid item xs={12}>
                             <FormControl className={classes.selectContainer}>
@@ -270,9 +272,9 @@ const FretboardControls = ({
     );
 };
 
-const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
-    const effectiveKeySignature = keySignature || {};
+const KeySelector = ({ choice, selectedKey, onElementChange, classes }) => {
 
+    console.log("integer", selectedKey)
     return (
         choice && (
             <FormControl className={classes.selectContainer}>
@@ -280,7 +282,7 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
                 <Select
                     labelId="key-signature-label"
                     id="key-signature-select"
-                    value={effectiveKeySignature[choice] !== undefined ? effectiveKeySignature[choice] : ''}
+                    value={isNaN(selectedKey) ? '' : selectedKey} // Ensure default value
                     onChange={(e) => onElementChange(e.target.value, 'key')}
                     displayEmpty
                     className={classes.selectContainer}
@@ -289,7 +291,7 @@ const KeySelector = ({ choice, keySignature, onElementChange, classes }) => {
                         <MenuItem key={index} value={index}>{key}</MenuItem>
                     ))}
                 </Select>
-            </FormControl>
+                </FormControl>
         )
     );
 };
@@ -301,7 +303,7 @@ FretboardControls.propTypes = {
     arppegiosNames: PropTypes.array.isRequired,
     choice: PropTypes.string.isRequired,
     onCleanFretboard: PropTypes.func.isRequired,
-    keySignature: PropTypes.object.isRequired,
+    selectedKey: PropTypes.number,
     onCopyLink: PropTypes.func.isRequired,
     selectedMode: PropTypes.number,
     selectedScale: PropTypes.string,
