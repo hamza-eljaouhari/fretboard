@@ -85,16 +85,16 @@ export default function App(props) {
   const drawer = (
     <div className={classes.drawer}>
       <List>
-        <ListItem button component={Link} to="/" onClick={handleDrawerToggle}>
+        <ListItem button component={Link} to="/fretboard/" onClick={handleDrawerToggle}>
           <ListItemText primary="Play and Visualize" />
         </ListItem>
-        <ListItem button component={Link} to="/compose" onClick={handleDrawerToggle}>
+        <ListItem button component={Link} to="/fretboard/compose" onClick={handleDrawerToggle}>
           <ListItemText primary="Compose and Share" />
         </ListItem>
-        <ListItem button component={Link} to="/learn" onClick={handleDrawerToggle}>
+        <ListItem button component={Link} to="/fretboard/learn" onClick={handleDrawerToggle}>
           <ListItemText primary="Learn Songs" />
         </ListItem>
-        <ListItem button component={Link} to="/circle" onClick={handleDrawerToggle}>
+        <ListItem button component={Link} to="/fretboard/circle" onClick={handleDrawerToggle}>
           <ListItemText primary="The Circle Of Fifths" />
         </ListItem>
       </List>
