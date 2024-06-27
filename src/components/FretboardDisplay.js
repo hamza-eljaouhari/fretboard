@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import guitar from '../config/guitar';
 import { makeStyles } from '@material-ui/core';
 import * as Tone from 'tone';
+import './guitar-neck.css'
 
 const useStyles = makeStyles((theme) => ({
   fretboardContainer: {
@@ -214,7 +215,7 @@ const FretboardDisplay = ({
 };
 
 FretboardDisplay.propTypes = {
-  boards: PropTypes.array.isRequired,
+  boards: PropTypes.array,
   handleFretboardSelect: PropTypes.func.isRequired,
   onElementChange: PropTypes.func.isRequired,
 };

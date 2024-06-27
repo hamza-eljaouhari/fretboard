@@ -20,7 +20,7 @@ import PlayAndVisualize from './pages/PlayAndVisualize';
 import ComposeAndShare from './pages/ComposeAndShare';
 import LearnSongs from './pages/LearnSongs';
 import TheCircleOfFifths from './pages/TheCircleOfFifths';
-import MusicApp from './components/MusicApp';
+import MusicApp from './parent/MusicApp';
 
 const useStyles = makeStyles((theme) => ({
   root: {

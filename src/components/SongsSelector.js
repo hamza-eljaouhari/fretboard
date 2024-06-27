@@ -169,8 +169,6 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
 
   const handlePlayProgression = () => {
     const selectedSong = filteredSongs[selectedSongIndex];
-
-    console.log(selectedSong)
     if (selectedSong) {
       const convertedProgression = convertChordProgression(selectedSong.chords, selectedKey);
       playProgression(convertedProgression)

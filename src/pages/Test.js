@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import MusicApp from '../components/MusicApp';
+import MusicApp from '../parent/MusicApp';
 
 const useStyles = makeStyles(() => ({
   root: {

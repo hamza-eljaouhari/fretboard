@@ -10,11 +10,34 @@ const defaultTuning = [4, 11, 7, 2, 9, 4];
 const withFretboardState = (WrappedComponent) => {
     return (props) => {
         const dispatch = useDispatch();
-        const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
-
         const { boards } = props;
+        
+        const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(-1);
+        const [selectedFretboard, setSelectedFretboard] = useState(null);
 
-        const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
+        useEffect(() => {
+            if (boards && boards.length > 0 && selectedFretboardIndex === -1) {
+                setSelectedFretboardIndex(0);
+            }
+        }, [boards]);
+        
+        useEffect(() => {
+            if (selectedFretboardIndex >= 0 && boards.length > 0) {
+                setSelectedFretboard(boards[selectedFretboardIndex]);
+            }
+        }, [selectedFretboardIndex, boards]);
+
+        useEffect(() => {
+            const restoredChordProgression = JSON.parse(localStorage.getItem('progression'));
+            if (restoredChordProgression?.length) {
+                dispatch(setProgression(restoredChordProgression));
+            }
+        }, [dispatch]);
+        
+        
+        const handleFretboardSelect = (index) => {
+            setSelectedFretboardIndex(index);
+        };
 
         useEffect(() => {
             const restoredChordProgression = JSON.parse(localStorage.getItem('progression'));
@@ -192,10 +215,6 @@ const withFretboardState = (WrappedComponent) => {
             return guitar.scales[scale]?.intervals || [];
         };
 
-        const handleFretboardSelect = (index) => {
-            setSelectedFretboardIndex(index);
-        };
-
         const handleChoiceChange = (newChoice) => {
             dispatch(updateStateProperty(selectedFretboard.id, 'generalSettings.choice', newChoice));
         };
@@ -205,7 +224,6 @@ const withFretboardState = (WrappedComponent) => {
             const newBoard = newFretboard(6, 22, [4, 7, 2, 9, 11, 4], [4, 3, 3, 3, 2, 2], currentPath, 'scale'); // Use the current route
             dispatch(addFretboard(newBoard));
         };
-        
 
         const cleanFretboard = () => {
             if (selectedFretboardIndex === -1) return;
@@ -309,7 +327,8 @@ const withFretboardState = (WrappedComponent) => {
                 cleanFretboard={cleanFretboard}
                 onElementChange={onElementChange}
                 selectedFretboardIndex={selectedFretboardIndex}
-                setSelectedFretboardIndex={setSelectedFretboardIndex} // Pass it here
+                setSelectedFretboardIndex={setSelectedFretboardIndex}
+                getScaleNotes={getScaleNotes}
             />
         );
     };

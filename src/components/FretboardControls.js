@@ -271,6 +271,7 @@ const FretboardControls = ({
 };
 
 const KeySelector = ({ choice, selectedKey, onElementChange, classes }) => {
+
     return (
         choice && (
             <FormControl className={classes.selectContainer}>
@@ -278,7 +279,7 @@ const KeySelector = ({ choice, selectedKey, onElementChange, classes }) => {
                 <Select
                     labelId="key-signature-label"
                     id="key-signature-select"
-                    value={isNaN(selectedKey) ? '' : selectedKey} // Ensure default value
+                    value={selectedKey || ''} // Ensure default value
                     onChange={(e) => onElementChange(e.target.value, 'key')}
                     displayEmpty
                     className={classes.selectContainer}
