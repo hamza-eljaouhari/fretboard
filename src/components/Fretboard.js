@@ -16,6 +16,7 @@ import { getNoteFromFretboard } from '../redux/helpers';
 import './guitar-neck.css';
 import { useDispatch } from 'react-redux';
 import { NotInterestedOutlined } from '@material-ui/icons';
+import ChordComposer from './ChordComposer';
 const queryString = require('query-string');
 
 const useStyles = makeStyles((theme) => ({
@@ -729,6 +730,11 @@ const Fretboard = withRouter((props) => {
                         onElementChange={onElementChange}
                         selectedFretboardIndex={selectedFretboardIndex}
                         quality={circleData.degree}
+                    />
+                    <ChordComposer
+                        addChordToProgression={addChordToProgression}
+                        playProgression={playProgression}
+                        saveProgression={saveProgression}
                     />
                 </section>
                 <section>
