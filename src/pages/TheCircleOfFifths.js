@@ -1,13 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import CircleOfFifths from '../components/CircleOfFifths';
+import Fretboard from '../components/Fretboard';
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: '100%',
+    width: '80%',
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
 }));
 
@@ -16,7 +16,7 @@ const TheCircleOfFifths = () => {
 
   return (
     <div className={classes.root}>
-      <CircleOfFifths />
+      <Fretboard  hideFretboard={true} hideChordProgressor={true} hideFretboardControls={true} hideAddMoreFretboards={true} hideChordComposer={true} />
     </div>
   );
 };

@@ -17,7 +17,7 @@ const ComposeAndShare = () => {
 
   return (
     <div className={classes.root}>
-      <ChordComposer />
+      <Fretboard  hideCircleOfFifths={true} hideChordProgressor={true} hideFretboardControls={true} hideAddMoreFretboards={true} />
     </div>
   );
 };

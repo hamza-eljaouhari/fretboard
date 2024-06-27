@@ -4,6 +4,7 @@ import {
   SET_PROGRESSION,
   SET_PROGRESSION_KEY
 } from "./actionTypes";
+import { v4 as uuidv4 } from 'uuid';
 
 import guitar from '../config/guitar';
 
@@ -18,8 +19,9 @@ export function newLayout(numberOfStrings, numberOfFrets, tuning){
 };
 
 
-export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [4, 7, 2, 9, 11, 4], baseOctaves = [4, 3, 3, 3, 2, 2]){
+export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [4, 7, 2, 9, 11, 4], baseOctaves = [4, 3, 3, 3, 2, 2], page = "/", choice = 'scale'){
   return {
+    id: uuidv4(), // Unique identifier for each fretboard
     keySettings: {
       scale: '',
       mode: '',
@@ -72,15 +74,16 @@ export function newFretboard(numberOfStrings = 6, numberOfFrets = 22, tuning = [
       nofrets: numberOfFrets,
       nostrs: numberOfStrings,
       tuning: guitar.tuning,
-      choice: 'scale',
-      baseOctaves: baseOctaves
+      choice: choice,
+      baseOctaves: baseOctaves,
+      page: page
     }
   }
 }
 
-export const updateStateProperty = (fretboardIndex, propertyPath, value) => ({
-  type: UPDATE_FRETBOARD_PROPERTY,
-  payload: { fretboardIndex, propertyPath, value }
+export const updateStateProperty = (fretboardId, propertyPath, value) => ({
+  type: 'UPDATE_FRETBOARD_PROPERTY',
+  payload: { fretboardId, propertyPath, value }
 });
 
 export const addFretboard = (fretboard) => ({

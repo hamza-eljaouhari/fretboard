@@ -3,11 +3,9 @@
 }
 
 .circle-container {
-  width: 50%;
+  width: 80%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0 auto;  
 }
 
 @media (max-width: 1024px) {

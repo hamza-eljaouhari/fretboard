@@ -173,7 +173,6 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
     console.log(selectedSong)
     if (selectedSong) {
       const convertedProgression = convertChordProgression(selectedSong.chords, selectedKey);
-      console.log(convertedProgression);
       playProgression(convertedProgression)
     }
   };

@@ -15,7 +15,6 @@ import {
 import { getNoteFromFretboard } from '../redux/helpers';
 import './guitar-neck.css';
 import { useDispatch } from 'react-redux';
-import { NotInterestedOutlined } from '@material-ui/icons';
 import ChordComposer from './ChordComposer';
 const queryString = require('query-string');
 
@@ -70,12 +69,11 @@ const Fretboard = withRouter((props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const { boards, progressions, setProgression, setProgressionKey } = props;
+    const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls, hideAddMoreFretboards, hideFretboard } = props;
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
-    const [restrainDisplay, setRestrainDisplay] = useState(false);
-    const { setFretboards, boards, progressions, setProgression, setProgressionKey } = props;
-    const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls, hideAddMoreFretboards} = props; 
     const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
-
+    console.log(selectedFretboard.id)
     useEffect(() => {
         const restoredChordProgression = JSON.parse(localStorage.getItem('progression'));
         if (restoredChordProgression?.length) {
@@ -88,7 +86,7 @@ const Fretboard = withRouter((props) => {
     };
 
     const handleChoiceChange = (newChoice) => {
-        dispatch(updateStateProperty(selectedFretboardIndex, 'generalSettings.choice', newChoice));
+        dispatch(updateStateProperty(selectedFretboard.id, 'generalSettings.choice', newChoice));
     };
 
 
@@ -105,13 +103,13 @@ const Fretboard = withRouter((props) => {
 
         const newBoard = newLayout(selectedFretboard.generalSettings.nostrs, selectedFretboard.generalSettings.nofrets, selectedFretboard.generalSettings.tuning);
 
-        dispatch(updateStateProperty(selectedFretboardIndex, `keySettings.${choice}`, ''));
-        dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.${choice}`, ''));
+        dispatch(updateStateProperty(selectedFretboard.id, `keySettings.${choice}`, ''));
+        dispatch(updateStateProperty(selectedFretboard.id, `${choice}Settings.${choice}`, ''));
         if (choice === 'chord') {
-            dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.shape`, ''));
+            dispatch(updateStateProperty(selectedFretboard.id, `${choice}Settings.shape`, ''));
         }
-        dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.${choice}`, ''));
-        dispatch(updateStateProperty(selectedFretboardIndex, `${selectedFretboard.generalSettings.choice}Settings.fretboard`, newBoard));
+        dispatch(updateStateProperty(selectedFretboard.id, `${choice}Settings.${choice}`, ''));
+        dispatch(updateStateProperty(selectedFretboard.id, `${selectedFretboard.generalSettings.choice}Settings.fretboard`, newBoard));
     }
 
     const onElementChange = (value, element) => {
@@ -210,13 +208,13 @@ const Fretboard = withRouter((props) => {
     const dispatchPropertiesUpdate = (updates) => {
         if (updates !== null && updates.length > 0) {
             for (let i = 0; i < updates.length; i++) {
-                dispatch(updateStateProperty(selectedFretboardIndex, updates[i].property, updates[i].value));
+                dispatch(updateStateProperty(selectedFretboard.id, updates[i].property, updates[i].value));
             }
         }
     };
 
     const updateUrlSettings = (choice) => {
-        dispatch(updateStateProperty(selectedFretboardIndex, `urlSettings.${choice || 'scale'}`, props.history.location.search, choice));
+        dispatch(updateStateProperty(selectedFretboard.id, `urlSettings.${choice || 'scale'}`, props.history.location.search, choice));
     };
 
     const onCleanFretboard = () => {
@@ -330,7 +328,7 @@ const Fretboard = withRouter((props) => {
         const oldFretboardSettings = selectedFretboard['chordSettings'].fretboard;
 
         if (JSON.stringify(oldFretboardSettings) !== JSON.stringify(newBoard)) {
-            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.fretboard', newBoard));
+            dispatch(updateStateProperty(selectedFretboard.id, 'chordSettings.fretboard', newBoard));
         }
     }
 
@@ -425,7 +423,7 @@ const Fretboard = withRouter((props) => {
         }
 
         if (JSON.stringify(selectedFretboard[choice + 'Settings']) !== JSON.stringify(fretboardClone[choice + 'Settings'])) {
-            dispatch(updateStateProperty(selectedFretboardIndex, `${choice}Settings.fretboard`, fretboardClone[choice + 'Settings'].fretboard));
+            dispatch(updateStateProperty(selectedFretboard.id, `${choice}Settings.fretboard`, fretboardClone[choice + 'Settings'].fretboard));
         }
     }, [selectedFretboard]);
 
@@ -456,11 +454,11 @@ const Fretboard = withRouter((props) => {
 
         for (let i = 0; i < progression.length; i++) {
             const { chord, shape, key, notes } = progression[i];
-            dispatch(updateStateProperty(selectedFretboardIndex, 'generalSettings.choice', 'chord'));
-            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.chord', chord));
-            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.shape', shape));
-            dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.notes', notes));
-            dispatch(updateStateProperty(selectedFretboardIndex, 'keySettings.chord', key));
+            dispatch(updateStateProperty(selectedFretboard.id, 'generalSettings.choice', 'chord'));
+            dispatch(updateStateProperty(selectedFretboard.id, 'chordSettings.chord', chord));
+            dispatch(updateStateProperty(selectedFretboard.id, 'chordSettings.shape', shape));
+            dispatch(updateStateProperty(selectedFretboard.id, 'chordSettings.notes', notes));
+            dispatch(updateStateProperty(selectedFretboard.id, 'keySettings.chord', key));
             displayChordPortion({ key, chord, shape });
             playSelectedNotes();
             await new Promise(r => setTimeout(r, 5000));
@@ -686,15 +684,17 @@ const Fretboard = withRouter((props) => {
                         <AddCircleOutlineIcon />
                     </IconButton>
                 }
-                <FretboardDisplay
-                    progressions={progressions}
-                    selectedFretboardIndex={selectedFretboardIndex}
-                    boards={boards}
-                    numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
-                    numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
-                    handleFretboardSelect={handleFretboardSelect}
-                    onElementChange={onElementChange}
-                />
+                { !hideFretboard && 
+                    <FretboardDisplay
+                        progressions={progressions}
+                        selectedFretboardIndex={selectedFretboardIndex}
+                        boards={boards}
+                        numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
+                        numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
+                        handleFretboardSelect={handleFretboardSelect}
+                        onElementChange={onElementChange}
+                    />
+                }
             </div>
             <div >
                 <section className="controls">
@@ -719,12 +719,9 @@ const Fretboard = withRouter((props) => {
                         playProgression={playProgression}
                         progressions={progressions}
                         onElementChange={onElementChange}
-                        restrainDisplay={restrainDisplay}
-                        setRestrainDisplay={setRestrainDisplay}
                     />
                 }
                 </section>
-                <section>
                 { !hideCircleOfFifths &&
                     <CircleOfFifths
                         className={classes.circleOfFifths}
@@ -741,32 +738,33 @@ const Fretboard = withRouter((props) => {
                         saveProgression={saveProgression}
                     />
                 }
-                </section>
-                <section>
-                    { !hideChordProgressor && 
-                        <Progressor
-                            className={classes.chordPressionDisplay}
-                            progression={progressions.progression}
-                            setProgression={setProgression}
-                            playProgression={playProgression}
-                            setProgressionKey={setProgressionKey}
-                            selectedKey={progressions.key}
-                            getScaleNotes={getScaleNotes}
-                        />
-                    }
-                </section>
+                { !hideChordProgressor && 
+                    <Progressor
+                        className={classes.chordPressionDisplay}
+                        progression={progressions.progression}
+                        setProgression={setProgression}
+                        playProgression={playProgression}
+                        setProgressionKey={setProgressionKey}
+                        selectedKey={progressions.key}
+                        getScaleNotes={getScaleNotes}
+                    />
+                }
             </div>
         </div>
     );
 });
 
-const mapStateToProps = state => {
-    return { boards: state.fretboard.components, progressions: state.partitions };
+// Function to filter boards based on the current path
+const mapStateToProps = (state, ownProps) => {
+    const currentPath = ownProps.location.pathname;
+    console.log(currentPath)
+    const filteredBoards = state.fretboard.components.filter(board => board.generalSettings.page === currentPath);
+    return { boards: filteredBoards, progressions: state.partitions };
 };
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     {
         addFretboard, updateStateProperty, setProgression, setProgressionKey
     }
-)(Fretboard);
+)(Fretboard));
