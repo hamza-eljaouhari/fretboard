@@ -89,8 +89,6 @@ const Fretboard = withRouter((props) => {
 
     const handleChoiceChange = (newChoice) => {
         dispatch(updateStateProperty(selectedFretboardIndex, 'generalSettings.choice', newChoice));
-        const storedURL = selectedFretboard.urlSettings[newChoice];
-        props.history.push('/fretboard' + storedURL);
     };
 
 
@@ -131,8 +129,6 @@ const Fretboard = withRouter((props) => {
     const updateUrl = (element, newElement) => {
         const search = queryString.parse(props.history.location.search);
         search[element] = newElement;
-        const newUrl = `/fretboard?${queryString.stringify(search)}`;
-        props.history.push(newUrl);
     };
 
     const getPropertiesUpdate = (element, value, newElement) => {
@@ -224,7 +220,6 @@ const Fretboard = withRouter((props) => {
     };
 
     const onCleanFretboard = () => {
-        props.history.push('/fretboard');
         cleanFretboard();
     };
 
