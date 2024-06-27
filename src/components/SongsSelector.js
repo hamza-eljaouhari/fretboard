@@ -170,8 +170,10 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
   const handlePlayProgression = () => {
     const selectedSong = filteredSongs[selectedSongIndex];
 
-    if (selectedSong && selectedKey) {
+    console.log(selectedSong)
+    if (selectedSong) {
       const convertedProgression = convertChordProgression(selectedSong.chords, selectedKey);
+      console.log(convertedProgression);
       playProgression(convertedProgression)
     }
   };
@@ -249,7 +251,16 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
             Back
           </Button>
           <div className={classes.fixedWidth} style={{ overflowX: 'auto', width: '100vw' }}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.playProgression}
+            onClick={handlePlayProgression}
+          >
+            Play Progression
+          </Button>
             <div className={classes.cardsContainer}>
+              
               {selectedChordProgression.map((chord, index) => (
                 <Card
                   key={index}
@@ -286,15 +297,6 @@ const SongsSelector = ({ playProgression, getScaleNotes }) => {
               ))}
             </div>
           </div>
-
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.playProgression}
-            onClick={handlePlayProgression}
-          >
-            Play Progression
-          </Button>
           <div className={classes.fixedWidth} style={{ overflowX: 'auto', width: '100vw' }}>
             <div className={classes.cardsContainer}>
               {/* Render song cards in chunks of 33 items each */}

@@ -72,7 +72,8 @@ const Fretboard = withRouter((props) => {
 
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
     const [restrainDisplay, setRestrainDisplay] = useState(false);
-    const { setFretboards, boards, progressions, setProgression, setProgressionKey } = props;
+    const { setFretboards, boards, progressions, setProgression, setProgressionKey, display } = props;
+    const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls } = props; 
     const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
 
     useEffect(() => {
@@ -466,7 +467,8 @@ const Fretboard = withRouter((props) => {
             dispatch(updateStateProperty(selectedFretboardIndex, 'chordSettings.notes', notes));
             dispatch(updateStateProperty(selectedFretboardIndex, 'keySettings.chord', key));
             displayChordPortion({ key, chord, shape });
-            await new Promise(r => setTimeout(r, 4000));
+            playSelectedNotes();
+            await new Promise(r => setTimeout(r, 5000));
         }
     }, [progressions, selectedFretboardIndex]);
 
@@ -684,21 +686,26 @@ const Fretboard = withRouter((props) => {
     return (
         <div className={classes.root}>
             <div>
-                <IconButton onClick={createNewBoardDisplay}>
-                    <AddCircleOutlineIcon />
-                </IconButton>
-                <FretboardDisplay
-                    progressions={progressions}
-                    selectedFretboardIndex={selectedFretboardIndex}
-                    boards={boards}
-                    numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
-                    numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
-                    handleFretboardSelect={handleFretboardSelect}
-                    onElementChange={onElementChange}
-                />
+                { display === "playAndVisualize" &&
+                    <IconButton onClick={createNewBoardDisplay}>
+                        <AddCircleOutlineIcon />
+                    </IconButton>
+                }
+                {
+                    <FretboardDisplay
+                        progressions={progressions}
+                        selectedFretboardIndex={selectedFretboardIndex}
+                        boards={boards}
+                        numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
+                        numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
+                        handleFretboardSelect={handleFretboardSelect}
+                        onElementChange={onElementChange}
+                    />
+                }
             </div>
             <div >
                 <section className="controls">
+                { !hideFretboardControls &&
                     <FretboardControls
                         playSelectedNotes={playSelectedNotes}
                         handleChoiceChange={handleChoiceChange}
@@ -722,8 +729,10 @@ const Fretboard = withRouter((props) => {
                         restrainDisplay={restrainDisplay}
                         setRestrainDisplay={setRestrainDisplay}
                     />
+                }
                 </section>
                 <section>
+                { !hideCircleOfFifths &&
                     <CircleOfFifths
                         className={classes.circleOfFifths}
                         selectedTone={circleData.tone}
@@ -731,22 +740,27 @@ const Fretboard = withRouter((props) => {
                         selectedFretboardIndex={selectedFretboardIndex}
                         quality={circleData.degree}
                     />
+                }
+                { !hideChordComposer &&
                     <ChordComposer
                         addChordToProgression={addChordToProgression}
                         playProgression={playProgression}
                         saveProgression={saveProgression}
                     />
+                }
                 </section>
                 <section>
-                    <Progressor
-                        className={classes.chordPressionDisplay}
-                        progression={progressions.progression}
-                        setProgression={setProgression}
-                        playProgression={playProgression}
-                        setProgressionKey={setProgressionKey}
-                        selectedKey={progressions.key}
-                        getScaleNotes={getScaleNotes}
-                    />
+                    { !hideChordProgressor && 
+                        <Progressor
+                            className={classes.chordPressionDisplay}
+                            progression={progressions.progression}
+                            setProgression={setProgression}
+                            playProgression={playProgression}
+                            setProgressionKey={setProgressionKey}
+                            selectedKey={progressions.key}
+                            getScaleNotes={getScaleNotes}
+                        />
+                    }
                 </section>
             </div>
         </div>
