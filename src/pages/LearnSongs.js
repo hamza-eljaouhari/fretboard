@@ -17,7 +17,7 @@ const LearnSongs = () => {
 
   return (
     <div className={classes.root}>
-      <Fretboard hideCircleOfFifths={true} hideChordComposer={true} hideFretboardControls={true} />
+      <Fretboard hideCircleOfFifths={true} hideChordComposer={true} hideFretboardControls={true} hideAddMoreFretboards={true}/>
     </div>
   );
 };

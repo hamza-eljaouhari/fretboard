@@ -72,8 +72,8 @@ const Fretboard = withRouter((props) => {
 
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
     const [restrainDisplay, setRestrainDisplay] = useState(false);
-    const { setFretboards, boards, progressions, setProgression, setProgressionKey, display } = props;
-    const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls } = props; 
+    const { setFretboards, boards, progressions, setProgression, setProgressionKey } = props;
+    const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls, hideAddMoreFretboards} = props; 
     const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
 
     useEffect(() => {
@@ -681,22 +681,20 @@ const Fretboard = withRouter((props) => {
     return (
         <div className={classes.root}>
             <div>
-                { display === "playAndVisualize" &&
+                { !hideAddMoreFretboards &&
                     <IconButton onClick={createNewBoardDisplay}>
                         <AddCircleOutlineIcon />
                     </IconButton>
                 }
-                {
-                    <FretboardDisplay
-                        progressions={progressions}
-                        selectedFretboardIndex={selectedFretboardIndex}
-                        boards={boards}
-                        numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
-                        numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
-                        handleFretboardSelect={handleFretboardSelect}
-                        onElementChange={onElementChange}
-                    />
-                }
+                <FretboardDisplay
+                    progressions={progressions}
+                    selectedFretboardIndex={selectedFretboardIndex}
+                    boards={boards}
+                    numberOfStrings={selectedFretboard.generalSettings.nostrs || 6}
+                    numberOfFrets={selectedFretboard.generalSettings.nofrets || 22}
+                    handleFretboardSelect={handleFretboardSelect}
+                    onElementChange={onElementChange}
+                />
             </div>
             <div >
                 <section className="controls">
