@@ -1,12 +1,15 @@
 import './circle-of-fifths.css';
 import guitar from '../config/guitar';
-import React from 'react';
+import React, { useState } from 'react';
 
 const CircleOfFifths = ({
-    selectedTone,
-    quality,
-    onElementChange
+    selectedTone: initialSelectedTone = null,
+    quality: initialQuality = null,
+    onElementChange = null
 }) => {
+    const [selectedTone, setSelectedTone] = useState(initialSelectedTone);
+    const [quality, setQuality] = useState(initialQuality);
+
     const majorRadius = 150; // Radius of the circle for major tones
     const minorRadius = 110; // Radius for the inner circle of minor tones
     const majorTones = guitar.circleOfFifths.map((key) => key.key);
@@ -20,9 +23,13 @@ const CircleOfFifths = ({
         };
     };
 
-    const selectKey = (tone) => {
+    const selectKey = (tone, quality) => {
         const indexOfTone = guitar.notes.flats.indexOf(tone.replace('m', '')); // Remove 'm' for minor tones
-        onElementChange(indexOfTone, 'key');
+        setSelectedTone(tone);
+        setQuality(quality);
+        if (onElementChange) {
+            onElementChange(indexOfTone, 'key');
+        }
     };
 
     let rotationAngle = 0;
@@ -35,7 +42,7 @@ const CircleOfFifths = ({
             rotationAngle = -30 * majorIndex;
             selectedMinorTone = guitar.circleOfFifths[majorIndex].relative;
         }
-    } else {
+    } else if (quality === "Minor") {
         const minorIndex = minorTones.indexOf(selectedTone + 'm');
         if (minorIndex !== -1) {
             rotationAngle = -30 * minorIndex;
@@ -46,17 +53,17 @@ const CircleOfFifths = ({
     const shouldBeHighlighted = (index, isMajor) => {
         const majorIndex = majorTones.indexOf(selectedMajorTone);
         const minorIndex = minorTones.indexOf(selectedMinorTone + 'm');
-    
+
         const selectedIndex = isMajor ? majorIndex : minorIndex;
-    
+
         if (selectedIndex === -1) return false;
-    
+
         const highlightedIndices = [];
         for (let i = -1; i <= 5; i++) {
             highlightedIndices.push((selectedIndex + i + majorTones.length) % majorTones.length);
             highlightedIndices.push((selectedIndex + i + minorTones.length) % minorTones.length);
         }
-    
+
         // Highlight the relative tones
         if (quality === "Major") {
             const relativeMinorIndex = minorTones.indexOf(selectedMinorTone + 'm');
@@ -73,10 +80,10 @@ const CircleOfFifths = ({
                 }
             }
         }
-    
+
         return highlightedIndices.includes(index);
     };
-    
+
     return (
         <div className="circle-container">
             <svg width="80vw" viewBox="-200 -200 400 400" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +105,7 @@ const CircleOfFifths = ({
                                     textAnchor="middle"
                                     alignmentBaseline="middle"
                                     transform={`rotate(${counterRotationAngle})`}
-                                    onClick={() => selectKey(tone)}
+                                    onClick={() => selectKey(tone, "Major")}
                                 >
                                     {tone}
                                 </text>
@@ -120,7 +127,7 @@ const CircleOfFifths = ({
                                     textAnchor="middle"
                                     alignmentBaseline="middle"
                                     transform={`rotate(${counterRotationAngle})`}
-                                    onClick={() => selectKey(tone.replace('m', ''))} // Strip 'm' when selecting key
+                                    onClick={() => selectKey(tone.replace('m', ''), "Minor")} // Strip 'm' when selecting key
                                     fill="black"
                                 >
                                     {tone}
