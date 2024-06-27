@@ -73,7 +73,7 @@ const Fretboard = withRouter((props) => {
     const {  hideCircleOfFifths, hideChordComposer, hideChordProgressor, hideFretboardControls, hideAddMoreFretboards, hideFretboard } = props;
     const [selectedFretboardIndex, setSelectedFretboardIndex] = useState(0);
     const selectedFretboard = selectedFretboardIndex >= 0 ? boards[selectedFretboardIndex] : newFretboard();
-    console.log(selectedFretboard.id)
+    console.log(boards)
     useEffect(() => {
         const restoredChordProgression = JSON.parse(localStorage.getItem('progression'));
         if (restoredChordProgression?.length) {
@@ -91,9 +91,8 @@ const Fretboard = withRouter((props) => {
 
 
     const createNewBoardDisplay = () => {
-        const newBoard = newFretboard();
+        const newBoard = newFretboard(6, 22, [4, 7, 2, 9, 11, 4], [4, 3, 3, 3, 2, 2], "/", 'scale');
         dispatch(addFretboard(newBoard));
-        setSelectedFretboardIndex(boards.length);
     };
 
     const cleanFretboard = () => {
@@ -482,7 +481,7 @@ const Fretboard = withRouter((props) => {
 
     const getCircleData = () => {
         const defaultPoint = { tone: 'C', degree: 'Major' };
-        if (selectedFretboardIndex === -1) return defaultPoint;
+        if (selectedFretboardIndex === -1 || !selectedFretboard) return defaultPoint;
         const selectedKey = selectedFretboard.keySettings[selectedFretboard.generalSettings.choice];
         const selectedTone = guitar.notes.flats[selectedKey];
         return { tone: selectedTone, degree: getDegree(selectedFretboard.generalSettings.choice) };

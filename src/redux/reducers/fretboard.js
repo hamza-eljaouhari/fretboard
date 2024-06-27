@@ -28,6 +28,11 @@ const initialState = {
 
 const fretboard = (state = initialState, action) => {
   switch (action.type) {
+    case ADD_FRETBOARD:
+      return {
+        ...state,
+        components: [...state.components, action.payload.fretboard],
+      }
     case UPDATE_FRETBOARD_PROPERTY: {
       const { fretboardId, propertyPath, value } = action.payload;
 
