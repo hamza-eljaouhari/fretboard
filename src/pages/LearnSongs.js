@@ -16,7 +16,13 @@ const LearnSongs = () => {
 
   return (
     <div className={classes.root}>
-      <MusicApp />
+      <MusicApp 
+        showFretboardControls={false} 
+        showCircleOfFifths={false} 
+        showFretboard={true} 
+        showChordComposer={false} 
+        showProgressor={true} 
+        showSongsSelector={true} />
     </div>
   );
 };

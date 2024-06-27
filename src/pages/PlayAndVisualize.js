@@ -16,7 +16,13 @@ const PlayAndVisualize = () => {
 
   return (
     <div className={classes.root}>
-      <MusicApp />
+        <MusicApp 
+          showFretboardControls={true} 
+          showCircleOfFifths={false} 
+          showFretboard={true} 
+          showChordComposer={false} 
+          showProgressor={false} 
+          showSongsSelector={false} />
     </div>
   );
 };

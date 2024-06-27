@@ -16,7 +16,13 @@ const TheCircleOfFifths = () => {
 
   return (
     <div className={classes.root}>
-      <MusicApp />
+      <MusicApp 
+        showFretboardControls={false} 
+        showCircleOfFifths={true} 
+        showFretboard={false} 
+        showChordComposer={false} 
+        showProgressor={false} 
+        showSongsSelector={false} />
     </div>
   );
 };

@@ -16,7 +16,12 @@ const ComposeAndShare = () => {
 
   return (
     <div className={classes.root}>
-      <MusicApp />
+      <MusicApp 
+        showFretboardControls={false} 
+        showCircleOfFifths={false} 
+        showFretboard={true} 
+        showChordComposer={true} 
+        showProgressor={false} />
     </div>
   );
 };

@@ -13,6 +13,7 @@ import { withRouter } from 'react-router-dom'; // Import withRouter
 import { connect } from 'react-redux';
 import { addFretboard, updateStateProperty, setProgression, setProgressionKey } from '../redux/actions';
 import guitar from '../config/guitar';
+import SongsSelector from '../components/SongsSelector';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,11 +76,8 @@ const MusicApp = (props) => {
   } = props;
 
 
-  const [showFretboardControls, setShowFretboardControls] = useState(true);
-  const [showProgressor, setShowProgressor] = useState(true);
-  const [showCircleOfFifths, setShowCircleOfFifths] = useState(true);
-  const [showChordComposer, setShowChordComposer] = useState(true);
-
+  const { showFretboardControls, showProgressor, showCircleOfFifths, showChordComposer, showSongsSelector, showAddMoreFretboardsButton, showFretboard } = props;
+  
   if (!selectedFretboard) {
     return <div>Loading...</div>;
   }
@@ -111,70 +109,82 @@ const MusicApp = (props) => {
 
   const components = (
         <div className={classes.root}>
-        <div>
-            <IconButton onClick={createNewBoardDisplay}>
-            <AddCircleOutlineIcon />
-            </IconButton>
-            <FretboardDisplay
-            boards={boards}
-            handleFretboardSelect={handleFretboardSelect}
-            onElementChange={onElementChange}
-            />
-        </div>
-        <div>
-            <section className="controls">
-            {showFretboardControls && (
-                <FretboardControls
-                playSelectedNotes={playSelectedNotes}
-                handleChoiceChange={handleChoiceChange}
-                scaleModes={scaleModes}
-                arppegiosNames={Object.keys(guitar.arppegios)}
-                choice={selectedFretboard.generalSettings.choice}
-                onCleanFretboard={cleanFretboard}
-                selectedKey={parseInt(selectedFretboard.keySettings[selectedFretboard.generalSettings.choice])}
-                onCopyLink={() => navigator.clipboard.writeText(window.location.href).then(() => alert("The link has been copied successfully."), () => alert("Oops, something went wrong. You can copy the link directly."))}
-                selectedMode={parseInt(selectedFretboard.modeSettings.mode || 0)}
-                selectedScale={selectedFretboard.scaleSettings.scale || ''}
-                selectedChord={selectedFretboard.chordSettings.chord || ''}
-                selectedShape={selectedFretboard[selectedFretboard.generalSettings.choice + 'Settings'].shape || ''}
-                selectedArppegio={selectedFretboard.arppegioSettings.arppegio}
-                selectedFret={selectedFretboard.chordSettings.fret}
-                addChordToProgression={addChordToProgression}
-                saveProgression={saveProgression}
-                playProgression={playProgression}
-                progressions={progressions.progression}
-                onElementChange={onElementChange}
-                />
-            )}
-            </section>
-            {showCircleOfFifths && (
-            <CircleOfFifths
-                className={classes.circleOfFifths}
-                tone={circleData.tone}
-                onElementChange={onElementChange}
-                selectedFretboardIndex={selectedFretboardIndex}
-                quality={circleData.degree}
-            />
-            )}
-            {showChordComposer && (
-            <ChordComposer
-                addChordToProgression={addChordToProgression}
-                playProgression={playProgression}
-                saveProgression={saveProgression}
-            />
-            )}
-            {showProgressor && (
-            <Progressor
-                className={classes.chordPressionDisplay}
-                progression={progressions.progression}
-                setProgression={setProgression}
-                playProgression={playProgression}
-                setProgressionKey={setProgressionKey}
-                selectedKey={progressions.key}
-                getScaleNotes={getScaleNotes}
-            />
-            )}
-        </div>
+              {showAddMoreFretboardsButton &&
+                <div>
+                    <IconButton onClick={createNewBoardDisplay}>
+                    <AddCircleOutlineIcon />
+                    </IconButton>
+                </div>
+              }
+              { showFretboard &&
+                <div>
+                  <FretboardDisplay
+                    boards={boards}
+                    handleFretboardSelect={handleFretboardSelect}
+                    onElementChange={onElementChange}
+                    />
+                </div>
+              }
+
+          <div>
+              <section className="controls">
+              {showFretboardControls && (
+                  <FretboardControls
+                  playSelectedNotes={playSelectedNotes}
+                  handleChoiceChange={handleChoiceChange}
+                  scaleModes={scaleModes}
+                  arppegiosNames={Object.keys(guitar.arppegios)}
+                  choice={selectedFretboard.generalSettings.choice}
+                  onCleanFretboard={cleanFretboard}
+                  selectedKey={parseInt(selectedFretboard.keySettings[selectedFretboard.generalSettings.choice])}
+                  onCopyLink={() => navigator.clipboard.writeText(window.location.href).then(() => alert("The link has been copied successfully."), () => alert("Oops, something went wrong. You can copy the link directly."))}
+                  selectedMode={parseInt(selectedFretboard.modeSettings.mode || 0)}
+                  selectedScale={selectedFretboard.scaleSettings.scale || ''}
+                  selectedChord={selectedFretboard.chordSettings.chord || ''}
+                  selectedShape={selectedFretboard[selectedFretboard.generalSettings.choice + 'Settings'].shape || ''}
+                  selectedArppegio={selectedFretboard.arppegioSettings.arppegio}
+                  selectedFret={selectedFretboard.chordSettings.fret}
+                  addChordToProgression={addChordToProgression}
+                  saveProgression={saveProgression}
+                  playProgression={playProgression}
+                  progressions={progressions.progression}
+                  onElementChange={onElementChange}
+                  />
+              )}
+              </section>
+              {showCircleOfFifths && (
+              <CircleOfFifths
+                  className={classes.circleOfFifths}
+                  tone={circleData.tone}
+                  onElementChange={onElementChange}
+                  selectedFretboardIndex={selectedFretboardIndex}
+                  quality={circleData.degree}
+              />
+              )}
+              {showChordComposer && (
+              <ChordComposer
+                  addChordToProgression={addChordToProgression}
+                  playProgression={playProgression}
+                  saveProgression={saveProgression}
+              />
+              )}
+              {showProgressor && (
+              <Progressor
+                  className={classes.chordPressionDisplay}
+                  progression={progressions.progression}
+                  setProgression={setProgression}
+                  playProgression={playProgression}
+                  setProgressionKey={setProgressionKey}
+                  selectedKey={progressions.key}
+                  getScaleNotes={getScaleNotes}
+              />
+              )}
+              {showSongsSelector && (
+                <SongsSelector 
+                  playProgression={playProgression}
+                  getScaleNotes={getScaleNotes}/>
+              )}
+          </div>
         </div>
     );
 
